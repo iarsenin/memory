@@ -412,24 +412,30 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
-- **Phase 5 implemented (NOT YET RUN — requires pod GPU):**
-  Three modules scaffolded and linted clean:
-  - `src/trainer/batch.py` — `BatchGenerator`: builds per-cycle batch from declarative (40%),
-    QA (40%), dialogue snippets (20%), replay buffer (weighted by `salience_score × temporal_decay`),
-    and 10 hardcoded regularizer exchanges to preserve assistant formatting.
-  - `src/trainer/loop.py` — `load_base_model` (4-bit NF4 Llama-3-8B, loaded once),
-    `build_peft_model` (fresh LoRA for cycle 1, accumulate from checkpoint for cycles 2–6),
-    `run_cycle` (HuggingFace Trainer, custom loss-logger callback, telemetry dict),
-    `reset_peft` (clears Alice's adapter before Bob starts — prevents cross-persona contamination).
-  - `src/trainer/run.py` — main orchestrator: iterates trigger days per persona,
-    handles resume (skips completed checkpoints), writes telemetry JSONL per cycle,
-    marks consolidated memories in memories JSONL.
-  - `scripts/run_phase5.sh` — pod runner with GPU detection + HF token check.
-  - `.env.example` and `setup_pod.sh` updated for `HUGGING_FACE_TOKEN`.
-  - `trl>=0.8.0` added to `requirements.txt`.
-  Key decisions applied: adapter accumulation across cycles; both-speaker dialogue snippets;
-  single-process (load once, 12 cycles sequentially); strict per-persona LoRA reset.
-  GPU: **RTX 4090** (24 GB, ~$0.50/hr); estimated ~35–50 min for full Phase 5 run.
+- **Phase 5 complete** (run on RunPod RTX 4090, 50.9 GB VRAM):
+  12 sleep cycles trained successfully (6 Alice × 6 Bob). All adapters saved to `checkpoints/`.
+
+  | Persona | Day | New | Replay | Batch | Avg Loss | VRAM | Time |
+  |---|---|---|---|---|---|---|---|
+  | alice | 03 | 8 | 0 | 49 | 3.359 | 9.7 GB | 27s |
+  | alice | 06 | 5 | 10 | 44 | 1.596 | 9.8 GB | 22s |
+  | alice | 09 | 8 | 10 | 57 | 0.989 | 9.8 GB | 27s |
+  | alice | 12 | 6 | 10 | 49 | 0.880 | 9.9 GB | 25s |
+  | alice | 15 | 9 | 15 | 65 | 0.745 | 9.9 GB | 31s |
+  | alice | 18 | 8 | 9 | 56 | 0.650 | 9.7 GB | 25s |
+  | bob | 03 | 9 | 0 | 53 | 3.172 | 9.8 GB | 26s |
+  | bob | 06 | 8 | 10 | 57 | 1.481 | 9.8 GB | 27s |
+  | bob | 09 | 9 | 15 | 69 | 1.097 | 9.9 GB | 30s |
+  | bob | 12 | 5 | 10 | 43 | 0.892 | 9.9 GB | 19s |
+  | bob | 15 | 6 | 10 | 48 | 0.806 | 9.8 GB | 24s |
+  | bob | 18 | 4 | 5 | 35 | 0.859 | 9.7 GB | 16s |
+
+  Consolidated: Alice 44/50 (88%), Bob 41/45 (91%).
+  (Days 19–20 memories fall after the last trigger day and are not consolidated — expected.)
+  Loss trajectory confirms consistent learning across all 6 cycles for both personas.
+  Total Phase 5 wall time: ~5 min (tiny batch sizes; well within pod budget).
+  Pod notes: required `torch==2.5.1` upgrade (transformers 5.3 uses `set_submodule` added in torch 2.5).
+  Checkpoints: 12 × 45 MB = 540 MB, backed up locally and on pod `/workspace`.
 - **Phase 4 complete:** Salience scoring applied to all 172 extracted items.
   Alice: 50/74 kept (avg=0.41); Bob: 45/98 kept (avg=0.38).
   All 10 GT state-change events score ≥ 0.44 (highest: "adopted Luna" 0.72, "moved to Austin" 0.66).
@@ -477,13 +483,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-1. **Provision pod** (RTX 4090, 24 GB VRAM), run `bash scripts/setup_pod.sh`
-2. **Accept Llama-3 license** at https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
-3. **Sanity check** — `bash scripts/run_phase5.sh --sanity --persona alice`
-   (trains Day 3 cycle only; verifies VRAM, batch counts, telemetry log, checkpoint files)
-4. **Full Phase 5 run** — `bash scripts/run_phase5.sh`
-5. **Sync locally** — `bash scripts/sync_local.sh` (back up checkpoints + logs before stopping pod)
-6. **Phase 6** — Baselines (5 conditions on same 20-day timeline)
+1. **Phase 6** — Baselines (5 conditions on same 20-day timeline; pod GPU)
 
 ---
 
