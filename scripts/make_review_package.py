@@ -26,7 +26,8 @@ OUTPUT = REPO_ROOT / "data" / "review_package.json"
 # What to include (relative to repo root)
 INCLUDE_FILES = ["README.md", "coding_agent.md", "requirements.txt", ".env.example"]
 INCLUDE_DIRS  = ["src", "configs", "scripts", "analysis"]
-DATA_DIRS     = ["data/personas", "data/memories", "data/eval_probes", "results"]
+DATA_DIRS     = ["data/personas", "data/memories", "data/memories_unfiltered",
+                 "data/eval_probes", "results"]
 DIALOGUE_DIR  = REPO_ROOT / "data" / "dialogue"
 LOGS_DIR      = REPO_ROOT / "logs"
 CHECKPOINTS_DIR = REPO_ROOT / "checkpoints"
