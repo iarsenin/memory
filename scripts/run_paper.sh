@@ -104,6 +104,14 @@ for SEED in "${SEEDS[@]}"; do
     echo "  SEED ${SEED}"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+    # ── Seed-done guard ───────────────────────────────────────────────────
+    # eval_summary.json is written last by Phase 7. If it exists, all phases
+    # for this seed completed successfully — skip the entire seed.
+    if [ -f "${RESULTS_DIR}/eval_summary.json" ]; then
+        echo "  eval_summary.json exists — seed ${SEED} already complete, skipping."
+        continue
+    fi
+
     # ── Reset consolidated flags ──────────────────────────────────────────
     # Each seed is an independent consolidation pass over the same memory
     # data. The dev run (and any prior seed) left consolidated=true on every
