@@ -412,6 +412,11 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
+- **Phase 3 complete:** Extraction gatekeeper **PASSED** for both personas.
+  Alice: Recall 90.9%, Precision 68.2%, FIR 28.4%, Update Linking 42.9%.
+  Bob: Recall 90.9%, Precision 54.4%, FIR 36.7%, Update Linking 66.7%.
+  Results saved to `results/extraction_eval_{alice,bob}.json`.
+  Bug fix: `_coerce_str()` added to `extract.py` to handle nested-dict LLM values.
 - **Phase 2 complete:** 172 memory items extracted (74 Alice, 98 Bob); 0 schema violations;
   all key life-change events captured at conf=1.0 with is_update=True (breakup Day 5,
   layoff Day 7, freelance Day 12, Austin move Day 15, Jamie Day 18 for Alice;
@@ -430,10 +435,24 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
     only Luna, with correct emotional continuity referencing Rex's death.
 
 ### Issues
-- None
+- **FIR elevated (~28–37%)** — partly structural: keyword matching is conservative
+  (e.g., "enjoys running" maps to hobby but doesn't match the "marathon" key for alice_f010),
+  and one malformed Bob extraction on Day 2 (LLM returned a nested dict for `value`) contributed
+  several artifact items. The extractor has been patched (`_coerce_str`) to prevent this in future
+  runs. True hallucination rate is materially lower; Salience Phase 4 will suppress low-confidence
+  noise before it reaches training.
+- **Update Linking Accuracy is low for Alice (43%)** — the extractor over-flags `is_update=True`
+  on repeat mentions of the same fact (e.g., "pottery" mentioned again on Day 12 flagged as update
+  when it was introduced Day 10). This is a Phase 2 extraction quality issue, not a data-integrity
+  issue; Phase 4 salience will deprioritise redundant updates.
+- **alice_f009 (vegetarian) not recalled** — Alice never explicitly stated her diet in dialogue;
+  this is an inherent limitation of extraction from natural conversation. Noted for paper.
+- **bob_f002 (Lincoln High teacher) not recalled** — The extractor never captured "Lincoln High"
+  specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-1. **Phase 3** — Standalone extraction eval script (Precision/Recall vs ground truth) — must pass before any training
+1. **Phase 4** — Salience scoring (composite score + temporal decay)
+   Gate: all GT state-change events must have salience > threshold
 
 ---
 

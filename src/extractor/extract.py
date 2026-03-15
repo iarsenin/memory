@@ -93,13 +93,20 @@ def _build_user_prompt(name: str, age: int, day: int, turns: list[dict]) -> str:
     )
 
 
+def _coerce_str(v: object) -> str:
+    """Ensure a value is a plain string (LLMs occasionally return nested objects)."""
+    if isinstance(v, str):
+        return v
+    return json.dumps(v)
+
+
 def _to_schema(fact: dict, day: int) -> dict:
     """Map a raw LLM fact dict to the official MemLoRA memory schema."""
     return {
         "memory_id": str(uuid.uuid4()),
-        "subject": fact["subject"],
-        "predicate": fact["predicate"],
-        "value": fact["value"],
+        "subject": _coerce_str(fact["subject"]),
+        "predicate": _coerce_str(fact["predicate"]),
+        "value": _coerce_str(fact["value"]),
         "day": day,
         "confidence": float(fact["confidence"]),
         "is_update": bool(fact.get("is_update", False)),
