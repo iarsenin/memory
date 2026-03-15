@@ -1,0 +1,16 @@
+{
+  "openai": {
+    "model": null,
+    "temperature": 0.0,
+    "max_tokens": 1500,
+    "response_format": "json_object"
+  },
+  "confidence_threshold": 0.6,
+  "input": {
+    "dialogue_dir": "data/dialogue",
+    "personas_dir": "data/personas"
+  },
+  "output": {
+    "memories_dir": "data/memories"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "experiment_mode": "main",
+  "dev_mode": true,
+  "seeds": {
+    "dev": [42],
+    "paper": [42, 123, 456]
+  },
+  "lora": {
+    "r": 16,
+    "lora_alpha": 32,
+    "target_modules": ["q_proj", "v_proj"],
+    "lora_dropout": 0.05,
+    "bias": "none"
+  },
+  "training": {
+    "num_epochs": 5,
+    "learning_rate": 2e-4,
+    "per_device_train_batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "warmup_steps": 10,
+    "max_grad_norm": 1.0,
+    "fp16": true
+  },
+  "batch_mixture": {
+    "declarative_ratio": 0.40,
+    "qa_ratio": 0.40,
+    "dialogue_ratio": 0.20,
+    "qa_phrasings_per_fact": 3
+  },
+  "replay_buffer": {
+    "enabled": true,
+    "historical_sample_ratio": 0.3,
+    "weighting": "salience"
+  },
+  "regularizer": {
+    "enabled": true,
+    "generic_dialogue_samples": 10
+  },
+  "consolidation_trigger_days": 3,
+  "qa_train_templates": [
+    "What is {subject}'s {category}?",
+    "Tell me about {subject}'s {predicate}.",
+    "Regarding {subject}, what do you know about their {category}?"
+  ],
+  "model": {
+    "base_model_id": "meta-llama/Meta-Llama-3-8B-Instruct",
+    "load_in_4bit": true,
+    "bnb_4bit_compute_dtype": "float16",
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_use_double_quant": true
+  },
+  "output": {
+    "checkpoints_dir": "checkpoints",
+    "logs_dir": "logs"
+  }
+}

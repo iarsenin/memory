@@ -1,0 +1,15 @@
+{
+  "seed": 42,
+  "n_days": 20,
+  "personas": ["alice", "bob"],
+  "turns_per_day": 6,
+  "openai": {
+    "model": null,
+    "temperature": 0.7,
+    "max_tokens": 1200
+  },
+  "output": {
+    "personas_dir": "data/personas",
+    "dialogue_dir": "data/dialogue"
+  }
+}

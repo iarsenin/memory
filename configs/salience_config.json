@@ -1,0 +1,23 @@
+{
+  "weights": {
+    "novelty": 0.30,
+    "recurrence": 0.20,
+    "explicit_change": 0.25,
+    "fact_density": 0.15,
+    "banter_penalty": -0.10
+  },
+  "temporal_decay_lambda": 0.1,
+  "salience_threshold": 0.4,
+  "explicit_change_patterns": [
+    "used to", "no longer", "not anymore", "changed", "switched",
+    "now i", "recently", "just started", "just found out", "broke up",
+    "got laid off", "moved to", "adopted", "passed away"
+  ],
+  "banter_patterns": [
+    "haha", "lol", "yeah", "sure", "okay", "sounds good",
+    "that's great", "nice", "cool", "awesome"
+  ],
+  "input": {
+    "memories_dir": "data/memories"
+  }
+}

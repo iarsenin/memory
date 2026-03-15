@@ -1,0 +1,24 @@
+{
+  "openai": {
+    "model": null,
+    "temperature": 0.0,
+    "max_tokens": 300,
+    "response_format": "json_object"
+  },
+  "zero_context": true,
+  "buckets": ["stable", "updated", "superseded", "relational"],
+  "qa_eval_templates": [
+    "What is {subject}'s current {category}?",
+    "As of now, where does {subject} {predicate}?",
+    "Has {subject}'s {category} changed recently? What is it now?",
+    "I heard {subject} had some changes lately — what is their {category} at the moment?"
+  ],
+  "input": {
+    "personas_dir": "data/personas",
+    "checkpoints_dir": "checkpoints"
+  },
+  "output": {
+    "results_dir": "results",
+    "eval_probes_dir": "data/eval_probes"
+  }
+}

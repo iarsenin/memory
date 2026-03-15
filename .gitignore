@@ -1,4 +1,49 @@
-Scratchpad/
+# macOS
 .DS_Store
 Icon?
+
+# Secrets
 .env
+
+# === DATA (large, regenerable — back up via sync_local.sh, NOT git) ===
+data/
+logs/
+checkpoints/
+results/
+
+# Keep placeholder markers for empty tracked dirs
+!data/.gitkeep
+!logs/.gitkeep
+!checkpoints/.gitkeep
+!results/.gitkeep
+!data/personas/.gitkeep
+!data/dialogue/.gitkeep
+!data/memories/.gitkeep
+!data/eval_probes/.gitkeep
+
+# Scratchpad
+Scratchpad/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*.swo

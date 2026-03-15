@@ -286,6 +286,52 @@ Runs are replayable from saved artifacts without regenerating upstream phases.
 
 ---
 
+## Git Strategy
+
+Git tracks **code and lightweight configs only**. The following are never committed:
+
+```
+data/          # generated dialogue, memories, ground truth (large, reproducible)
+logs/          # training telemetry (large)
+checkpoints/   # LoRA adapter weights (large)
+results/       # metric outputs (regenerable)
+.env           # secrets
+```
+
+Data safety relies on two mechanisms:
+1. **RunPod Network Volume** — persists across pod start/stop cycles
+2. **`scripts/sync_local.sh`** — rsync pull to local drive before any pod shutdown
+
+---
+
+## ML Guardrails
+
+### 1. Catastrophic Forgetting — Replay Buffer
+Every sleep-phase training batch must mix:
+- New 3-day memories (primary signal)
+- A salience-weighted sample of **all previously consolidated memories** (replay)
+
+Training only on the newest 3 days will immediately overwrite older facts. The memory schema tracks `consolidated` and `consolidation_day` fields to support replay sampling.
+
+### 2. Tiny Batch Handling
+A 3-day window may yield only 2–5 new facts. Prevent overfitting and formatting collapse via:
+- **Augmentation:** generate 2–3 distinct QA phrasings per memory item
+- **Padding:** sample a small set of generic Llama-3 conversational data as a regularizer
+- **Epoch cap:** limit to 3–5 epochs per sleep cycle regardless of batch size
+
+### 3. Test Leakage Prevention
+QA probe templates used in Phase 5 training must use **completely different phrasing and templates** than Phase 7 eval probes. Two non-overlapping template sets are defined in `configs/train_config.json` and `configs/eval_config.json`. Never train on eval phrasing.
+
+### 4. API Determinism
+All OpenAI calls for **extraction and eval judging** use:
+- `temperature=0.0`
+- `response_format={"type": "json_object"}`
+- Exact model version string pinned in config
+
+Dialogue generation uses `temperature=0.7` (variety is intentional there).
+
+---
+
 ## Fallback Strategy
 
 If the main system underperforms: expand LoRA target modules modestly (e.g., add `k_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`). Do not redesign the architecture. Keep iteration controlled so the paper narrative remains clear on what changed and why.
@@ -348,18 +394,17 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ## Current Status
 
 ### Done
-- Project instructions written and committed
-- README with full plan, telemetry spec, multi-seed policy, compute estimates, phase gates
+- All design decisions resolved; plan fully approved
+- README with telemetry spec, ML guardrails, multi-seed policy, compute estimates, phase gates, git strategy
+- Repository scaffolded: configs, scripts, src structure, requirements.txt
+- Phase 1 coded: persona state machine (Alice + Bob), OpenAI dialogue generator
 
 ### Issues
-- None yet (pre-implementation)
-- Several design questions require answers before Phase 1 coding starts (see below)
+- None yet
 
 ### Next Steps
-1. Resolve open questions (see below)
-2. Scaffold repository: `memlora/` directory structure, `requirements.txt`, placeholder configs
-3. Implement Phase 1: Persona Engine (Pydantic state machine + dialogue generator)
-4. Run Phase 1 sanity check; verify ground truth JSON and dialogue JSONL on disk
+1. Run Phase 1 full output; verify ground truth JSON and dialogue JSONL for both personas
+2. Review Phase 1 outputs; proceed to Phase 2 (extraction pipeline) after approval
 
 ---
 
@@ -371,23 +416,13 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 | Extraction model | OpenAI API (small model) | Same — text in, structured JSON out; no heavy compute needed |
 | LLM eval judge | OpenAI API (small model) | Judging is text reasoning, not heavy compute |
 | Heavy compute (training, batch inference) | Pod GPU | Pod GPU far outperforms M1 Mac for any long-running compute |
-| Persona backstories | Left to implementation | Personas share fact categories (job, location, diet, relationship status) for clean bucket comparisons |
+| Persona backstories | Left to implementation | Personas share fact categories (job, location, diet, relationship, pet, sport) for clean bucket comparisons |
+| Q5: Data persistence | RunPod Network Volume + `sync_local.sh` rsync to local drive | Volume persists across pod restarts; rsync protects against catastrophic pod loss |
+| Q6: Multi-seed | 1 seed (dev/debug), 3 seeds (paper run) | Budget-conscious; dev seed=42; paper seeds=42,123,456 |
+| Q7: Sleep training val split | None — train-only per cycle | Per-cycle batches too small to split; Phase 7 zero-context eval detects overfitting |
 
-**API model:** Use `OPENAI_MODEL` from `.env` for all OpenAI calls. Default small model is `gpt-4o-mini`.  
-**Pod GPU rule:** Use pod GPU for any code that would run more than a few seconds — LoRA training, running the local 8B model for batch inference, evaluation loops over many examples. Do not run these on the local Mac.
+**API model:** Use `OPENAI_MODEL` from `.env` for all OpenAI calls (default: `gpt-4o-mini`). Pin the exact version string in configs for paper reproducibility.  
+**Pod GPU rule:** Any code running more than a few seconds runs on the pod GPU — LoRA training, local 8B model inference, large eval loops. Fast scripts (salience, aggregation) run locally.
 
 ---
 
-## Open Questions (Remaining — Need Answers Before Coding)
-
-**Q5. Data persistence between pod runs**  
-Where does data live when the pod is off?
-- (a) Git — small JSON/JSONL files only; model weights and checkpoints excluded
-- (b) RunPod Network Volume — persistent across pod restarts, ~$0.07/GB/month
-- (c) S3 or similar — cheap, slightly more setup
-
-**Q6. Multi-seed budget**  
-The plan calls for 3 seeds for paper-grade claims (Phases 5–7). Given the $500 budget, is this acceptable, or should v1 use 1 seed with a note that multi-seed is future work?
-
-**Q7. Validation split during sleep training**  
-Should the sleep training loop hold out a small set of memory items to log val loss and detect overfitting per cycle? Or train-only given the small per-cycle batch?
