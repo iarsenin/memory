@@ -137,28 +137,28 @@
     },
     "main": {
       "stable": {
-        "mean": 22.2,
-        "std": 25.5,
+        "mean": 16.7,
+        "std": 0.0,
         "n_seeds": 3
       },
       "updated": {
-        "mean": 36.8,
-        "std": 7.9,
+        "mean": 43.1,
+        "std": 16.8,
         "n_seeds": 3
       },
       "superseded": {
-        "mean": 15.0,
-        "std": 13.2,
+        "mean": 25.6,
+        "std": 6.9,
         "n_seeds": 3
       },
       "relational": {
-        "mean": 38.9,
-        "std": 12.7,
+        "mean": 44.4,
+        "std": 4.8,
         "n_seeds": 3
       },
       "overall": {
-        "mean": 25.0,
-        "std": 3.1,
+        "mean": 32.7,
+        "std": 8.8,
         "n_seeds": 3
       }
     }

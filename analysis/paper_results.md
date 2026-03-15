@@ -12,7 +12,7 @@ Accuracy = mean ± std (%) across seeds. Frozen/RAG std = 0 (deterministic).
 | Naïve LoRA | 11.1 ±4.8 | 4.2 ±7.2 | 8.3 ±5.8 | 25.0 | 11.9 ±2.7 |
 | Unfiltered LoRA | 22.2 ±25.5 | 41.0 ±17.7 | 22.2 ±19.9 | 47.2 ±12.7 | 31.0 ±1.0 |
 | Gold LoRA (upper bound) | 27.8 ±34.7 | 20.8 ±18.2 | 9.4 ±7.7 | 47.2 ±17.3 | 22.0 ±8.8 |
-| **MemLoRA (ours)** | 22.2 ±25.5 | 36.8 ±7.9 | 15.0 ±13.2 | 38.9 ±12.7 | **25.0 ±3.1** |
+| **MemLoRA (ours)** | 16.7 | 43.1 ±16.8 | 25.6 ±6.9 | 44.4 ±4.8 | **32.7 ±8.8** |
 
 ### Per-Seed Overall Accuracy
 
@@ -23,7 +23,7 @@ Accuracy = mean ± std (%) across seeds. Frozen/RAG std = 0 (deterministic).
 | Naïve LoRA | 14.3% | 8.9% | 12.5% |
 | Unfiltered LoRA | 30.4% | 32.1% | 30.4% |
 | Gold LoRA (upper bound) | 32.1% | 16.1% | 17.9% |
-| **MemLoRA (ours)** | 21.4% | 26.8% | 26.8% |
+| **MemLoRA (ours)** | 42.9% | 26.8% | 28.6% |
 
 ## Bucket Detail (mean % ± std)
 
@@ -63,8 +63,8 @@ Accuracy = mean ± std (%) across seeds. Frozen/RAG std = 0 (deterministic).
   - Overall: 22.0 ±8.8
 
 ### **MemLoRA (ours)**
-  - Stable: 22.2 ±25.5
-  - Updated: 36.8 ±7.9
-  - Superseded: 15.0 ±13.2
-  - Relational: 38.9 ±12.7
-  - Overall: 25.0 ±3.1
+  - Stable: 16.7
+  - Updated: 43.1 ±16.8
+  - Superseded: 25.6 ±6.9
+  - Relational: 44.4 ±4.8
+  - Overall: 32.7 ±8.8

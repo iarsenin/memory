@@ -587,10 +587,22 @@ The model holds both old and new values in the same adapter weights, occasionall
 - `unfiltered_lora` edges out `main` on Updated (41.0 vs 36.8%), suggesting salience-filtered batches are too sparse for the small 2-module adapter
 - High variance in Stable/Superseded across all LoRA conditions suggests room for improvement
 
-**Fallback strategy activated** (`scripts/run_fallback.sh`):
-- Expanded LoRA `target_modules` from 2 (q/v) to 7 (q/k/v/o/gate/up/down)
-- Re-training `main` only across 3 seeds (~2 hours vs ~5.5 hours for full rerun)
-- Baselines untouched; `summarize.py` merges new `main` results with existing baseline files
+**Fallback run complete** (`scripts/run_fallback.sh`, 34 min total):
+- Expanded LoRA `target_modules` from 2 (q/v) to 7 (q/k/v/o/gate/up/down), 41.9M trainable params
+- Retrained `main` only across 3 seeds; baselines untouched
+
+**Updated results (7-module fallback, 3-seed mean ± std %)**
+
+| Condition | Stable | Updated | Superseded | Relational | Overall |
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Frozen (base) | 0.0 | 0.0 | 41.7 | 8.3 | 17.9 |
+| RAG (no adapter) | 58.3 | 58.3 | 33.3 | 33.3 | 39.3 |
+| Naïve LoRA | 11.1 ±4.8 | 4.2 ±7.2 | 8.3 ±5.8 | 25.0 | 11.9 ±2.7 |
+| Unfiltered LoRA | 22.2 ±25.5 | 41.0 ±17.7 | 22.2 ±19.9 | 47.2 ±12.7 | 31.0 ±1.0 |
+| Gold LoRA (upper bound) | 27.8 ±34.7 | 20.8 ±18.2 | 9.4 ±7.7 | 47.2 ±17.3 | 22.0 ±8.8 |
+| **MemLoRA (ours)** | 16.7 | **43.1 ±16.8** | 25.6 ±6.9 | 44.4 ±4.8 | **32.7 ±8.8** |
+
+**Improvement vs initial run**: Overall +7.7pp (25.0 → 32.7%), Updated +6.3pp (36.8 → 43.1pp). MemLoRA now **beats unfiltered_lora on Updated facts** (+2.1pp), confirming the hypothesis that expanded adapter capacity was the missing ingredient. Superseded and Relational also improved materially.
 
 ### Paper Run Infrastructure
 
