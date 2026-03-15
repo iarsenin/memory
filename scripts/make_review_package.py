@@ -139,10 +139,10 @@ def sample_logs() -> dict:
     """
     # Patterns that identify meaningful summary lines in .log files
     _SUMMARY_PATTERNS = (
-        "Phase 5", "Persona", "Seed", "Trigger", "SANITY",
+        "Phase 5", "Persona", "Seed", "SEED", "Trigger", "SANITY",
         "Day ", "new memories", "Batch:", "Cycle done",
-        "Telemetry", "Resetting", "complete", "ERROR", "WARNING",
-        "=====", "GPU:", "VRAM:",
+        "Telemetry", "Resetting", "complete", "Done.", "ERROR", "WARNING",
+        "=====", "GPU:", "VRAM:", "[P5]", "[P6]", "[P7]",
     )
 
     node: dict = {}
