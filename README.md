@@ -412,6 +412,24 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
+- **Phase 5 implemented (NOT YET RUN — requires pod GPU):**
+  Three modules scaffolded and linted clean:
+  - `src/trainer/batch.py` — `BatchGenerator`: builds per-cycle batch from declarative (40%),
+    QA (40%), dialogue snippets (20%), replay buffer (weighted by `salience_score × temporal_decay`),
+    and 10 hardcoded regularizer exchanges to preserve assistant formatting.
+  - `src/trainer/loop.py` — `load_base_model` (4-bit NF4 Llama-3-8B, loaded once),
+    `build_peft_model` (fresh LoRA for cycle 1, accumulate from checkpoint for cycles 2–6),
+    `run_cycle` (HuggingFace Trainer, custom loss-logger callback, telemetry dict),
+    `reset_peft` (clears Alice's adapter before Bob starts — prevents cross-persona contamination).
+  - `src/trainer/run.py` — main orchestrator: iterates trigger days per persona,
+    handles resume (skips completed checkpoints), writes telemetry JSONL per cycle,
+    marks consolidated memories in memories JSONL.
+  - `scripts/run_phase5.sh` — pod runner with GPU detection + HF token check.
+  - `.env.example` and `setup_pod.sh` updated for `HUGGING_FACE_TOKEN`.
+  - `trl>=0.8.0` added to `requirements.txt`.
+  Key decisions applied: adapter accumulation across cycles; both-speaker dialogue snippets;
+  single-process (load once, 12 cycles sequentially); strict per-persona LoRA reset.
+  GPU: **RTX 4090** (24 GB, ~$0.50/hr); estimated ~35–50 min for full Phase 5 run.
 - **Phase 4 complete:** Salience scoring applied to all 172 extracted items.
   Alice: 50/74 kept (avg=0.41); Bob: 45/98 kept (avg=0.38).
   All 10 GT state-change events score ≥ 0.44 (highest: "adopted Luna" 0.72, "moved to Austin" 0.66).
@@ -459,7 +477,13 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-1. **Phase 5** — Consolidation training (Sleep Phase LoRA)
+1. **Provision pod** (RTX 4090, 24 GB VRAM), run `bash scripts/setup_pod.sh`
+2. **Accept Llama-3 license** at https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct
+3. **Sanity check** — `bash scripts/run_phase5.sh --sanity --persona alice`
+   (trains Day 3 cycle only; verifies VRAM, batch counts, telemetry log, checkpoint files)
+4. **Full Phase 5 run** — `bash scripts/run_phase5.sh`
+5. **Sync locally** — `bash scripts/sync_local.sh` (back up checkpoints + logs before stopping pod)
+6. **Phase 6** — Baselines (5 conditions on same 20-day timeline)
 
 ---
 
