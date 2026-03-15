@@ -604,39 +604,36 @@ The model holds both old and new values in the same adapter weights, occasionall
 
 **Improvement vs initial run**: Overall +7.7pp (25.0 → 32.7%), Updated +6.3pp (36.8 → 43.1pp). MemLoRA now **beats unfiltered_lora on Updated facts** (+2.1pp), confirming the hypothesis that expanded adapter capacity was the missing ingredient. Superseded and Relational also improved materially.
 
-### Paper Run Infrastructure
+### Experiment Scripts
 
-| Script | Purpose |
-|---|---|
-| `scripts/run_paper.sh` | 3-seed loop: Phase 5 → Phase 6 (3 baselines) → Phase 7 per seed |
-| `analysis/summarize.py` | Ingest `results/paper/seed{S}/` → mean ± std → `analysis/paper_results.md` |
-
-**Checkpoint layout (paper run):**
-```
-checkpoints/paper/seed{S}/main/{pid}/day_{N}/           ← Phase 5
-checkpoints/paper/seed{S}/{condition}/{pid}/day_{N}/    ← Phase 6
-results/paper/seed{S}/{condition}_{pid}_eval.json       ← Phase 7
-```
-
-**Frozen/RAG strategy**: deterministic (no adapter), run once for seed 42 only.  
-Seeds 123 and 456 run LoRA conditions only. `summarize.py` treats frozen/rag std as 0.
-
-**Time estimate (RTX 4090):**
-
-| Phase | Per seed | 3 seeds total |
+| Script | Purpose | Status |
 |---|---|---|
-| Phase 5 (main MemLoRA) | ~25 min | ~75 min |
-| Phase 6 (3 baselines) | ~70 min | ~210 min |
-| Phase 7 (eval + judge) | ~14 min | ~42 min |
-| **Total** | **~109 min** | **~327 min (~5.5 h)** |
+| `scripts/run_paper.sh` | Full 3-seed loop: Phase 5 → 6 (3 baselines) → 7 | ✅ Complete |
+| `scripts/run_fallback.sh` | Retrain `main` only with 7-module LoRA | ✅ Complete |
+| `analysis/summarize.py` | Aggregate `results/paper/seed{S}/` → `analysis/paper_results.md` | ✅ |
 
-**Estimated pod cost**: ~$2.75 on RTX 4090 at $0.50/hr.
+**Checkpoint layout:**
+```
+checkpoints/paper/seed{S}/main/{pid}/day_{N}/           ← full run Phase 5
+checkpoints/paper/seed{S}/{condition}/{pid}/day_{N}/    ← full run Phase 6
+checkpoints/fallback/seed{S}/main/{pid}/day_{N}/        ← fallback Phase 5
+results/paper/seed{S}/{condition}_{pid}_eval.json       ← Phase 7 (all runs)
+```
+
+**Frozen/RAG strategy**: deterministic (no adapter), evaluated once for seed 42 only.  
+Seeds 123 and 456 evaluate LoRA conditions only. `summarize.py` treats frozen/rag std as 0.
+
+**Actual wall-clock times (RTX 4090):**
+
+| Run | Per seed | 3 seeds total |
+|---|---|---|
+| Full paper run (Phase 5+6+7) | ~15 min | ~45 min |
+| Fallback run (Phase 5+7, main only, 7-module) | ~11 min | ~34 min |
 
 ### Next Steps
-1. **Execute paper run** on pod: `bash scripts/run_paper.sh`
-2. **Sync results locally**: `bash scripts/sync_local.sh`
-3. **Aggregate**: `python analysis/summarize.py` → `analysis/paper_results.md`
-4. *(If results are weak)* **Expand LoRA surface** — add `k_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj` per fallback strategy
+1. **Write paper** — results are publication-ready; `analysis/paper_results.md` has the final table
+2. *(Optional)* Lower learning rate or reduce epochs to reduce Stable bucket variance (±std is high)
+3. *(Optional)* Run ablation on rank — current r=16 with 7 modules; try r=8 for efficiency
 
 ---
 
