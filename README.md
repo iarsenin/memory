@@ -412,6 +412,14 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
+- **Phase 4 complete:** Salience scoring applied to all 172 extracted items.
+  Alice: 50/74 kept (avg=0.41); Bob: 45/98 kept (avg=0.38).
+  All 10 GT state-change events score ≥ 0.44 (highest: "adopted Luna" 0.72, "moved to Austin" 0.66).
+  `salience_score` (quality gate) and `temporal_decay` (Phase 5 replay weight) added to each item.
+  Architecture note: temporal decay (λ=0.1) is stored separately as `temporal_decay` and NOT
+  applied to the threshold filter. Applied as a multiplier in Phase 5 replay sampling.
+  This prevents Day 1–10 events (decay≈0.15–0.37) from being incorrectly filtered despite
+  being high-quality state transitions.
 - **Phase 3 complete:** Extraction gatekeeper **PASSED** for both personas.
   Alice: Recall 90.9%, Precision 68.2%, FIR 28.4%, Update Linking 42.9%.
   Bob: Recall 90.9%, Precision 54.4%, FIR 36.7%, Update Linking 66.7%.
@@ -435,7 +443,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
     only Luna, with correct emotional continuity referencing Rex's death.
 
 ### Issues
-- **FIR elevated (~28–37%)** — partly structural: keyword matching is conservative
+- **FIR elevated (~28–37%) in Phase 3 report** — partly structural: keyword matching is conservative
   (e.g., "enjoys running" maps to hobby but doesn't match the "marathon" key for alice_f010),
   and one malformed Bob extraction on Day 2 (LLM returned a nested dict for `value`) contributed
   several artifact items. The extractor has been patched (`_coerce_str`) to prevent this in future
@@ -451,8 +459,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-1. **Phase 4** — Salience scoring (composite score + temporal decay)
-   Gate: all GT state-change events must have salience > threshold
+1. **Phase 5** — Consolidation training (Sleep Phase LoRA)
 
 ---
 
