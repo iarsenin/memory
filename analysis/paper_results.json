@@ -1,0 +1,183 @@
+{
+  "summary": {
+    "frozen": {
+      "stable": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "updated": {
+        "mean": 0.0,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "superseded": {
+        "mean": 41.7,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "relational": {
+        "mean": 8.3,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "overall": {
+        "mean": 17.9,
+        "std": 0.0,
+        "n_seeds": 1
+      }
+    },
+    "rag": {
+      "stable": {
+        "mean": 58.3,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "updated": {
+        "mean": 58.3,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "superseded": {
+        "mean": 33.3,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "relational": {
+        "mean": 33.3,
+        "std": 0.0,
+        "n_seeds": 1
+      },
+      "overall": {
+        "mean": 39.3,
+        "std": 0.0,
+        "n_seeds": 1
+      }
+    },
+    "naive_lora": {
+      "stable": {
+        "mean": 11.1,
+        "std": 4.8,
+        "n_seeds": 3
+      },
+      "updated": {
+        "mean": 4.2,
+        "std": 7.2,
+        "n_seeds": 3
+      },
+      "superseded": {
+        "mean": 8.3,
+        "std": 5.8,
+        "n_seeds": 3
+      },
+      "relational": {
+        "mean": 25.0,
+        "std": 0.0,
+        "n_seeds": 3
+      },
+      "overall": {
+        "mean": 11.9,
+        "std": 2.7,
+        "n_seeds": 3
+      }
+    },
+    "unfiltered_lora": {
+      "stable": {
+        "mean": 22.2,
+        "std": 25.5,
+        "n_seeds": 3
+      },
+      "updated": {
+        "mean": 41.0,
+        "std": 17.7,
+        "n_seeds": 3
+      },
+      "superseded": {
+        "mean": 22.2,
+        "std": 19.9,
+        "n_seeds": 3
+      },
+      "relational": {
+        "mean": 47.2,
+        "std": 12.7,
+        "n_seeds": 3
+      },
+      "overall": {
+        "mean": 31.0,
+        "std": 1.0,
+        "n_seeds": 3
+      }
+    },
+    "gold_lora": {
+      "stable": {
+        "mean": 27.8,
+        "std": 34.7,
+        "n_seeds": 3
+      },
+      "updated": {
+        "mean": 20.8,
+        "std": 18.2,
+        "n_seeds": 3
+      },
+      "superseded": {
+        "mean": 9.4,
+        "std": 7.7,
+        "n_seeds": 3
+      },
+      "relational": {
+        "mean": 47.2,
+        "std": 17.3,
+        "n_seeds": 3
+      },
+      "overall": {
+        "mean": 22.0,
+        "std": 8.8,
+        "n_seeds": 3
+      }
+    },
+    "main": {
+      "stable": {
+        "mean": 22.2,
+        "std": 25.5,
+        "n_seeds": 3
+      },
+      "updated": {
+        "mean": 36.8,
+        "std": 7.9,
+        "n_seeds": 3
+      },
+      "superseded": {
+        "mean": 15.0,
+        "std": 13.2,
+        "n_seeds": 3
+      },
+      "relational": {
+        "mean": 38.9,
+        "std": 12.7,
+        "n_seeds": 3
+      },
+      "overall": {
+        "mean": 25.0,
+        "std": 3.1,
+        "n_seeds": 3
+      }
+    }
+  },
+  "seeds": [
+    42,
+    123,
+    456
+  ],
+  "conditions": [
+    "frozen",
+    "rag",
+    "naive_lora",
+    "unfiltered_lora",
+    "gold_lora",
+    "main"
+  ],
+  "persona_ids": [
+    "alice",
+    "bob"
+  ]
+}
