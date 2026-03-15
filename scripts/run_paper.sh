@@ -70,6 +70,25 @@ echo "  Baselines: ${BASELINE_CONDITIONS[*]}"
 echo "  Skip P5  : ${SKIP_P5}  | Skip P6: ${SKIP_P6}  | Skip P7: ${SKIP_P7}"
 echo ""
 
+# ── Helpers ──────────────────────────────────────────────────────────────────
+# Delete all day_* subdirs except the highest-numbered one (the final adapter).
+# Phase 7 find_latest_checkpoint picks the highest day, so earlier ones are safe
+# to remove once training for that condition is complete.
+_prune_checkpoints() {
+    local base="$1"   # e.g. checkpoints/paper/seed42/main
+    [ -d "$base" ] || return 0
+    for pid_dir in "$base"/*/; do
+        [ -d "$pid_dir" ] || continue
+        # Find the last day dir by sort order and keep it; delete the rest
+        last=$(ls -d "$pid_dir"day_*/ 2>/dev/null | sort | tail -1)
+        [ -n "$last" ] || continue
+        for day_dir in "$pid_dir"day_*/; do
+            [ "$day_dir" != "$last" ] && rm -rf "$day_dir"
+        done
+    done
+    echo "    pruned intermediate checkpoints → kept day_18 only in ${base}"
+}
+
 TOTAL_START=$(date +%s)
 
 for SEED in "${SEEDS[@]}"; do
@@ -121,6 +140,8 @@ PYEOF
             --checkpoints-dir "${CKPT_BASE}/main" \
             --logs-dir        "${LOGS_DIR}" \
             --resume
+        # Keep only final day; intermediate days only needed for accumulation
+        _prune_checkpoints "${CKPT_BASE}/main"
         echo "  [P5] Done."
     else
         echo "  [P5] Skipped."
@@ -142,6 +163,7 @@ PYEOF
                 --checkpoints-dir "${CKPT_BASE}" \
                 --logs-dir        "${LOGS_DIR}" \
                 --resume
+            _prune_checkpoints "${CKPT_BASE}/${COND}"
             echo "  [P6] ${COND} done."
         done
     else
@@ -172,6 +194,12 @@ PYEOF
             --eval-probes-dir data/eval_probes \
             ${CONDITIONS_ARG}
         echo "  [P7] Eval done."
+
+        # ── Post-eval checkpoint cleanup ──────────────────────────────────
+        # Eval results are now in results/. Adapter weights no longer needed.
+        echo "  Removing seed ${SEED} checkpoints (eval complete, results saved) …"
+        rm -rf "${CKPT_BASE}"
+        echo "  Checkpoint cleanup done. Disk: $(df -h /workspace | awk 'NR==2{print $3\" used / \"$2\" total\"}')"
     else
         echo "  [P7] Skipped."
     fi
