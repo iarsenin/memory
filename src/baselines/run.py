@@ -117,6 +117,8 @@ def main() -> None:
                         help="Run only Day 3 (1-cycle debug)")
     parser.add_argument("--resume",           action="store_true",
                         help="Skip cycles whose checkpoint already exists")
+    parser.add_argument("--seed",             type=int, default=None,
+                        help="Override config seed for this run (paper loop)")
     args = parser.parse_args()
 
     config = _load_json(Path(args.config))
@@ -124,7 +126,11 @@ def main() -> None:
 
     dev_mode = config.get("dev_mode", True)
     seeds    = config["seeds"]["dev"] if dev_mode else config["seeds"]["paper"]
-    seed     = seeds[0]
+    seed     = args.seed if args.seed is not None else seeds[0]
+
+    # Seed PyTorch for reproducible LoRA weight initialisation
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
 
     try:
         sim_cfg     = _load_json(Path("configs/sim_config.json"))

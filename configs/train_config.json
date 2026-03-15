@@ -1,6 +1,6 @@
 {
   "experiment_mode": "main",
-  "dev_mode": true,
+  "dev_mode": false,
   "seeds": {
     "dev": [42],
     "paper": [42, 123, 456]

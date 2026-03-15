@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+# =============================================================================
+# run_paper.sh — Full 3-seed paper run (Phase 5 → 6 → 7)
+#
+# Checkpoint layout (per seed, isolated):
+#   checkpoints/paper/seed{S}/main/{pid}/day_{N}/     ← Phase 5
+#   checkpoints/paper/seed{S}/{cond}/{pid}/day_{N}/   ← Phase 6
+#
+# Results layout:
+#   results/paper/seed{S}/{condition}_{pid}_eval.json
+#
+# Aggregation (run locally after syncing results):
+#   python analysis/summarize.py
+#
+# Usage:
+#   bash scripts/run_paper.sh                       # full run, all 3 seeds
+#   bash scripts/run_paper.sh --seeds 42            # single seed (debug)
+#   bash scripts/run_paper.sh --skip-p5             # skip Phase 5 (resume)
+#   bash scripts/run_paper.sh --skip-p6             # skip Phase 6 baselines
+#   bash scripts/run_paper.sh --skip-p7             # skip Phase 7 eval
+#   bash scripts/run_paper.sh --condition gold_lora # Phase 6: one condition only
+# =============================================================================
+
+set -e
+cd "$(dirname "$0")/.."
+
+# ── Environment ──────────────────────────────────────────────────────────────
+if [ -f .env ]; then set -a; source .env; set +a; fi
+
+if [ -z "$HUGGING_FACE_TOKEN" ]; then
+    echo "ERROR: HUGGING_FACE_TOKEN not set in .env"; exit 1
+fi
+if [ -z "$OPENAI_API_KEY" ]; then
+    echo "ERROR: OPENAI_API_KEY not set in .env"; exit 1
+fi
+
+# ── Parse args ───────────────────────────────────────────────────────────────
+SEEDS=(42 123 456)
+SKIP_P5=false
+SKIP_P6=false
+SKIP_P7=false
+SINGLE_CONDITION=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --seeds)       shift; IFS=' ' read -r -a SEEDS <<< "$*"; break ;;
+        --skip-p5)     SKIP_P5=true ;;
+        --skip-p6)     SKIP_P6=true ;;
+        --skip-p7)     SKIP_P7=true ;;
+        --condition)   shift; SINGLE_CONDITION="$1" ;;
+        *) echo "Unknown arg: $1"; exit 1 ;;
+    esac
+    shift
+done
+
+BASELINE_CONDITIONS=("naive_lora" "unfiltered_lora" "gold_lora")
+if [ -n "$SINGLE_CONDITION" ]; then
+    BASELINE_CONDITIONS=("$SINGLE_CONDITION")
+fi
+
+GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo "unknown")
+
+echo ""
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║         MemLoRA v1 — 3-Seed Paper Run                       ║"
+echo "╚══════════════════════════════════════════════════════════════╝"
+echo "  GPU      : ${GPU_NAME}"
+echo "  Seeds    : ${SEEDS[*]}"
+echo "  Baselines: ${BASELINE_CONDITIONS[*]}"
+echo "  Skip P5  : ${SKIP_P5}  | Skip P6: ${SKIP_P6}  | Skip P7: ${SKIP_P7}"
+echo ""
+
+TOTAL_START=$(date +%s)
+
+for SEED in "${SEEDS[@]}"; do
+    SEED_START=$(date +%s)
+
+    CKPT_BASE="checkpoints/paper/seed${SEED}"
+    LOGS_DIR="logs/paper/seed${SEED}"
+    RESULTS_DIR="results/paper/seed${SEED}"
+
+    mkdir -p "${CKPT_BASE}/main" "${LOGS_DIR}" "${RESULTS_DIR}"
+
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  SEED ${SEED}"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+    # ── Phase 5: main MemLoRA ─────────────────────────────────────────────
+    if [ "$SKIP_P5" = false ]; then
+        echo ""
+        echo "  [P5] Training main MemLoRA (seed=${SEED}) …"
+        python3 -m src.trainer.run \
+            --config          configs/train_config.json \
+            --seed            "${SEED}" \
+            --memories-dir    data/memories \
+            --dialogue-dir    data/dialogue \
+            --checkpoints-dir "${CKPT_BASE}/main" \
+            --logs-dir        "${LOGS_DIR}" \
+            --resume
+        echo "  [P5] Done."
+    else
+        echo "  [P5] Skipped."
+    fi
+
+    # ── Phase 6: baselines ────────────────────────────────────────────────
+    if [ "$SKIP_P6" = false ]; then
+        for COND in "${BASELINE_CONDITIONS[@]}"; do
+            echo ""
+            echo "  [P6] Training ${COND} (seed=${SEED}) …"
+            python3 -m src.baselines.run \
+                --condition       "${COND}" \
+                --config          configs/train_config.json \
+                --seed            "${SEED}" \
+                --memories-dir    data/memories \
+                --unfiltered-dir  data/memories_unfiltered \
+                --dialogue-dir    data/dialogue \
+                --personas-dir    data/personas \
+                --checkpoints-dir "${CKPT_BASE}" \
+                --logs-dir        "${LOGS_DIR}" \
+                --resume
+            echo "  [P6] ${COND} done."
+        done
+    else
+        echo "  [P6] Skipped."
+    fi
+
+    # ── Phase 7: evaluation ───────────────────────────────────────────────
+    # frozen/rag are deterministic — only run them for seed 42 to save API calls.
+    # For seeds 123/456, skip non-adapter conditions; summarize.py reuses seed-42
+    # scores for frozen/rag (std=0 is the correct finding for those baselines).
+    if [ "$SKIP_P7" = false ]; then
+        echo ""
+        if [ "${SEED}" = "42" ]; then
+            CONDITIONS_ARG=""
+            echo "  [P7] Evaluating ALL conditions (seed=${SEED}) …"
+        else
+            CONDITIONS_ARG="--condition main,naive_lora,unfiltered_lora,gold_lora"
+            echo "  [P7] Evaluating LoRA conditions only (seed=${SEED}, frozen/rag reused from seed 42) …"
+        fi
+
+        python3 -m src.eval.run \
+            --train-config    configs/train_config.json \
+            --eval-config     configs/eval_config.json \
+            --personas-dir    data/personas \
+            --memories-dir    data/memories \
+            --checkpoints-dir "${CKPT_BASE}" \
+            --results-dir     "${RESULTS_DIR}" \
+            --eval-probes-dir data/eval_probes \
+            ${CONDITIONS_ARG}
+        echo "  [P7] Eval done."
+    else
+        echo "  [P7] Skipped."
+    fi
+
+    SEED_END=$(date +%s)
+    SEED_ELAPSED=$(( (SEED_END - SEED_START) / 60 ))
+    echo ""
+    echo "  Seed ${SEED} complete in ${SEED_ELAPSED} min."
+    echo ""
+done
+
+TOTAL_END=$(date +%s)
+TOTAL_ELAPSED=$(( (TOTAL_END - TOTAL_START) / 60 ))
+
+echo "╔══════════════════════════════════════════════════════════════╗"
+echo "║  Paper run complete in ${TOTAL_ELAPSED} min."
+echo "╚══════════════════════════════════════════════════════════════╝"
+echo ""
+echo "Next steps:"
+echo "  1. Sync results locally:"
+echo "       bash scripts/sync_local.sh"
+echo "  2. Aggregate & produce paper table:"
+echo "       python analysis/summarize.py"
+echo ""

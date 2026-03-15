@@ -135,6 +135,8 @@ def main() -> None:
                         help="Run only the first trigger day (1-cycle debug)")
     parser.add_argument("--resume",         action="store_true",
                         help="Skip cycles whose checkpoint already exists")
+    parser.add_argument("--seed",           type=int, default=None,
+                        help="Override config seed for this run (paper loop)")
     args = parser.parse_args()
 
     cfg_path = Path(args.config)
@@ -143,10 +145,14 @@ def main() -> None:
         sys.exit(1)
     config = _load_json(cfg_path)
 
-    # Active seed (dev vs paper)
+    # Active seed (dev vs paper; --seed flag overrides)
     dev_mode = config.get("dev_mode", True)
     seeds    = config["seeds"]["dev"] if dev_mode else config["seeds"]["paper"]
-    seed     = seeds[0]
+    seed     = args.seed if args.seed is not None else seeds[0]
+
+    # Seed PyTorch for reproducible LoRA weight initialisation
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
 
     # Persona list
     try:

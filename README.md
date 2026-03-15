@@ -566,13 +566,44 @@ The model holds both old and new values in the same adapter weights, occasionall
 | Phase 6 gold re-run | ~8 min (12 cycles, RTX 4090) |
 
 ### Current Status
-- Phases 1–7 all **COMPLETE** (dev seed=42, single run)
-- All artifacts in `results/`, `logs/`, `data/eval_probes/`
+- Phases 1–7 all **COMPLETE** (dev seed=42, single run, all bugs patched)
+- `dev_mode` flipped to **`false`** — pipeline is now locked for paper execution
+- Paper run infrastructure **READY**: `scripts/run_paper.sh` + `analysis/summarize.py` built and committed
+- **NEXT**: Execute `bash scripts/run_paper.sh` on the pod (est. ~6 hours on RTX 4090)
+
+### Paper Run Infrastructure
+
+| Script | Purpose |
+|---|---|
+| `scripts/run_paper.sh` | 3-seed loop: Phase 5 → Phase 6 (3 baselines) → Phase 7 per seed |
+| `analysis/summarize.py` | Ingest `results/paper/seed{S}/` → mean ± std → `analysis/paper_results.md` |
+
+**Checkpoint layout (paper run):**
+```
+checkpoints/paper/seed{S}/main/{pid}/day_{N}/           ← Phase 5
+checkpoints/paper/seed{S}/{condition}/{pid}/day_{N}/    ← Phase 6
+results/paper/seed{S}/{condition}_{pid}_eval.json       ← Phase 7
+```
+
+**Frozen/RAG strategy**: deterministic (no adapter), run once for seed 42 only.  
+Seeds 123 and 456 run LoRA conditions only. `summarize.py` treats frozen/rag std as 0.
+
+**Time estimate (RTX 4090):**
+
+| Phase | Per seed | 3 seeds total |
+|---|---|---|
+| Phase 5 (main MemLoRA) | ~25 min | ~75 min |
+| Phase 6 (3 baselines) | ~70 min | ~210 min |
+| Phase 7 (eval + judge) | ~14 min | ~42 min |
+| **Total** | **~109 min** | **~327 min (~5.5 h)** |
+
+**Estimated pod cost**: ~$2.75 on RTX 4090 at $0.50/hr.
 
 ### Next Steps
-1. **Paper run** — Switch `dev_mode: false` in `train_config.json`, re-execute Phases 5–7 with 3 seeds (42, 123, 456) for statistical reliability
-2. **Superseded bucket improvement** — Explore explicit negative training on superseded facts to reduce main's contradiction rate
-3. **Expand LoRA target surface (fallback)** — Add `k_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj` if paper-run results don't improve materially
+1. **Execute paper run** on pod: `bash scripts/run_paper.sh`
+2. **Sync results locally**: `bash scripts/sync_local.sh`
+3. **Aggregate**: `python analysis/summarize.py` → `analysis/paper_results.md`
+4. *(If results are weak)* **Expand LoRA surface** — add `k_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj` per fallback strategy
 
 ---
 
