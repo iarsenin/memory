@@ -395,16 +395,19 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 
 ### Done
 - All design decisions resolved; plan fully approved
-- README with telemetry spec, ML guardrails, multi-seed policy, compute estimates, phase gates, git strategy
-- Repository scaffolded: configs, scripts, src structure, requirements.txt
-- Phase 1 coded: persona state machine (Alice + Bob), OpenAI dialogue generator
+- Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
+- Phase 1 complete and verified:
+  - Alice Chen ground truth: 11 facts, 6 life-change events across 20 days
+  - Bob Martinez ground truth: 12 facts, 7 life-change events across 20 days
+  - 240 dialogue turns total (120 per persona, 6 per day)
+  - Event days produce natural, emotionally coherent dialogue (breakup day 5, layoff day 7, Rex's death day 11, move to Austin day 15 — all verified)
 
 ### Issues
-- None yet
+- None
 
 ### Next Steps
-1. Run Phase 1 full output; verify ground truth JSON and dialogue JSONL for both personas
-2. Review Phase 1 outputs; proceed to Phase 2 (extraction pipeline) after approval
+1. **Phase 2** — Extraction pipeline: prompt + parsing logic to convert `data/dialogue/` → `data/memories/` JSONL using the defined schema
+2. **Phase 3** — Standalone extraction eval script (Precision/Recall vs ground truth) — must pass before any training
 
 ---
 
