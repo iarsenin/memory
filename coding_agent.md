@@ -283,6 +283,22 @@ Keep this section current after every work cycle. A fresh agent must be able to 
 
 Do not let the repo become archaeology.
 
+### Review Package
+
+After every phase or significant iteration, regenerate `data/review_package.json` by running:
+
+```bash
+python3 scripts/make_review_package.py
+```
+
+Before regenerating, verify that `scripts/make_review_package.py` captures all new artifacts produced in the completed phase:
+- new source files → confirm they are under an included directory (`src/`, `scripts/`, `configs/`, `analysis/`)
+- new data outputs → confirm their directory is listed in `DATA_DIRS`
+- new log formats → confirm `sample_logs()` handles the file extension correctly
+- new checkpoint layouts → confirm `build_checkpoint_meta()` will find them
+
+If any new artifact type is not covered, update `make_review_package.py` first, then regenerate. The review package must always reflect the current project state so that an LLM reviewer can evaluate progress from a single file.
+
 ---
 
 ## 12. Paper Support
