@@ -246,8 +246,8 @@ All logs are machine-readable JSONL or JSON. `analysis/summarize.py` aggregates 
 | 2 (Extraction) | OpenAI API + Local | — | ~10–20 min / persona | debug 1 day → full 20 days |
 | 3 (Extraction eval) | Local (CPU) | — | < 1 min | — |
 | 4 (Salience) | Local (CPU) | — | < 1 min | — |
-| 5 (Sleep training) | **Pod GPU** | ~18–22 GB (4-bit + LoRA) | ~10–20 min / sleep cycle | 1-cycle sanity → full 7 cycles |
-| 6 (Baselines) | **Pod GPU** | ~18–22 GB | ~5× Phase 5 | sanity first per condition |
+| 5 (Sleep training) | **Pod GPU** | ~6–8 GB (4-bit NF4 base + LoRA weights + AdamW optimizer states + activations — fits comfortably on RTX 4090 24 GB) | ~35–50 min total (load model once, 6 cycles × 2 personas; ~2–5 min per cycle); $0 API; ~$0.50 pod cost | 1-cycle sanity run first |
+| 6 (Baselines) | **Pod GPU** | ~6–8 GB | ~3–4 hrs (5 conditions × Phase 5 time); $0 API | sanity first per condition |
 | 7 (Eval inference) | **Pod GPU** | ~12 GB (local 8B model) | ~20–30 min | spot-check before full run |
 | 7 (LLM judge scoring) | OpenAI API | — | ~5–10 min | after inference outputs saved to disk |
 
