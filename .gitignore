@@ -6,7 +6,8 @@ Icon?
 .env
 
 # === DATA (large, regenerable — back up via sync_local.sh, NOT git) ===
-data/
+# Use /* (not /) so that file-level !exceptions below still work
+data/*
 logs/
 checkpoints/
 results/
@@ -20,6 +21,9 @@ results/
 !data/dialogue/.gitkeep
 !data/memories/.gitkeep
 !data/eval_probes/.gitkeep
+
+# Review package lives in git so reviewers can access it directly
+!data/review_package.json
 
 # Scratchpad
 Scratchpad/
