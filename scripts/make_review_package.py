@@ -24,15 +24,18 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = REPO_ROOT / "data" / "review_package.json"
 
 # What to include (relative to repo root)
-INCLUDE_FILES = ["README.md", "requirements.txt", ".env.example"]
+INCLUDE_FILES = ["README.md", "coding_agent.md", "requirements.txt", ".env.example"]
 INCLUDE_DIRS  = ["src", "configs", "scripts", "analysis"]
 DATA_DIRS     = ["data/personas", "data/memories", "data/eval_probes", "results"]
 DIALOGUE_DIR  = REPO_ROOT / "data" / "dialogue"
 LOGS_DIR      = REPO_ROOT / "logs"
-LOG_MAX_LINES = 150
+CHECKPOINTS_DIR = REPO_ROOT / "checkpoints"
+LOG_MAX_LINES = 100          # raw .log files capped here
+# Small checkpoint files to include (adapter metadata only — never weights)
+CHECKPOINT_INCLUDE_NAMES = {"adapter_config.json"}
 
 EXCLUDE_NAMES    = {".env", "Icon", "Icon\r", ".DS_Store", ".gitkeep"}
-EXCLUDE_PATTERNS = ["__pycache__", ".pyc", ".pyo", "checkpoints",
+EXCLUDE_PATTERNS = ["__pycache__", ".pyc", ".pyo",
                     ".git/", ".zip", "Scratchpad", ".egg-info"]
 
 
@@ -107,22 +110,63 @@ def sample_dialogue(max_days: int | None) -> dict:
 
 
 def sample_logs() -> dict:
-    """Include last LOG_MAX_LINES lines of each log file."""
+    """
+    Include log files from logs/.
+
+    .jsonl files  → parsed as arrays (full, they are small telemetry records).
+    .log files    → extract lines matching key training events rather than
+                    raw tail, so the reviewer sees clean cycle summaries
+                    instead of tqdm progress bars. Falls back to last
+                    LOG_MAX_LINES lines if no structured lines are found.
+    """
+    # Patterns that identify meaningful summary lines in .log files
+    _SUMMARY_PATTERNS = (
+        "Phase 5", "Persona", "Seed", "Trigger", "SANITY",
+        "Day ", "new memories", "Batch:", "Cycle done",
+        "Telemetry", "Resetting", "complete", "ERROR", "WARNING",
+        "=====", "GPU:", "VRAM:",
+    )
+
     node: dict = {}
     if not LOGS_DIR.exists():
         return node
     for path in sorted(LOGS_DIR.rglob("*")):
         if not path.is_file() or skip(path):
             continue
-        lines = path.read_text(errors="replace").splitlines()
-        if len(lines) > LOG_MAX_LINES:
-            truncated = (f"[truncated — last {LOG_MAX_LINES} of {len(lines)} lines]\n"
-                         + "\n".join(lines[-LOG_MAX_LINES:]))
-            content: object = truncated
-        else:
-            content = read_file(path)
         rel = str(path.relative_to(LOGS_DIR))
-        node[rel] = content
+        if path.suffix == ".jsonl":
+            # Telemetry records — include fully (they are small)
+            node[rel] = read_file(path)
+        else:
+            # .log — extract structured summary lines only
+            lines = path.read_text(errors="replace").splitlines()
+            summary = [l for l in lines if any(p in l for p in _SUMMARY_PATTERNS)]
+            if summary:
+                note = f"[summary: {len(summary)} of {len(lines)} lines matched]"
+                node[rel] = note + "\n" + "\n".join(summary)
+            elif len(lines) > LOG_MAX_LINES:
+                note = f"[truncated — last {LOG_MAX_LINES} of {len(lines)} lines]"
+                node[rel] = note + "\n" + "\n".join(lines[-LOG_MAX_LINES:])
+            else:
+                node[rel] = "\n".join(lines)
+    return node
+
+
+def build_checkpoint_meta() -> dict:
+    """
+    Include only adapter_config.json from each checkpoint directory.
+    Skips large files (weights, tokenizer). Gives the reviewer the LoRA
+    config that was actually trained for each persona × condition × day.
+    """
+    node: dict = {}
+    if not CHECKPOINTS_DIR.exists():
+        return node
+    for cfg_path in sorted(CHECKPOINTS_DIR.rglob("adapter_config.json")):
+        rel = str(cfg_path.relative_to(CHECKPOINTS_DIR))
+        try:
+            node[rel] = json.loads(cfg_path.read_text())
+        except Exception:
+            node[rel] = cfg_path.read_text(errors="replace")
     return node
 
 
@@ -163,10 +207,15 @@ def main() -> None:
     data_node["dialogue"] = sample_dialogue(args.max_dialogue_days)
     package["data"] = data_node
 
-    # Logs
+    # Logs (telemetry JSONL + summary-filtered .log files)
     logs = sample_logs()
     if logs:
         package["logs"] = logs
+
+    # Checkpoint metadata (adapter_config.json only — no weights)
+    ckpt_meta = build_checkpoint_meta()
+    if ckpt_meta:
+        package["checkpoint_configs"] = ckpt_meta
 
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(package, indent=2, ensure_ascii=False)
