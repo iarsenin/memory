@@ -412,11 +412,16 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
-- Phase 1 complete and verified:
+- Phase 1 complete and verified (v2 — re-run after bug fix):
   - Alice Chen ground truth: 11 facts, 6 life-change events across 20 days
   - Bob Martinez ground truth: 12 facts, 7 life-change events across 20 days
   - 240 dialogue turns total (120 per persona, 6 per day)
-  - Event days produce natural, emotionally coherent dialogue (breakup day 5, layoff day 7, Rex's death day 11, move to Austin day 15 — all verified)
+  - **Bug fixed:** "Zombie Rex" hallucination — dialogue prompt now includes a
+    "No longer true" historical context section listing all superseded facts with
+    day ranges, preventing the LLM from reviving past facts. Bob's static background
+    no longer names Rex (transient fact). bob_f010 value carries forward context
+    ("...his previous dog Rex passed away on Day 11"). Verified: Days 17–20 contain
+    only Luna, with correct emotional continuity referencing Rex's death.
 
 ### Issues
 - None

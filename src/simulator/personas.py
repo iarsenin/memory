@@ -280,7 +280,7 @@ def build_bob() -> PersonaGroundTruth:
         ),
         PersonaFact(
             fact_id="bob_f010", category="pet",
-            predicate="has adopted", value="a tabby cat named Luna",
+            predicate="has adopted", value="a tabby cat named Luna (his previous dog Rex passed away on Day 11)",
             day_introduced=17,
         ),
         # --- diet ---
@@ -352,7 +352,7 @@ def build_bob() -> PersonaGroundTruth:
         background=(
             "A 45-year-old high school history teacher who has taught for 18 years in Chicago. "
             "An avid long-distance cyclist who participates in charity rides. "
-            "Deeply attached to his golden retriever Rex. "
+            "An animal lover who is deeply attached to his pets. "
             "Thoughtful and reflective, with a passion for storytelling and local history."
         ),
         facts=facts,

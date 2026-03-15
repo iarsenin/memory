@@ -15,7 +15,7 @@ import os
 
 from openai import OpenAI
 
-from .personas import PersonaGroundTruth
+from .personas import FactStatus, PersonaGroundTruth
 
 
 def _make_client() -> OpenAI:
@@ -36,9 +36,29 @@ def _build_user_prompt(
     active_facts = persona.get_active_facts_on_day(day)
     events = persona.get_events_on_day(day)
 
+    # All facts that were once true but are no longer true as of this day
+    superseded_facts = [
+        f for f in persona.facts
+        if f.status == FactStatus.SUPERSEDED
+        and f.day_superseded is not None
+        and f.day_superseded <= day
+    ]
+
     facts_lines = "\n".join(
         f"  - {f.predicate} {f.value}" for f in active_facts
     )
+
+    if superseded_facts:
+        history_lines = "\n".join(
+            f"  - (Days {f.day_introduced}–{f.day_superseded - 1}) {f.predicate} {f.value}"
+            for f in superseded_facts
+        )
+        history_block = (
+            f"\nHistorical context — NO LONGER TRUE as of Day {day} "
+            f"(do NOT treat these as current facts):\n{history_lines}\n"
+        )
+    else:
+        history_block = ""
 
     if events:
         events_block = (
@@ -55,12 +75,12 @@ def _build_user_prompt(
     return f"""Write a natural daily check-in conversation between {persona.name} \
 (age {persona.age}) and an AI assistant. This is Day {day} of 20.
 
-About {persona.name}:
+About {persona.name} (background as of Day 1 — some facts may have changed since):
 {persona.background}
 
-{persona.name}'s current facts on Day {day}:
+{persona.name}'s CURRENT facts on Day {day} (these are the only truths):
 {facts_lines}
-{events_block}
+{history_block}{events_block}
 Rules:
 1. {persona.name} speaks as "user". The AI responds as "assistant". Always start with "user".
 2. Generate exactly {n_turns} turns alternating user/assistant.
@@ -68,6 +88,7 @@ Rules:
 4. If there are life changes today, {persona.name} must mention them; they are significant.
 5. Each turn should be 1–3 sentences. Conversational tone, not formal.
 6. Do NOT list facts mechanically. Weave them into natural speech.
+7. CRITICAL: Only the CURRENT facts above are true today. Historical context is past only.
 
 Output format — a JSON object only, no other text:
 {{"turns": [{{"speaker": "user", "utterance": "..."}}, {{"speaker": "assistant", "utterance": "..."}}, ...]}}"""
