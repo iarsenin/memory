@@ -62,8 +62,30 @@ DETERMINISTIC_CONDITIONS = {"frozen", "rag"}
 # ── I/O ───────────────────────────────────────────────────────────────────────
 
 
-def _load_eval_json(path: Path) -> dict:
+def _load_eval_json(path: Path) -> list[dict]:
     return json.loads(path.read_text())
+
+
+def _probes_to_bucket_accuracy(probes: list[dict]) -> dict[str, float]:
+    """
+    Compute per-bucket accuracy from a flat list of probe dicts.
+    Each probe has 'bucket' and 'score_numeric' (0.0, 0.5, or 1.0).
+    Returns {bucket: accuracy, 'overall': accuracy}.
+    """
+    bucket_scores: dict[str, list[float]] = defaultdict(list)
+    for p in probes:
+        bucket = p.get("bucket", "")
+        score  = p.get("score_numeric", 0.0)
+        if bucket:
+            bucket_scores[bucket].append(score)
+
+    result: dict[str, float] = {}
+    all_scores: list[float] = []
+    for bucket, scores in bucket_scores.items():
+        result[bucket] = sum(scores) / len(scores) if scores else 0.0
+        all_scores.extend(scores)
+    result["overall"] = sum(all_scores) / len(all_scores) if all_scores else 0.0
+    return result
 
 
 def _find_eval_files(
@@ -71,9 +93,9 @@ def _find_eval_files(
     seeds: list[int],
     conditions: list[str],
     persona_ids: list[str],
-) -> dict[tuple[int, str, str], dict]:
-    """Return {(seed, condition, persona): eval_dict} for all discovered files."""
-    data: dict[tuple[int, str, str], dict] = {}
+) -> dict[tuple[int, str, str], dict[str, float]]:
+    """Return {(seed, condition, persona): {bucket: accuracy}} for all discovered files."""
+    data: dict[tuple[int, str, str], dict[str, float]] = {}
 
     for seed in seeds:
         seed_dir = results_dir / f"seed{seed}"
@@ -83,10 +105,8 @@ def _find_eval_files(
             for pid in persona_ids:
                 path = seed_dir / f"{condition}_{pid}_eval.json"
                 if path.exists():
-                    data[(seed, condition, pid)] = _load_eval_json(path)
-                else:
-                    # Try alternate naming (run.py saves eval_summary separately)
-                    pass
+                    probes = _load_eval_json(path)
+                    data[(seed, condition, pid)] = _probes_to_bucket_accuracy(probes)
     return data
 
 
@@ -128,12 +148,9 @@ def aggregate(
                 key = (seed, condition, pid)
                 if key not in data:
                     continue
-                eval_dict = data[key]
+                bucket_accs = data[key]  # {bucket: float}
                 for bucket in BUCKET_ORDER:
-                    if bucket == "overall":
-                        acc = eval_dict.get("overall", {}).get("accuracy")
-                    else:
-                        acc = eval_dict.get(bucket, {}).get("accuracy")
+                    acc = bucket_accs.get(bucket)
                     if acc is not None:
                         bucket_per_persona[bucket].append(acc)
 
@@ -221,7 +238,7 @@ def build_per_seed_table(
             for pid in persona_ids:
                 key = (seed, condition, pid)
                 if key in data:
-                    acc = data[key].get("overall", {}).get("accuracy")
+                    acc = data[key].get("overall")
                     if acc is not None:
                         accs.append(acc * 100)
             if accs:
