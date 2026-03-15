@@ -88,13 +88,14 @@ Exact package versions are pinned in `requirements.txt`.
 After completing any phase or updating results, regenerate the LLM review package:
 
 ```bash
-python3 scripts/make_review_zip.py              # include all dialogue
-python3 scripts/make_review_zip.py --max-dialogue-days 5   # smaller, if needed
+python3 scripts/make_review_package.py                    # include all dialogue
+python3 scripts/make_review_package.py --max-dialogue-days 5   # smaller if needed
 ```
 
-Output: `data/review_package.zip` — includes all code, configs, README, ground truth,
-memories, eval probes, results, sampled dialogue, and truncated logs.
-Excludes model weights, secrets, and compiled files. Target size: well under 500 KB.
+Output: `data/review_package.json` — a single JSON file preserving the full directory
+hierarchy. Code files are strings, JSON configs are parsed objects, JSONL files are
+arrays. An LLM reviewer can read it directly without any unpacking.
+Excludes model weights, secrets, compiled files. Current size: ~137 KB (~34K tokens).
 
 ---
 
