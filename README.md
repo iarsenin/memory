@@ -412,7 +412,13 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
-- Phase 1 complete and verified (v2 — re-run after bug fix):
+- **Phase 2 complete:** 172 memory items extracted (74 Alice, 98 Bob); 0 schema violations;
+  all key life-change events captured at conf=1.0 with is_update=True (breakup Day 5,
+  layoff Day 7, freelance Day 12, Austin move Day 15, Jamie Day 18 for Alice;
+  sabbatical Day 8, Rex death Day 11+13, Westside Day 16, Luna Day 17 for Bob).
+  Known noise: ~15–20% low-value items (temp activities, "true" values, duplicate age
+  extractions) — expected; salience filtering (Phase 4) will suppress these.
+- **Phase 1 complete and verified (v2 — re-run after bug fix):**
   - Alice Chen ground truth: 11 facts, 6 life-change events across 20 days
   - Bob Martinez ground truth: 12 facts, 7 life-change events across 20 days
   - 240 dialogue turns total (120 per persona, 6 per day)
@@ -427,8 +433,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 - None
 
 ### Next Steps
-1. **Phase 2** — Extraction pipeline: prompt + parsing logic to convert `data/dialogue/` → `data/memories/` JSONL using the defined schema
-2. **Phase 3** — Standalone extraction eval script (Precision/Recall vs ground truth) — must pass before any training
+1. **Phase 3** — Standalone extraction eval script (Precision/Recall vs ground truth) — must pass before any training
 
 ---
 
