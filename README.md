@@ -83,6 +83,21 @@ Exact package versions are pinned in `requirements.txt`.
 
 ---
 
+## Review Package
+
+After completing any phase or updating results, regenerate the LLM review package:
+
+```bash
+python3 scripts/make_review_zip.py              # include all dialogue
+python3 scripts/make_review_zip.py --max-dialogue-days 5   # smaller, if needed
+```
+
+Output: `data/review_package.zip` — includes all code, configs, README, ground truth,
+memories, eval probes, results, sampled dialogue, and truncated logs.
+Excludes model weights, secrets, and compiled files. Target size: well under 500 KB.
+
+---
+
 ## How to Run
 
 ```bash
