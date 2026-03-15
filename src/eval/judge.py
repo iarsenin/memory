@@ -50,10 +50,15 @@ _BUCKET_INSTRUCTIONS: dict[str, str] = {
     ),
     "superseded": (
         "The question ASSERTS AN OUTDATED fact (see 'Stale claim' below). "
-        "A CORRECT answer means the assistant recognises the old fact is no longer "
-        "true and corrects or rejects it. "
-        "An INCORRECT answer means the assistant confirms the stale claim without "
-        "correction. "
+        "A CORRECT answer requires ACTIVE CORRECTION: the assistant must not only "
+        "reject the old claim but must supply the new reality (e.g. 'No, Rex passed "
+        "away — Bob now has a cat named Luna'). "
+        "STRICT RULE — the following response types are ALWAYS 'incorrect', even if "
+        "they avoid confirming the stale fact: "
+        "(a) Privacy/safety refusals ('I don't have personal information about Bob'). "
+        "(b) Generic ignorance ('I don't know', 'I'm not sure', 'I cannot say'). "
+        "(c) Vague deflections ('Things may have changed', 'I'd need more context'). "
+        "A correct answer must demonstrate the model KNOWS the updated state. "
         "A CONTRADICTION means the assistant simultaneously affirms both the old "
         "and the new value (e.g. 'Yes Rex is fine, but he also passed away')."
     ),

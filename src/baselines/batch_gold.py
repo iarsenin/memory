@@ -7,9 +7,10 @@ Ground Truth JSON, bypassing the entire extraction + salience pipeline.
 This establishes the parametric ceiling — what the model could learn if
 extraction were 100% perfect and salience filtering were unnecessary.
 
-Batch format mirrors the main system (declarative + QA probes from the same
-train_config qa_train_templates) so that the only variable is input quality,
-not training format.
+Batch format mirrors the main system (declarative + QA probes + regularizer
+exchanges) so that the only variable is input quality, not training format.
+Omitting the regularizer caused the adapter to forget Llama-3-Instruct's
+conversational alignment, collapsing stable/updated accuracy to 0% in Phase 7.
 
 Replay: facts introduced in earlier windows are sampled uniformly (no
 salience weighting since all GT facts are equally "gold").
@@ -19,6 +20,9 @@ from __future__ import annotations
 
 import json
 import random
+
+# Shared with src/trainer/batch.py — import to keep lists in sync.
+from src.trainer.batch import _REGULARIZER_EXCHANGES
 
 _SYS_REMEMBER = (
     "You are a helpful AI assistant that remembers personal information "
@@ -43,6 +47,7 @@ class GoldBatchGenerator:
         self.qa_templates: list[str] = config["qa_train_templates"]
         self.qa_per_fact  = int(config["batch_mixture"].get("qa_phrasings_per_fact", 3))
         self.replay_ratio = float(config["replay_buffer"]["historical_sample_ratio"])
+        self.reg_n        = int(config.get("regularizer", {}).get("generic_dialogue_samples", 10))
         self._rng = random.Random()
 
     def build_cycle_batch(
@@ -86,12 +91,29 @@ class GoldBatchGenerator:
                 examples.extend(self._expand_fact(fact, name))
                 n_replay += 1
 
+        # --- Regularizer exchanges (mirrors main BatchGenerator) ---
+        # Prevents the adapter from losing Llama-3-Instruct's conversational
+        # alignment when trained exclusively on structured fact statements.
+        n_reg = 0
+        if self.reg_n > 0:
+            reg_pairs = self._rng.sample(
+                _REGULARIZER_EXCHANGES,
+                min(self.reg_n, len(_REGULARIZER_EXCHANGES)),
+            )
+            for user_msg, asst_msg in reg_pairs:
+                examples.append([
+                    {"role": "user",      "content": user_msg},
+                    {"role": "assistant", "content": asst_msg},
+                ])
+                n_reg += 1
+
         self._rng.shuffle(examples)
 
         meta = {
             "n_total":         len(examples),
             "n_new_facts":     n_new,
             "n_replay_facts":  n_replay,
+            "n_regularizer":   n_reg,
         }
         return examples, meta
 
