@@ -581,12 +581,16 @@ The model holds both old and new values in the same adapter weights, occasionall
 | Gold LoRA (upper bound) | 27.8 ±34.7 | 20.8 ±18.2 | 9.4 ±7.7 | 47.2 ±17.3 | 22.0 ±8.8 |
 | **MemLoRA (ours)** | 22.2 ±25.5 | 36.8 ±7.9 | 15.0 ±13.2 | 38.9 ±12.7 | **25.0 ±3.1** |
 
-**Key findings**:
+**Key findings (initial run, q_proj + v_proj only)**:
 - MemLoRA beats Frozen on Updated facts by **+36.8pp** — the primary hypothesis is confirmed
 - MemLoRA is stable across seeds (Overall ±3.1pp) vs Gold LoRA (±8.8pp) — evidence of robustness
-- High variance in Stable/Superseded buckets across all LoRA conditions suggests room for improvement
-- RAG dominates parametric conditions overall — expected for this scale/epoch budget
-- **Next step**: analyse per-bucket variance and consider LoRA surface expansion (fallback strategy)
+- `unfiltered_lora` edges out `main` on Updated (41.0 vs 36.8%), suggesting salience-filtered batches are too sparse for the small 2-module adapter
+- High variance in Stable/Superseded across all LoRA conditions suggests room for improvement
+
+**Fallback strategy activated** (`scripts/run_fallback.sh`):
+- Expanded LoRA `target_modules` from 2 (q/v) to 7 (q/k/v/o/gate/up/down)
+- Re-training `main` only across 3 seeds (~2 hours vs ~5.5 hours for full rerun)
+- Baselines untouched; `summarize.py` merges new `main` results with existing baseline files
 
 ### Paper Run Infrastructure
 
