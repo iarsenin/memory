@@ -219,18 +219,21 @@ All logs are machine-readable JSONL or JSON. `analysis/summarize.py` aggregates 
 
 ## Compute Estimates and Staged Execution
 
-**Rule:** Any step expected to take more than a few seconds of compute runs on the RunPod GPU pod, not locally. This includes all LLM inference (paraphrasing, extraction, sleep training, evaluation inference). Short scripts (salience scoring, extraction eval, result aggregation) can run locally.
+**Compute routing rule:**
+- **OpenAI API (small model):** all LLM text tasks — dialogue paraphrasing, extraction, eval judging
+- **Pod GPU:** any code that runs more than a few seconds — LoRA training, batch inference with the local 8B model, large evaluation loops. Pod GPU >> M1 Mac for these.
+- **Local Mac:** fast scripts only — salience scoring, metrics aggregation, result formatting
 
 | Phase | Where to run | Estimated VRAM | Estimated runtime | Stage plan |
 |---|---|---|---|---|
 | 1 (Simulator) | Local (CPU) | — | < 1 min | — |
-| 2 (Extraction) | **Pod GPU** | ~12 GB (4-bit 8B) | ~30–60 min / persona | debug 1 day → full 20 days |
+| 2 (Extraction) | OpenAI API + Local | — | ~10–20 min / persona | debug 1 day → full 20 days |
 | 3 (Extraction eval) | Local (CPU) | — | < 1 min | — |
 | 4 (Salience) | Local (CPU) | — | < 1 min | — |
 | 5 (Sleep training) | **Pod GPU** | ~18–22 GB (4-bit + LoRA) | ~10–20 min / sleep cycle | 1-cycle sanity → full 7 cycles |
 | 6 (Baselines) | **Pod GPU** | ~18–22 GB | ~5× Phase 5 | sanity first per condition |
-| 7 (Eval inference) | **Pod GPU** | ~12 GB (inference only) | ~20–30 min | spot-check before full run |
-| 7 (LLM judge scoring) | OpenAI API | — | ~5–10 min | after inference outputs saved |
+| 7 (Eval inference) | **Pod GPU** | ~12 GB (local 8B model) | ~20–30 min | spot-check before full run |
+| 7 (LLM judge scoring) | OpenAI API | — | ~5–10 min | after inference outputs saved to disk |
 
 For each pod GPU phase: start with a 1-step or 1-day debug run before committing to full execution. Save outputs to disk before stopping the pod.
 
@@ -364,10 +367,14 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Dialogue paraphrasing model | Base model on pod GPU | Any LLM inference >few seconds runs on pod; no API cost |
-| Extraction model | Base model on pod GPU | Same rule; sequential with training so no VRAM conflict |
-| LLM eval judge | GPT-4o-mini via OpenAI API | Inference outputs are already saved to disk; judging is fast API calls, not heavy compute |
+| Dialogue paraphrasing model | OpenAI API (small model) | Fast, cheap, no VRAM; API is appropriate for LLM text tasks |
+| Extraction model | OpenAI API (small model) | Same — text in, structured JSON out; no heavy compute needed |
+| LLM eval judge | OpenAI API (small model) | Judging is text reasoning, not heavy compute |
+| Heavy compute (training, batch inference) | Pod GPU | Pod GPU far outperforms M1 Mac for any long-running compute |
 | Persona backstories | Left to implementation | Personas share fact categories (job, location, diet, relationship status) for clean bucket comparisons |
+
+**API model:** Use `OPENAI_MODEL` from `.env` for all OpenAI calls. Default small model is `gpt-4o-mini`.  
+**Pod GPU rule:** Use pod GPU for any code that would run more than a few seconds — LoRA training, running the local 8B model for batch inference, evaluation loops over many examples. Do not run these on the local Mac.
 
 ---
 
