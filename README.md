@@ -412,6 +412,15 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 ### Done
 - All design decisions resolved; plan fully approved
 - Full repository scaffolded: configs, scripts, src, analysis stubs, requirements.txt
+- **Phase 6 complete** (all 3 training baselines; pod RTX 4090):
+  36 cycles total (12 per condition × 2 personas × 6 trigger days).
+  | Condition | Final Alice loss | Final Bob loss | Avg batch | Notes |
+  |---|---|---|---|---|
+  | `naive_lora` | 1.78 | 1.97 | 9 | Residual high loss — raw dialogue doesn't condense facts |
+  | `unfiltered_lora` | 0.51 | 0.52 | 78 | Lower than main (0.65) — more data, but also more noise |
+  | `gold_lora` | 0.84 | 1.27 | 9 | Tiny GT batches; converges efficiently from perfect input |
+  All 36 checkpoints saved to `checkpoints/{condition}/{pid}/day_{N}/` (3 × 539 MB).
+  Frozen and RAG require no training — handled at inference in Phase 7.
 - **Phase 5 complete** (run on RunPod RTX 4090, 50.9 GB VRAM):
   12 sleep cycles trained successfully (6 Alice × 6 Bob). All adapters saved to `checkpoints/`.
 
@@ -483,7 +492,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-1. **Phase 6** — Baselines (5 conditions on same 20-day timeline; pod GPU)
+1. **Phase 7** — Zero-context evaluation suite (inference + metrics across all 5 conditions)
 
 ---
 

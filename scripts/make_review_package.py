@@ -110,6 +110,23 @@ def sample_dialogue(max_days: int | None) -> dict:
     return node
 
 
+def _trim_telemetry(record: object) -> object:
+    """
+    Compress step_losses in a telemetry record to first 3 + last 3 values
+    to keep the review package compact while preserving the loss trajectory.
+    """
+    if not isinstance(record, dict):
+        return record
+    tr = record.get("training")
+    if isinstance(tr, dict) and "step_losses" in tr:
+        losses = tr["step_losses"]
+        if len(losses) > 6:
+            tr = dict(tr)
+            tr["step_losses"] = losses[:3] + ["..."] + losses[-3:]
+            record = dict(record, training=tr)
+    return record
+
+
 def sample_logs() -> dict:
     """
     Include log files from logs/.
@@ -136,8 +153,11 @@ def sample_logs() -> dict:
             continue
         rel = str(path.relative_to(LOGS_DIR))
         if path.suffix == ".jsonl":
-            # Telemetry records — include fully (they are small)
-            node[rel] = read_file(path)
+            # Telemetry records — trim step_losses to save tokens
+            raw = read_file(path)
+            if isinstance(raw, list):
+                raw = [_trim_telemetry(r) for r in raw]
+            node[rel] = raw
         else:
             # .log — extract structured summary lines only
             lines = path.read_text(errors="replace").splitlines()
@@ -155,19 +175,25 @@ def sample_logs() -> dict:
 
 def build_checkpoint_meta() -> dict:
     """
-    Include only adapter_config.json from each checkpoint directory.
-    Skips large files (weights, tokenizer). Gives the reviewer the LoRA
-    config that was actually trained for each persona × condition × day.
+    Include one adapter_config.json per (condition, persona) — the last
+    training day only (all days share the same LoRA hyperparameters).
+    Skips large files (weights, tokenizer).
     """
-    node: dict = {}
-    if not CHECKPOINTS_DIR.exists():
-        return node
+    # Collect all adapter_config.json paths, keep only the last day per group
+    by_group: dict[str, Path] = {}
     for cfg_path in sorted(CHECKPOINTS_DIR.rglob("adapter_config.json")):
-        rel = str(cfg_path.relative_to(CHECKPOINTS_DIR))
+        parts = cfg_path.relative_to(CHECKPOINTS_DIR).parts
+        # parts = (condition_or_pid, ..., "day_NN", "adapter_config.json")
+        group_key = "/".join(parts[:-2])   # everything above day_NN
+        by_group[group_key] = cfg_path     # sorted order means last day wins
+
+    node: dict = {}
+    for group, cfg_path in sorted(by_group.items()):
+        label = group + "/day_latest"
         try:
-            node[rel] = json.loads(cfg_path.read_text())
+            node[label] = json.loads(cfg_path.read_text())
         except Exception:
-            node[rel] = cfg_path.read_text(errors="replace")
+            node[label] = cfg_path.read_text(errors="replace")
     return node
 
 
