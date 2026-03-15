@@ -219,17 +219,20 @@ All logs are machine-readable JSONL or JSON. `analysis/summarize.py` aggregates 
 
 ## Compute Estimates and Staged Execution
 
-| Phase | GPU needed | Estimated VRAM | Estimated runtime | Stage plan |
-|---|---|---|---|---|
-| 1 (Simulator) | No | CPU only | < 5 min | — |
-| 2 (Extraction) | Yes | ~12 GB (4-bit 8B) | ~30–60 min / persona | debug 1 day → full 20 days |
-| 3 (Extraction eval) | No | CPU only | < 5 min | — |
-| 4 (Salience) | No | CPU only | < 1 min | — |
-| 5 (Sleep training) | Yes | ~18–22 GB (4-bit + LoRA) | ~10–20 min / sleep cycle | 1-cycle sanity → full 7 cycles |
-| 6 (Baselines) | Yes | ~18–22 GB | ~5× Phase 5 | sanity first per condition |
-| 7 (Eval) | Yes | ~12 GB (inference only) | ~20–30 min | spot-check before full run |
+**Rule:** Any step expected to take more than a few seconds of compute runs on the RunPod GPU pod, not locally. This includes all LLM inference (paraphrasing, extraction, sleep training, evaluation inference). Short scripts (salience scoring, extraction eval, result aggregation) can run locally.
 
-For each GPU phase: start with a 1-step or 1-day debug run before committing to full execution.
+| Phase | Where to run | Estimated VRAM | Estimated runtime | Stage plan |
+|---|---|---|---|---|
+| 1 (Simulator) | Local (CPU) | — | < 1 min | — |
+| 2 (Extraction) | **Pod GPU** | ~12 GB (4-bit 8B) | ~30–60 min / persona | debug 1 day → full 20 days |
+| 3 (Extraction eval) | Local (CPU) | — | < 1 min | — |
+| 4 (Salience) | Local (CPU) | — | < 1 min | — |
+| 5 (Sleep training) | **Pod GPU** | ~18–22 GB (4-bit + LoRA) | ~10–20 min / sleep cycle | 1-cycle sanity → full 7 cycles |
+| 6 (Baselines) | **Pod GPU** | ~18–22 GB | ~5× Phase 5 | sanity first per condition |
+| 7 (Eval inference) | **Pod GPU** | ~12 GB (inference only) | ~20–30 min | spot-check before full run |
+| 7 (LLM judge scoring) | OpenAI API | — | ~5–10 min | after inference outputs saved |
+
+For each pod GPU phase: start with a 1-step or 1-day debug run before committing to full execution. Save outputs to disk before stopping the pod.
 
 ---
 
@@ -357,34 +360,27 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 
 ---
 
-## Open Questions (Need Answers Before Coding)
+## Resolved Design Decisions
 
-**Q1. Dialogue paraphrasing model**  
-Which model paraphrases simulator state transitions into natural dialogue? Options:
-- (a) Same base model already loaded (zero extra VRAM, but slow if not batched)
-- (b) A smaller local model (e.g., Mistral-7B-Instruct via Ollama — free, fast)
-- (c) API call (OpenAI/Anthropic — small cost, no VRAM)
+| Decision | Choice | Rationale |
+|---|---|---|
+| Dialogue paraphrasing model | Base model on pod GPU | Any LLM inference >few seconds runs on pod; no API cost |
+| Extraction model | Base model on pod GPU | Same rule; sequential with training so no VRAM conflict |
+| LLM eval judge | GPT-4o-mini via OpenAI API | Inference outputs are already saved to disk; judging is fast API calls, not heavy compute |
+| Persona backstories | Left to implementation | Personas share fact categories (job, location, diet, relationship status) for clean bucket comparisons |
 
-**Q2. Extraction model**  
-Same question for the extraction step. Same base model (reloaded between sleep cycles) or a dedicated smaller model?
+---
 
-**Q3. LLM judge for evaluation**  
-What model scores eval answers?
-- (a) GPT-4o-mini via OpenAI API (low cost, high quality)
-- (b) Llama-3-8B-Instruct self-hosted (free, but lower quality for judgment)
-- (c) Exact-match only for v1 (cheapest, but misses paraphrase-correct answers)
-
-**Q4. Persona design**  
-Both personas should share fact categories (job, location, diet, relationship status) for clean bucket comparisons — confirmed in the plan. Any specific persona backstories you want, or leave to the implementation?
+## Open Questions (Remaining — Need Answers Before Coding)
 
 **Q5. Data persistence between pod runs**  
 Where does data live when the pod is off?
-- (a) Git (only for small JSON/JSONL; not model weights)
-- (b) RunPod Network Volume (persistent, but costs ~$0.07/GB/month)
-- (c) S3 or similar (cheap, slightly more setup)
+- (a) Git — small JSON/JSONL files only; model weights and checkpoints excluded
+- (b) RunPod Network Volume — persistent across pod restarts, ~$0.07/GB/month
+- (c) S3 or similar — cheap, slightly more setup
 
 **Q6. Multi-seed budget**  
-The plan requires 3 seeds for paper claims. Given the $500 budget, is 3 seeds for Phases 5–7 acceptable, or should v1 use 1 seed with a note that multi-seed is future work?
+The plan calls for 3 seeds for paper-grade claims (Phases 5–7). Given the $500 budget, is this acceptable, or should v1 use 1 seed with a note that multi-seed is future work?
 
 **Q7. Validation split during sleep training**  
-Should the sleep training loop hold out a small set of memory items as a validation set (to log val loss and detect overfitting per cycle)? Or is it train-only given the small batch size?
+Should the sleep training loop hold out a small set of memory items to log val loss and detect overfitting per cycle? Or train-only given the small per-cycle batch?
