@@ -85,6 +85,30 @@ for SEED in "${SEEDS[@]}"; do
     echo "  SEED ${SEED}"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+    # ── Reset consolidated flags ──────────────────────────────────────────
+    # Each seed is an independent consolidation pass over the same memory
+    # data. The dev run (and any prior seed) left consolidated=true on every
+    # item. We must reset to false so Phase 5 and Phase 6 unfiltered_lora
+    # see all memories as new at the start of each seed's run.
+    echo ""
+    echo "  Resetting consolidated flags for seed ${SEED} …"
+    python3 - <<'PYEOF'
+import json, glob, sys
+
+reset_count = 0
+for pattern in ["data/memories/*.jsonl", "data/memories_unfiltered/*.jsonl"]:
+    for path in sorted(glob.glob(pattern)):
+        lines = [json.loads(l) for l in open(path) if l.strip()]
+        if not lines:
+            continue
+        reset = [{**l, "consolidated": False} for l in lines]
+        open(path, "w").write("\n".join(json.dumps(r) for r in reset) + "\n")
+        reset_count += len(reset)
+        print(f"    reset {len(reset):3d} items  ←  {path}")
+
+print(f"  Total reset: {reset_count} items")
+PYEOF
+
     # ── Phase 5: main MemLoRA ─────────────────────────────────────────────
     if [ "$SKIP_P5" = false ]; then
         echo ""
