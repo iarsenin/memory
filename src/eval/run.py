@@ -58,15 +58,20 @@ except ImportError:
     print("ERROR: torch not installed.  Run: pip install -r requirements.txt")
     sys.exit(1)
 
+import warnings
+import transformers as _tf
+_tf.logging.set_verbosity_error()
+warnings.filterwarnings("ignore", category=UserWarning, module="peft")
+
 from openai import OpenAI
 
 from .infer  import (
     CONDITIONS_WITH_ADAPTERS,
     find_latest_checkpoint,
     load_inference_model,
-    load_adapter,
+    load_first_adapter,
+    switch_adapter,
     run_condition_inference,
-    unload_adapter,
 )
 from .judge  import score_responses
 from .probes import generate_probes, save_probes
@@ -226,6 +231,12 @@ def main() -> None:
     if not args.skip_inference:
         base_model, tokenizer = load_inference_model(train_cfg, hf_token=hf_token)
 
+        # active_peft is None until the first LoRA adapter is loaded.
+        # Once initialised, we switch adapters in-place (never wrap base_model
+        # a second time) to avoid the PEFT "multiple adapters" issue.
+        active_peft: Any | None = None
+        active_adapter_name: str | None = None
+
         for condition in conditions:
             print(f"\n{'='*60}")
             print(f"  Condition: {condition}")
@@ -234,7 +245,7 @@ def main() -> None:
                 out_path = results_dir / f"{condition}_{pid}_responses.json"
 
                 if out_path.exists() and not args.force and not args.sanity:
-                    print(f"  {out_path.name} already exists — skipping (use --force to redo)")
+                    print(f"  {out_path.name} already exists — skipping")
                     continue
 
                 # Load memories for RAG context
@@ -243,33 +254,45 @@ def main() -> None:
                     rag_memories = _load_jsonl(memories_dir / f"{pid}_memories.jsonl")
                     print(f"  RAG: loaded {len(rag_memories)} memories for {pid}")
 
-                # Load LoRA adapter for LoRA conditions
-                peft_model = None
-                active_model = base_model
+                # --- Determine inference model and adapter state ---
+                use_adapter = False
                 if condition in CONDITIONS_WITH_ADAPTERS:
                     ckpt = find_latest_checkpoint(checkpoints_dir, condition, pid)
                     if ckpt is None:
-                        print(f"  WARNING: no checkpoint found for {condition}/{pid} — skipping")
+                        print(f"  WARNING: no checkpoint for {condition}/{pid} — skipping")
                         continue
-                    peft_model   = load_adapter(base_model, ckpt)
-                    active_model = peft_model
 
-                print(f"  Running {pid} under '{condition}' ({len([p for p in probes if p['persona_id']==pid])} probes) …")
+                    new_name = f"{condition}_{pid}"
+                    if active_peft is None:
+                        # First LoRA load — wrap base model once
+                        active_peft = load_first_adapter(base_model, ckpt, new_name)
+                    else:
+                        # Subsequent loads — swap adapter in the existing PeftModel
+                        active_peft = switch_adapter(active_peft, ckpt, new_name)
+                    active_adapter_name = new_name
+                    inference_model = active_peft
+                    use_adapter = True
+                else:
+                    # frozen / rag — use base_model directly, or disable adapter
+                    # if a PeftModel was already created for a prior LoRA condition
+                    inference_model = active_peft if active_peft is not None else base_model
+                    use_adapter = False   # disable_adapter() will be used if needed
+
+                n_probes = len([p for p in probes if p["persona_id"] == pid])
+                print(f"  Running {pid} under '{condition}' ({n_probes} probes) …")
+
                 raw_responses = run_condition_inference(
                     probes=probes,
                     persona_id=pid,
                     condition=condition,
-                    model=active_model,
+                    model=inference_model,
                     tokenizer=tokenizer,
                     rag_memories=rag_memories,
+                    use_adapter=use_adapter,
                 )
 
                 _save_json(out_path, raw_responses)
                 print(f"  {len(raw_responses)} responses → {out_path}")
-
-                if peft_model is not None:
-                    unload_adapter(peft_model)
-                    peft_model = None
 
     # ── Step 3: LLM judge scoring ──────────────────────────────────────────
     if not args.skip_judge:

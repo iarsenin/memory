@@ -104,23 +104,41 @@ def load_inference_model(
     return model, tokenizer
 
 
-def load_adapter(base_model: Any, adapter_path: str) -> Any:
-    """Wrap frozen base model with a saved LoRA adapter for inference."""
-    print(f"  Loading adapter: {adapter_path}")
-    peft_model = PeftModel.from_pretrained(base_model, adapter_path)
+def load_first_adapter(base_model: Any, adapter_path: str, name: str) -> Any:
+    """
+    Wrap the clean base model with the first LoRA adapter.
+
+    Call this exactly once per process.  All subsequent adapter changes
+    must go through switch_adapter() to avoid the 'multiple adapters'
+    PEFT warning that arises from repeatedly calling PeftModel.from_pretrained
+    on the same (already-wrapped) base model.
+    """
+    print(f"  Loading adapter [{name}]: {adapter_path}")
+    peft_model = PeftModel.from_pretrained(base_model, adapter_path, adapter_name=name)
     peft_model.eval()
     vram = torch.cuda.memory_allocated() / 1e9 if torch.cuda.is_available() else 0.0
-    print(f"  Adapter loaded.  VRAM: {vram:.2f} GB")
+    print(f"  Adapter [{name}] ready.  VRAM: {vram:.2f} GB")
     return peft_model
 
 
-def unload_adapter(peft_model: Any) -> None:
-    """Delete LoRA wrapper and reclaim VRAM.  Base model stays in memory."""
-    del peft_model
-    gc.collect()
-    torch.cuda.empty_cache()
+def switch_adapter(peft_model: Any, new_path: str, new_name: str) -> Any:
+    """
+    Replace the currently active LoRA adapter with a new one.
+
+    Loads new_name from new_path, sets it as the active adapter, then
+    deletes all previous adapter slots to free VRAM.  Returns the same
+    peft_model object with the new adapter active.
+    """
+    old_names = list(peft_model.peft_config.keys())
+    print(f"  Switching adapter → [{new_name}]: {new_path}")
+    peft_model.load_adapter(new_path, adapter_name=new_name)
+    peft_model.set_adapter(new_name)
+    for old in old_names:
+        peft_model.delete_adapter(old)
+    peft_model.eval()
     vram = torch.cuda.memory_allocated() / 1e9 if torch.cuda.is_available() else 0.0
-    print(f"  Adapter unloaded.  VRAM: {vram:.2f} GB")
+    print(f"  Adapter [{new_name}] active.  VRAM: {vram:.2f} GB")
+    return peft_model
 
 
 def find_latest_checkpoint(
@@ -224,12 +242,15 @@ def run_condition_inference(
     model: Any,
     tokenizer: Any,
     rag_memories: list[dict] | None = None,
+    use_adapter: bool = True,
 ) -> list[dict]:
     """
     Run every probe for one (condition, persona) pair and return raw responses.
 
-    The caller is responsible for loading / unloading the LoRA adapter before
-    and after calling this function.
+    use_adapter=False is used for frozen/rag conditions when `model` is a
+    PeftModel (because LoRA conditions ran earlier in the same process).
+    In that case generation is wrapped in model.disable_adapter() so the
+    base weights are used without any LoRA delta.
     """
     persona_probes = [p for p in probes if p["persona_id"] == persona_id]
     if not persona_probes:
@@ -244,7 +265,13 @@ def run_condition_inference(
     results: list[dict] = []
     for probe in persona_probes:
         messages = _format_prompt(probe, condition, rag_ctx)
-        response = _generate(model, tokenizer, messages)
+
+        if not use_adapter and hasattr(model, "disable_adapter"):
+            with model.disable_adapter():
+                response = _generate(model, tokenizer, messages)
+        else:
+            response = _generate(model, tokenizer, messages)
+
         results.append({
             "probe_id":   probe["probe_id"],
             "persona_id": persona_id,
