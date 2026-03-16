@@ -386,6 +386,13 @@ def main() -> None:
                 examples=examples,
                 checkpoint_path=str(chk_path),
             )
+            # Delete previous cycle checkpoint immediately to stay within disk quota.
+            # The new checkpoint is fully saved; we no longer need the old one for
+            # accumulation (the next cycle will load from chk_path).
+            if prev_checkpoint is not None:
+                import shutil as _shutil
+                _shutil.rmtree(prev_checkpoint, ignore_errors=True)
+                print(f"  Freed previous checkpoint: {prev_checkpoint}")
             prev_checkpoint = str(chk_path)
 
             # --- Update consolidated state for all memory-based conditions ---

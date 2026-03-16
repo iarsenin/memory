@@ -265,10 +265,25 @@ def _save_adapter_via_tmp(checkpoint_path: str, peft_model: Any, tokenizer: Any)
         peft_model.save_pretrained(tmp_dir)
         tokenizer.save_pretrained(tmp_dir)
         _ensure_adapter_config(tmp_dir, peft_model)
-        # Copy from /tmp to the network volume
+        # Copy from /tmp to the network volume (large files first to detect quota
+        # issues early; small config file last so it doesn't get 0-byte'd by quota).
         print(f"  Copying checkpoint to {checkpoint_path} …", flush=True)
-        for src_file in Path(tmp_dir).iterdir():
-            shutil.copy2(src_file, dst / src_file.name)
+        tmp_files = list(Path(tmp_dir).iterdir())
+        # Sort: safetensors first, then others
+        tmp_files.sort(key=lambda p: (0 if p.suffix == ".safetensors" else 1, p.name))
+        for src_file in tmp_files:
+            dst_file = dst / src_file.name
+            shutil.copy2(src_file, dst_file)
+            # Verify non-empty for adapter_config.json; repair if quota truncated it
+            if src_file.name == "adapter_config.json" and dst_file.stat().st_size == 0:
+                shutil.copy2(src_file, dst_file)  # retry once
+                if dst_file.stat().st_size == 0:
+                    raise RuntimeError(
+                        f"Disk quota exceeded: adapter_config.json is 0 bytes after copy "
+                        f"to {dst_file}. Free disk space and retry."
+                    )
+    # Final repair pass in case of any subtle NFS flush delay
+    _ensure_adapter_config(checkpoint_path, peft_model)
     print(f"  Checkpoint saved to {checkpoint_path}", flush=True)
 
 
