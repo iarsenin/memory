@@ -100,14 +100,18 @@ def _write_jsonl(path: Path, items: list[dict]) -> None:
 
 def _prune_persona_checkpoints(checkpoints_dir: Path, persona_id: str) -> None:
     """Delete intermediate day_* dirs for a persona, keeping only the last one."""
+    import shutil
     persona_dir = checkpoints_dir / persona_id
     if not persona_dir.is_dir():
         return
-    day_dirs = sorted(persona_dir.glob("day_*/"))
+    # glob("day_*/") does not filter to dirs in Python pathlib; use iterdir.
+    day_dirs = sorted(
+        d for d in persona_dir.iterdir()
+        if d.is_dir() and d.name.startswith("day_")
+    )
     if len(day_dirs) <= 1:
         return
     for d in day_dirs[:-1]:
-        import shutil
         shutil.rmtree(d, ignore_errors=True)
     kept = day_dirs[-1].name
     print(f"  Pruned intermediate checkpoints for {persona_id} — kept {kept}")
