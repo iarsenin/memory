@@ -1,7 +1,7 @@
 {
   "seed": 42,
   "n_days": 20,
-  "personas": ["alice", "bob"],
+  "personas": ["alice", "bob", "charlie", "diana", "ethan", "fiona", "george", "hannah", "ian", "julia"],
   "turns_per_day": 6,
   "openai": {
     "model": null,

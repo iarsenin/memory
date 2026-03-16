@@ -141,6 +141,10 @@ class BatchGenerator:
         self.reg_enabled = bool(reg.get("enabled", True))
         self.reg_n       = int(reg.get("generic_dialogue_samples", 10))
 
+        am = config.get("anti_memory", {})
+        self.anti_memory_cfg_enabled = bool(am.get("enabled", False))
+        self.anti_pairs_per_update   = int(am.get("pairs_per_update", 2))
+
         self._rng = random.Random()
 
     # ------------------------------------------------------------------
@@ -153,6 +157,8 @@ class BatchGenerator:
         consolidated_memories: list[dict],
         dialogue_by_day: dict[int, list[dict]],
         seed: int = 42,
+        anti_memory_enabled: bool = False,
+        all_memories: list[dict] | None = None,
     ) -> tuple[list[list[dict]], dict[str, Any]]:
         """
         Build one training batch for a sleep cycle.
@@ -162,6 +168,12 @@ class BatchGenerator:
             consolidated_memories: All previously consolidated memories (replay pool).
             dialogue_by_day:       {day: [turn_dict]} for dialogue snippet extraction.
             seed:                  RNG seed for reproducibility.
+            anti_memory_enabled:   If True (and config anti_memory.enabled is True),
+                                   generate Anti-Memory QA pairs for update memories.
+            all_memories:          Full memory pool needed to look up superseded facts
+                                   when building Anti-Memory pairs. If None and
+                                   anti_memory is enabled, builds a lookup from
+                                   new + consolidated memories.
 
         Returns:
             examples:   List of message-lists in HF chat format.
@@ -169,9 +181,16 @@ class BatchGenerator:
         """
         self._rng.seed(seed)
 
+        # Build a fast id→memory lookup for Anti-Memory superseded-fact lookup
+        _use_anti = anti_memory_enabled and self.anti_memory_cfg_enabled
+        _mem_by_id: dict[str, dict] = {}
+        if _use_anti:
+            pool = (all_memories or []) + new_memories + consolidated_memories
+            _mem_by_id = {m["memory_id"]: m for m in pool if m.get("memory_id")}
+
         examples: list[list[dict]] = []
         memory_ids: list[str] = []
-        n_decl = n_qa = n_dial = n_replay = 0
+        n_decl = n_qa = n_dial = n_replay = n_anti = 0
 
         # --- New memories: expand via batch mixture ---
         for mem in new_memories:
@@ -179,6 +198,14 @@ class BatchGenerator:
             examples.extend(new_ex)
             memory_ids.append(mem["memory_id"])
             n_decl += d; n_qa += q; n_dial += dl
+
+            # Anti-Memory pairs for update memories
+            if _use_anti and mem.get("is_update") and mem.get("supersedes_memory_id"):
+                old_mem = _mem_by_id.get(mem["supersedes_memory_id"])
+                if old_mem:
+                    anti_ex = self._anti_memory_examples(old_mem, mem)
+                    examples.extend(anti_ex)
+                    n_anti += len(anti_ex)
 
         # --- Replay buffer ---
         if self.replay_enabled and consolidated_memories:
@@ -207,13 +234,14 @@ class BatchGenerator:
         self._rng.shuffle(examples)
 
         meta = {
-            "memory_ids":    memory_ids,
-            "n_total":       len(examples),
-            "n_declarative": n_decl,
-            "n_qa":          n_qa,
-            "n_dialogue":    n_dial,
-            "n_replay":      n_replay,
-            "n_regularizer": n_reg,
+            "memory_ids":     memory_ids,
+            "n_total":        len(examples),
+            "n_declarative":  n_decl,
+            "n_qa":           n_qa,
+            "n_dialogue":     n_dial,
+            "n_replay":       n_replay,
+            "n_regularizer":  n_reg,
+            "n_anti_memory":  n_anti,
         }
         return examples, meta
 
@@ -347,6 +375,67 @@ class BatchGenerator:
         ]
         # Need at least user + assistant for a meaningful exchange
         return messages if len(messages) >= 2 else None
+
+    # ------------------------------------------------------------------
+    # Anti-Memory: negative training for superseded facts
+    # ------------------------------------------------------------------
+
+    # Probe templates that challenge the OLD (stale) state.
+    # The model must actively reject the premise and supply the new state.
+    _ANTI_PROBE_TEMPLATES: list[str] = [
+        "Is {subject} still {old_pred} {old_val}?",
+        "{subject} {old_pred} {old_val}, right?",
+        "I heard {subject} {old_pred} {old_val} — is that still true?",
+        "Does {subject} still {old_pred} {old_val}?",
+    ]
+
+    def _anti_memory_examples(
+        self,
+        old_mem: dict,
+        new_mem: dict,
+    ) -> list[list[dict]]:
+        """
+        Generate Anti-Memory QA pairs that force the model to reject the stale
+        state and supply the updated state.
+
+        Example:
+          old_mem: "Alice lives in Seattle, WA"
+          new_mem: "Alice lives in Austin, TX"
+          → Probe:  "Is Alice still lives in Seattle, WA?"
+          → Target: "No — Alice lives in Austin, TX now."
+        """
+        subj     = new_mem.get("subject", "")
+        old_pred = old_mem.get("predicate", "")
+        old_val  = old_mem.get("value",     "")
+        new_pred = new_mem.get("predicate", "")
+        new_val  = new_mem.get("value",     "")
+
+        if not (subj and old_val and new_val):
+            return []
+
+        answer = f"No — {subj} {new_pred} {new_val} now."
+
+        templates = self._rng.sample(
+            self._ANTI_PROBE_TEMPLATES,
+            min(self.anti_pairs_per_update, len(self._ANTI_PROBE_TEMPLATES)),
+        )
+
+        examples: list[list[dict]] = []
+        for tmpl in templates:
+            try:
+                question = tmpl.format(
+                    subject=subj,
+                    old_pred=old_pred,
+                    old_val=old_val,
+                )
+                examples.append([
+                    {"role": "system",    "content": _SYS_RECALL},
+                    {"role": "user",      "content": question},
+                    {"role": "assistant", "content": answer},
+                ])
+            except KeyError:
+                continue
+        return examples
 
     # ------------------------------------------------------------------
     # Replay buffer sampling

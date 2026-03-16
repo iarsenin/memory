@@ -18,7 +18,7 @@
 #   bash scripts/run_paper.sh --skip-p5             # skip Phase 5 (resume)
 #   bash scripts/run_paper.sh --skip-p6             # skip Phase 6 baselines
 #   bash scripts/run_paper.sh --skip-p7             # skip Phase 7 eval
-#   bash scripts/run_paper.sh --condition gold_lora # Phase 6: one condition only
+#   bash scripts/run_paper.sh --condition oracle_data_lora  # Phase 6: one condition
 # =============================================================================
 
 set -e
@@ -53,7 +53,7 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-BASELINE_CONDITIONS=("naive_lora" "unfiltered_lora" "gold_lora")
+BASELINE_CONDITIONS=("naive_lora" "unfiltered_lora" "oracle_data_lora" "ablation_no_salience" "ablation_no_replay" "ablation_no_negative")
 if [ -n "$SINGLE_CONDITION" ]; then
     BASELINE_CONDITIONS=("$SINGLE_CONDITION")
 fi
@@ -188,7 +188,7 @@ PYEOF
             CONDITIONS_ARG=""
             echo "  [P7] Evaluating ALL conditions (seed=${SEED}) …"
         else
-            CONDITIONS_ARG="--condition main,naive_lora,unfiltered_lora,gold_lora"
+            CONDITIONS_ARG="--condition main,naive_lora,unfiltered_lora,oracle_data_lora,ablation_no_salience,ablation_no_replay,ablation_no_negative"
             echo "  [P7] Evaluating LoRA conditions only (seed=${SEED}, frozen/rag reused from seed 42) …"
         fi
 

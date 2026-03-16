@@ -76,17 +76,27 @@ _PREDICATE_STOPWORDS = {
 # Category → keyword map (same taxonomy as Phase 3 eval)
 # ---------------------------------------------------------------------------
 _CATEGORY_PATTERNS: dict[str, list[str]] = {
-    "pet":          ["rex", "luna", "dog", "cat", "pet", "adopted", "passed away",
-                     "grieving", "deceased"],
-    "location":     ["seattle", "austin", "chicago", "lives in", "moved to", "relocated"],
+    "pet":          ["dog", "cat", "pet", "adopted", "passed away", "grieving", "deceased",
+                     "hamster", "parrot", "rabbit", "bird", "shelter", "rescue",
+                     # named pets across all 10 personas
+                     "rex", "luna", "mochi", "pepper", "cooper", "pi", "pixel", "mango", "rio", "max"],
+    "location":     ["lives in", "moved to", "relocated", "moving to",
+                     # cities across all 10 personas
+                     "seattle", "austin", "chicago", "denver", "boston", "san francisco",
+                     "san jose", "portland", "miami", "new york", "brooklyn", "nyc"],
     "relationship": ["dating", "boyfriend", "girlfriend", "broke up", "single",
-                     "mark", "jamie", "relationship"],
-    "diet":         ["vegetarian", "fasting", "16:8", "intermittent", "diet"],
-    "sport":        ["cycling", "cyclist", "bike", "knee", "injury", "ride"],
-    "hobby":        ["pottery", "marathon", "running"],
-    "job":          ["works", "job", "employer", "unemployed", "freelance",
-                     "teacher", "consultant", "sabbatical", "laid off", "techcorp",
-                     "lincoln", "westside"],
+                     "relationship", "partner", "started dating", "is seeing"],
+    "diet":         ["vegetarian", "vegan", "pescatarian", "fasting", "16:8",
+                     "intermittent", "diet", "plant-based"],
+    "sport":        ["cycling", "cyclist", "bike", "knee", "injury", "ride",
+                     "marathon", "running", "triathlon", "golf", "sailing", "yoga",
+                     "5k", "swim", "swimming"],
+    "hobby":        ["pottery", "guitar", "dancing", "cooking", "meditation",
+                     "meditates", "reading", "history", "sailing"],
+    "job":          ["works as", "job", "employer", "unemployed", "freelance",
+                     "teacher", "consultant", "sabbatical", "laid off", "retired",
+                     "retirement", "nurse", "journalist", "designer", "developer",
+                     "barista", "instructor", "architect", "advisor", "researcher"],
 }
 _CATEGORY_PRIORITY = ["pet", "location", "relationship", "diet", "sport", "hobby", "job"]
 

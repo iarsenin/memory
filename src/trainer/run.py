@@ -248,7 +248,9 @@ def main() -> None:
 
             # --- Build training batch ---
             examples, batch_meta = batch_gen.build_cycle_batch(
-                new_mems, consolidated, dialogue_by_day, seed=seed
+                new_mems, consolidated, dialogue_by_day, seed=seed,
+                anti_memory_enabled=True,   # main condition: enable negative training
+                all_memories=memories,
             )
             print(
                 f"  Batch: {batch_meta['n_total']} examples  "
@@ -256,7 +258,8 @@ def main() -> None:
                 f"qa={batch_meta['n_qa']} "
                 f"dial={batch_meta['n_dialogue']} "
                 f"replay={batch_meta['n_replay']} "
-                f"reg={batch_meta['n_regularizer']})"
+                f"reg={batch_meta['n_regularizer']} "
+                f"anti={batch_meta['n_anti_memory']})"
             )
 
             # --- Build or load PEFT model ---

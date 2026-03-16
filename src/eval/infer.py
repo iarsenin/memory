@@ -33,7 +33,10 @@ from transformers import (
 )
 
 # Conditions that require loading a LoRA adapter
-CONDITIONS_WITH_ADAPTERS = frozenset({"main", "naive_lora", "unfiltered_lora", "gold_lora"})
+CONDITIONS_WITH_ADAPTERS = frozenset({
+    "main", "naive_lora", "unfiltered_lora", "oracle_data_lora",
+    "ablation_no_salience", "ablation_no_replay", "ablation_no_negative",
+})
 
 # ---------------------------------------------------------------------------
 # System prompts

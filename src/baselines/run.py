@@ -18,7 +18,7 @@ unfiltered_lora
     Same BatchGenerator as main but with the full 168-item pool and
     no threshold gate. Isolates the value of composite salience scoring.
 
-gold_lora
+oracle_data_lora  (formerly gold_lora)
     Train on structured ground-truth facts from data/personas/*.json.
     Perfect input quality — the parametric upper bound. Isolates how much
     headroom remains between "perfect extraction" and current system.
@@ -35,7 +35,7 @@ Telemetry:
 Usage (from repo root, on the pod):
     python -m src.baselines.run --condition naive_lora
     python -m src.baselines.run --condition unfiltered_lora --resume
-    python -m src.baselines.run --condition gold_lora --sanity --persona alice
+    python -m src.baselines.run --condition oracle_data_lora --sanity --persona alice
 """
 
 from __future__ import annotations
@@ -62,7 +62,25 @@ from ..trainer.loop  import build_peft_model, load_base_model, reset_peft, run_c
 from .batch_naive    import NaiveBatchGenerator
 from .batch_gold     import GoldBatchGenerator
 
-VALID_CONDITIONS = ("naive_lora", "unfiltered_lora", "gold_lora")
+# Ablation: uniform-weight variant of BatchGenerator (no salience weighting)
+from ..trainer.batch import BatchGenerator as _BatchGenerator
+
+class _UniformBatchGenerator(_BatchGenerator):
+    """ablation_no_salience: identical to BatchGenerator but overrides the
+    replay sampler to use uniform weights instead of salience × decay."""
+
+    def _sample_replay(self, consolidated: list[dict], n: int) -> list[dict]:
+        n = min(n, len(consolidated))
+        return self._rng.choices(consolidated, k=n)  # uniform
+
+VALID_CONDITIONS = (
+    "naive_lora",
+    "unfiltered_lora",
+    "oracle_data_lora",          # renamed from gold_lora
+    "ablation_no_salience",      # extracted memories, uniform salience weights
+    "ablation_no_replay",        # main pipeline, replay buffer disabled
+    "ablation_no_negative",      # main pipeline, anti-memory pairs disabled
+)
 
 
 # ---------------------------------------------------------------------------
@@ -176,7 +194,7 @@ def main() -> None:
         # Condition-specific data sources
         if condition == "naive_lora":
             batch_gen = NaiveBatchGenerator()
-            memories = None        # naive doesn't use memories
+            memories = None
 
         elif condition == "unfiltered_lora":
             mem_path  = unfiltered_dir / f"{pid}_memories.jsonl"
@@ -186,14 +204,41 @@ def main() -> None:
             memories  = _load_jsonl(mem_path)
             batch_gen = BatchGenerator(config)
 
-        elif condition == "gold_lora":
+        elif condition == "oracle_data_lora":
             gt_path   = personas_dir / f"{pid}_ground_truth.json"
             if not gt_path.exists():
                 print(f"\nERROR: {gt_path} not found.")
                 sys.exit(1)
             ground_truth = _load_json(gt_path)
-            memories     = None   # gold uses GT directly
+            memories     = None
             batch_gen    = GoldBatchGenerator(config)
+
+        elif condition == "ablation_no_salience":
+            # Same salience-filtered memories as main, but replay uses uniform weights
+            mem_path = Path(args.memories_dir) / f"{pid}_memories.jsonl"
+            if not mem_path.exists():
+                print(f"\nERROR: {mem_path} not found. Re-run Phase 4 first.")
+                sys.exit(1)
+            memories  = _load_jsonl(mem_path)
+            batch_gen = _UniformBatchGenerator(config)
+
+        elif condition == "ablation_no_replay":
+            # Main pipeline but replay buffer disabled at call site
+            mem_path = Path(args.memories_dir) / f"{pid}_memories.jsonl"
+            if not mem_path.exists():
+                print(f"\nERROR: {mem_path} not found. Re-run Phase 4 first.")
+                sys.exit(1)
+            memories  = _load_jsonl(mem_path)
+            batch_gen = BatchGenerator(config)
+
+        elif condition == "ablation_no_negative":
+            # Main pipeline without anti-memory pairs
+            mem_path = Path(args.memories_dir) / f"{pid}_memories.jsonl"
+            if not mem_path.exists():
+                print(f"\nERROR: {mem_path} not found. Re-run Phase 4 first.")
+                sys.exit(1)
+            memories  = _load_jsonl(mem_path)
+            batch_gen = BatchGenerator(config)
 
         print(f"\n{'='*60}")
         print(f"  Persona: {pid}")
@@ -209,7 +254,10 @@ def main() -> None:
             if _checkpoint_complete(chk_path):
                 print(f"\n  Day {day:02d}: checkpoint exists — skipping")
                 prev_checkpoint = str(chk_path)
-                if condition == "unfiltered_lora" and memories is not None:
+                # Update consolidated state on resume for memory-based conditions
+                _mem_conds = {"unfiltered_lora", "ablation_no_salience",
+                              "ablation_no_replay", "ablation_no_negative"}
+                if condition in _mem_conds and memories is not None:
                     win_start = day - window_size + 1
                     ids = {m["memory_id"] for m in memories
                            if win_start <= m["day"] <= day}
@@ -222,11 +270,11 @@ def main() -> None:
                     dialogue_by_day, day, window_size=window_size
                 )
 
-            elif condition == "unfiltered_lora":
-                win_start  = day - window_size + 1
-                new_mems   = [m for m in memories
-                               if win_start <= m["day"] <= day
-                               and not m.get("consolidated")]
+            elif condition in ("unfiltered_lora", "ablation_no_salience"):
+                win_start    = day - window_size + 1
+                new_mems     = [m for m in memories
+                                if win_start <= m["day"] <= day
+                                and not m.get("consolidated")]
                 consolidated = [m for m in memories if m.get("consolidated")]
                 if not new_mems:
                     print(f"\n  Day {day:02d}: no new memories — skipping")
@@ -235,9 +283,37 @@ def main() -> None:
                     new_mems, consolidated, dialogue_by_day, seed=seed
                 )
 
-            elif condition == "gold_lora":
+            elif condition == "oracle_data_lora":
                 examples, batch_meta = batch_gen.build_cycle_batch(
                     ground_truth, day, window_size=window_size, seed=seed
+                )
+
+            elif condition == "ablation_no_replay":
+                win_start    = day - window_size + 1
+                new_mems     = [m for m in memories
+                                if win_start <= m["day"] <= day
+                                and not m.get("consolidated")]
+                if not new_mems:
+                    print(f"\n  Day {day:02d}: no new memories — skipping")
+                    continue
+                # Pass empty consolidated list → replay buffer produces nothing
+                examples, batch_meta = batch_gen.build_cycle_batch(
+                    new_mems, [], dialogue_by_day, seed=seed
+                )
+
+            elif condition == "ablation_no_negative":
+                win_start    = day - window_size + 1
+                new_mems     = [m for m in memories
+                                if win_start <= m["day"] <= day
+                                and not m.get("consolidated")]
+                consolidated = [m for m in memories if m.get("consolidated")]
+                if not new_mems:
+                    print(f"\n  Day {day:02d}: no new memories — skipping")
+                    continue
+                # anti_memory_enabled=False → no negative pairs generated
+                examples, batch_meta = batch_gen.build_cycle_batch(
+                    new_mems, consolidated, dialogue_by_day, seed=seed,
+                    anti_memory_enabled=False,
                 )
 
             if not examples:
@@ -264,11 +340,15 @@ def main() -> None:
             )
             prev_checkpoint = str(chk_path)
 
-            # --- Update consolidated state (unfiltered only) ---
+            # --- Update consolidated state for all memory-based conditions ---
             if condition == "unfiltered_lora" and memories is not None:
                 ids = {m["memory_id"] for m in new_mems}
                 memories = _mark_consolidated(memories, ids)
                 _write_jsonl(unfiltered_dir / f"{pid}_memories.jsonl", memories)
+            elif condition in ("ablation_no_salience", "ablation_no_replay",
+                               "ablation_no_negative") and memories is not None:
+                ids = {m["memory_id"] for m in new_mems}
+                memories = _mark_consolidated(memories, ids)
 
             # --- Telemetry ---
             log_entry = {
@@ -291,7 +371,6 @@ def main() -> None:
             reset_peft(peft_model)
             peft_model = None
 
-        # Persist final unfiltered memory state
         if condition == "unfiltered_lora" and memories is not None:
             _write_jsonl(unfiltered_dir / f"{pid}_memories.jsonl", memories)
 

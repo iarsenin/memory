@@ -8,7 +8,7 @@ Execution flow
   1. Generate eval probes from GT JSONs once; save to data/eval_probes/.
   2. Load base Llama-3-8B ONCE (stays in VRAM throughout).
   3. For each condition in [frozen, rag, naive_lora, unfiltered_lora,
-     gold_lora, main]:
+     oracle_data_lora, ablation_*, main]:
        For each persona:
          a. Load LoRA adapter (LoRA conditions only; skip for frozen/rag).
          b. Run all probes → raw responses saved to results/.
@@ -77,7 +77,12 @@ from .judge  import score_responses
 from .probes import generate_probes, save_probes
 
 # Evaluation is run across all six conditions in this order.
-ALL_CONDITIONS = ["frozen", "rag", "naive_lora", "unfiltered_lora", "gold_lora", "main"]
+ALL_CONDITIONS = [
+    "frozen", "rag",
+    "naive_lora", "unfiltered_lora", "oracle_data_lora",
+    "ablation_no_salience", "ablation_no_replay", "ablation_no_negative",
+    "main",
+]
 
 
 # ---------------------------------------------------------------------------

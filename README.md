@@ -630,10 +630,15 @@ Seeds 123 and 456 evaluate LoRA conditions only. `summarize.py` treats frozen/ra
 | Full paper run (Phase 5+6+7) | ~15 min | ~45 min |
 | Fallback run (Phase 5+7, main only, 7-module) | ~11 min | ~34 min |
 
-### Next Steps
-1. **Write paper** — results are publication-ready; `analysis/paper_results.md` has the final table
-2. *(Optional)* Lower learning rate or reduce epochs to reduce Stable bucket variance (±std is high)
-3. *(Optional)* Run ablation on rank — current r=16 with 7 modules; try r=8 for efficiency
+### Next Steps (TMLR Revision)
+Scale and ablation phase activated to address reviewer feedback on evidentiary breadth:
+
+1. **Objective 1 ✅** — Scale simulator from 2 → 10 personas (charlie, diana, ethan, fiona, george, hannah, ian, julia added to `src/simulator/personas.py`)
+2. **Objective 2 ✅** — Deduplication/canonicalization pass in `src/extractor/deduplicate.py` reduces false `is_update` flags; hooked into Phase 2 extraction pipeline
+3. **Objective 3 ✅** — Anti-Memory negative training in `src/trainer/batch.py`: update memories generate "Is X still Y? No — X is now Z." pairs; enabled only for `main` condition
+4. **Objective 4 ✅** — Three ablation conditions added (`ablation_no_salience`, `ablation_no_replay`, `ablation_no_negative`); `gold_lora` renamed to `oracle_data_lora`
+
+**Pending:** Rerun Phases 1→7 on pod with 10 personas and new ablation suite.
 
 ---
 

@@ -26,6 +26,7 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
 from src.extractor.extract import MemoryExtractor
+from src.extractor.deduplicate import deduplicate_and_link
 
 
 # ── helpers ────────────────────────────────────────────────────────────────
@@ -175,6 +176,16 @@ def main() -> None:
         persona_total = 0
         failed_days: list[int] = []
 
+        # Track all memories persisted so far for this persona (for dedup)
+        accumulated: list[dict] = []
+        # Seed with already-extracted items when resuming
+        if args.resume and already_done:
+            from pathlib import Path as _Path
+            _mem_path = memories_dir / f"{persona_id}_memories.jsonl"
+            if _mem_path.exists():
+                import json as _json
+                accumulated = [_json.loads(l) for l in _mem_path.read_text().splitlines() if l.strip()]
+
         for day in range(1, n_days + 1):
             if day in already_done:
                 print_day_result(day, [], skipped=True)
@@ -186,8 +197,14 @@ def main() -> None:
                 continue
 
             try:
-                items = extractor.extract_day(name, age, day, turns)
+                raw_items = extractor.extract_day(name, age, day, turns)
+                # Dedup/canonicalize against all prior items for this persona
+                items = deduplicate_and_link(raw_items, accumulated)
+                n_suppressed = len(raw_items) - len(items)
+                if n_suppressed:
+                    print(f"    Day {day:2d}  [dedup suppressed {n_suppressed} repeat(s)]")
                 append_memories(items, memories_dir, persona_id)
+                accumulated.extend(items)
                 print_day_result(day, items)
                 persona_total += len(items)
             except Exception as exc:

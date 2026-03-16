@@ -33,17 +33,23 @@ CONDITION_ORDER = [
     "rag",
     "naive_lora",
     "unfiltered_lora",
-    "gold_lora",
+    "oracle_data_lora",
+    "ablation_no_salience",
+    "ablation_no_replay",
+    "ablation_no_negative",
     "main",
 ]
 
 CONDITION_LABELS = {
-    "frozen":          "Frozen (base)",
-    "rag":             "RAG (no adapter)",
-    "naive_lora":      "Naïve LoRA",
-    "unfiltered_lora": "Unfiltered LoRA",
-    "gold_lora":       "Gold LoRA (upper bound)",
-    "main":            "**MemLoRA (ours)**",
+    "frozen":               "Frozen (base)",
+    "rag":                  "RAG (no adapter)",
+    "naive_lora":           "Naïve LoRA",
+    "unfiltered_lora":      "Unfiltered LoRA",
+    "oracle_data_lora":     "Oracle-Data LoRA (upper bound)",
+    "ablation_no_salience": "Ablation: No Salience Weighting",
+    "ablation_no_replay":   "Ablation: No Replay Buffer",
+    "ablation_no_negative": "Ablation: No Anti-Memory Pairs",
+    "main":                 "**MemLoRA (ours)**",
 }
 
 BUCKET_ORDER  = ["stable", "updated", "superseded", "relational", "overall"]
@@ -57,6 +63,7 @@ BUCKET_LABELS = {
 
 # These conditions have no LoRA adapter; results are deterministic across seeds.
 DETERMINISTIC_CONDITIONS = {"frozen", "rag"}
+# oracle_data_lora, ablation_* are LoRA-based so they vary across seeds
 
 
 # ── I/O ───────────────────────────────────────────────────────────────────────

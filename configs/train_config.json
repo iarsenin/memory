@@ -36,6 +36,10 @@
     "enabled": true,
     "generic_dialogue_samples": 10
   },
+  "anti_memory": {
+    "enabled": true,
+    "pairs_per_update": 2
+  },
   "consolidation_trigger_days": 3,
   "qa_train_templates": [
     "What is {subject}'s {category}?",
