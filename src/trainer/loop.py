@@ -230,6 +230,26 @@ def tokenize_examples(
 
 
 # ---------------------------------------------------------------------------
+# Checkpoint save helpers
+# ---------------------------------------------------------------------------
+
+
+def _ensure_adapter_config(checkpoint_path: str, peft_model: Any) -> None:
+    """Re-write adapter_config.json if PEFT left it as 0 bytes (network-FS race)."""
+    import json, tempfile, os
+    cfg_path = Path(checkpoint_path) / "adapter_config.json"
+    if cfg_path.exists() and cfg_path.stat().st_size > 0:
+        return
+    # Reconstruct from the live peft_config on the model.
+    adapter_name = next(iter(peft_model.peft_config))
+    cfg_dict = peft_model.peft_config[adapter_name].to_dict()
+    tmp = cfg_path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(cfg_dict, indent=2))
+    os.replace(tmp, cfg_path)
+    print(f"  [repair] adapter_config.json was empty — rewrote from live config at {checkpoint_path}")
+
+
+# ---------------------------------------------------------------------------
 # Training cycle
 # ---------------------------------------------------------------------------
 
@@ -310,6 +330,9 @@ def run_cycle(
     Path(checkpoint_path).mkdir(parents=True, exist_ok=True)
     peft_model.save_pretrained(checkpoint_path)
     tokenizer.save_pretrained(checkpoint_path)  # for easy reload on pod
+    # MooseFS/NFS can occasionally produce a 0-byte adapter_config.json after
+    # save_pretrained (file created but write never flushed). Detect and repair.
+    _ensure_adapter_config(checkpoint_path, peft_model)
 
     print(
         f"  Cycle done: {runtime:.0f}s  |  VRAM peak {vram_peak:.2f} GB  |  "

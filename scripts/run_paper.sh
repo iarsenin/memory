@@ -105,10 +105,11 @@ for SEED in "${SEEDS[@]}"; do
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
     # ── Seed-done guard ───────────────────────────────────────────────────
-    # eval_summary.json is written last by Phase 7. If it exists, all phases
-    # for this seed completed successfully — skip the entire seed.
-    if [ -f "${RESULTS_DIR}/eval_summary.json" ]; then
-        echo "  eval_summary.json exists — seed ${SEED} already complete, skipping."
+    # seed_complete.json is written at the very end of this seed's block.
+    # (Different from eval_summary.json which is also written by src/eval/run.py
+    # as part of its output — those two must not be confused.)
+    if [ -f "${RESULTS_DIR}/seed_complete.json" ]; then
+        echo "  seed_complete.json exists — seed ${SEED} already complete, skipping."
         continue
     fi
 
@@ -192,17 +193,28 @@ PYEOF
     fi
 
     # Evaluate main (+ frozen/rag for seed 42) immediately, then delete main ckpts.
-    if [ "${SEED}" = "42" ]; then
-        # Run all deterministic baselines (frozen, rag) together with main.
-        _eval_and_delete "main" ""
-        # frozen and rag have no checkpoints; their eval results are now saved.
+    # Guard with a per-condition sentinel so restarts don't re-run completed evals.
+    if [ ! -f "${RESULTS_DIR}/main_done.sentinel" ]; then
+        if [ "${SEED}" = "42" ]; then
+            # Run all deterministic baselines (frozen, rag) together with main.
+            _eval_and_delete "main" ""
+            # frozen and rag have no checkpoints; their eval results are now saved.
+        else
+            _eval_and_delete "main" "main"
+        fi
+        touch "${RESULTS_DIR}/main_done.sentinel"
     else
-        _eval_and_delete "main" "main"
+        echo "  [P7] main already evaluated — skipping."
     fi
 
     # ── Phase 6: baselines — train, eval, delete (one at a time) ─────────
     if [ "$SKIP_P6" = false ]; then
         for COND in "${BASELINE_CONDITIONS[@]}"; do
+            # Per-condition sentinel: skip entirely if already trained+evaluated.
+            if [ -f "${RESULTS_DIR}/${COND}_done.sentinel" ]; then
+                echo "  [skip] ${COND} already done (sentinel present)."
+                continue
+            fi
             echo ""
             echo "  [P6] Training ${COND} (seed=${SEED}) …"
             python3 -m src.baselines.run \
@@ -219,15 +231,16 @@ PYEOF
             echo "  [P6] ${COND} done."
             # Evaluate this condition immediately, then delete its checkpoints.
             _eval_and_delete "${COND}" "${COND}"
+            touch "${RESULTS_DIR}/${COND}_done.sentinel"
         done
     else
         echo "  [P6] Skipped."
     fi
 
     # ── Write seed-done sentinel ──────────────────────────────────────────
-    # eval_summary.json is generated later by summarize.py; use a lightweight
-    # sentinel here so subsequent runs skip already-completed seeds.
-    echo "{\"seed\": ${SEED}, \"complete\": true}" > "${RESULTS_DIR}/eval_summary.json"
+    # Use seed_complete.json (not eval_summary.json, which is also written
+    # by src/eval/run.py as part of its own output — they must not collide).
+    echo "{\"seed\": ${SEED}, \"complete\": true}" > "${RESULTS_DIR}/seed_complete.json"
     echo "  Seed ${SEED} complete — sentinel written."
     echo "  Disk: $(df -h /workspace | awk 'NR==2{print $3\" used / \"$2\" total\"}')"
 
