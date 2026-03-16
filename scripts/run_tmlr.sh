@@ -226,6 +226,31 @@ PYEOF
 fi
 
 # ═══════════════════════════════════════════════════════════════════
+# BACKUP CLEAN MEMORIES — snapshot before trainers corrupt them
+# ═══════════════════════════════════════════════════════════════════
+# Phase 5/6 trainers write consolidated=True using open(path,"w") which
+# truncates files first. A crash mid-write leaves 0-byte files, destroying
+# the Phase 2/4 outputs. The backup lets run_paper.sh restore a clean
+# copy at the start of each seed instead of doing an in-place reset.
+BACKUP_SENTINEL=$(_sentinel "memory_backup")
+
+if [ -f "$BACKUP_SENTINEL" ]; then
+    _log "Memory backup: sentinel found — clean copy already exists"
+else
+    _log "Creating clean memory backup (pre-training snapshot) …"
+    rm -rf data/memories_clean data/memories_unfiltered_clean
+    cp -r data/memories           data/memories_clean
+    cp -r data/memories_unfiltered data/memories_unfiltered_clean
+    # Verify backup
+    CLEAN_COUNT=$(ls data/memories_clean/*.jsonl 2>/dev/null | wc -l)
+    UNFILTERED_COUNT=$(ls data/memories_unfiltered_clean/*.jsonl 2>/dev/null | wc -l)
+    _log "  Backed up ${CLEAN_COUNT} filtered + ${UNFILTERED_COUNT} unfiltered files"
+    [ "$CLEAN_COUNT" -ge 10 ] && [ "$UNFILTERED_COUNT" -ge 10 ] || { _log "FATAL: backup incomplete"; exit 1; }
+    touch "$BACKUP_SENTINEL"
+    _log "Memory backup complete."
+fi
+
+# ═══════════════════════════════════════════════════════════════════
 # PRE-FLIGHT: clear stale 2-persona results so Phase 5–7 run fresh
 # ═══════════════════════════════════════════════════════════════════
 _log "Pre-flight: clearing stale 2-persona paper results and eval probes …"

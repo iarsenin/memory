@@ -112,28 +112,39 @@ for SEED in "${SEEDS[@]}"; do
         continue
     fi
 
-    # ── Reset consolidated flags ──────────────────────────────────────────
-    # Each seed is an independent consolidation pass over the same memory
-    # data. The dev run (and any prior seed) left consolidated=true on every
-    # item. We must reset to false so Phase 5 and Phase 6 unfiltered_lora
-    # see all memories as new at the start of each seed's run.
+    # ── Restore clean memory snapshot ────────────────────────────────────
+    # Trainers write consolidated=True using open(path,"w") which truncates
+    # files before writing. A crash mid-write leaves 0-byte files. We keep
+    # clean backups from the post-Phase-4 state and restore them at each seed
+    # start, ensuring each seed trains on a full, uncorrupted memory set.
     echo ""
-    echo "  Resetting consolidated flags for seed ${SEED} …"
+    echo "  Restoring clean memory snapshot for seed ${SEED} …"
     python3 - <<'PYEOF'
-import json, glob, sys
+import json, glob, shutil, sys, os
 
-reset_count = 0
-for pattern in ["data/memories/*.jsonl", "data/memories_unfiltered/*.jsonl"]:
-    for path in sorted(glob.glob(pattern)):
-        lines = [json.loads(l) for l in open(path) if l.strip()]
-        if not lines:
-            continue
-        reset = [{**l, "consolidated": False} for l in lines]
-        open(path, "w").write("\n".join(json.dumps(r) for r in reset) + "\n")
-        reset_count += len(reset)
-        print(f"    reset {len(reset):3d} items  ←  {path}")
+restored = 0
+for src_dir, dst_dir in [
+    ("data/memories_clean",            "data/memories"),
+    ("data/memories_unfiltered_clean", "data/memories_unfiltered"),
+]:
+    if not os.path.isdir(src_dir):
+        print(f"  WARNING: backup dir {src_dir!r} missing — falling back to in-place reset")
+        for path in sorted(glob.glob(dst_dir + "/*.jsonl")):
+            lines = [json.loads(l) for l in open(path) if l.strip()]
+            if not lines:
+                continue
+            reset = [{**l, "consolidated": False} for l in lines]
+            open(path, "w").write("\n".join(json.dumps(r) for r in reset) + "\n")
+            restored += len(reset)
+        continue
+    for src_path in sorted(glob.glob(src_dir + "/*.jsonl")):
+        dst_path = os.path.join(dst_dir, os.path.basename(src_path))
+        shutil.copy2(src_path, dst_path)
+        count = sum(1 for l in open(dst_path) if l.strip())
+        print(f"    restored {count:3d} items  ←  {dst_path}")
+        restored += count
 
-print(f"  Total reset: {reset_count} items")
+print(f"  Total restored: {restored} items")
 PYEOF
 
     # ── Phase 5: main MemLoRA ─────────────────────────────────────────────
