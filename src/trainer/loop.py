@@ -236,17 +236,40 @@ def tokenize_examples(
 
 def _ensure_adapter_config(checkpoint_path: str, peft_model: Any) -> None:
     """Re-write adapter_config.json if PEFT left it as 0 bytes (network-FS race)."""
-    import json, tempfile, os
+    import json, os
     cfg_path = Path(checkpoint_path) / "adapter_config.json"
     if cfg_path.exists() and cfg_path.stat().st_size > 0:
         return
-    # Reconstruct from the live peft_config on the model.
     adapter_name = next(iter(peft_model.peft_config))
     cfg_dict = peft_model.peft_config[adapter_name].to_dict()
     tmp = cfg_path.with_suffix(".tmp")
     tmp.write_text(json.dumps(cfg_dict, indent=2))
     os.replace(tmp, cfg_path)
     print(f"  [repair] adapter_config.json was empty — rewrote from live config at {checkpoint_path}")
+
+
+def _save_adapter_via_tmp(checkpoint_path: str, peft_model: Any, tokenizer: Any) -> None:
+    """Save adapter to /tmp, then copy to network FS to avoid MooseFS crash on direct write.
+
+    Direct save_pretrained to MooseFS (network volume) crashes the process mid-save
+    (SIGSEGV/SIGBUS in the safetensors Rust serializer under NFS write pressure).
+    Saving to local /tmp first is reliable; rsync/shutil.copytree then transfers
+    the completed checkpoint atomically.
+    """
+    import shutil, tempfile, os
+    dst = Path(checkpoint_path)
+    dst.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.TemporaryDirectory(prefix="memlora_ckpt_", dir="/tmp") as tmp_dir:
+        print(f"  Saving adapter to {tmp_dir} (local /tmp) …", flush=True)
+        peft_model.save_pretrained(tmp_dir)
+        tokenizer.save_pretrained(tmp_dir)
+        _ensure_adapter_config(tmp_dir, peft_model)
+        # Copy from /tmp to the network volume
+        print(f"  Copying checkpoint to {checkpoint_path} …", flush=True)
+        for src_file in Path(tmp_dir).iterdir():
+            shutil.copy2(src_file, dst / src_file.name)
+    print(f"  Checkpoint saved to {checkpoint_path}", flush=True)
 
 
 # ---------------------------------------------------------------------------
@@ -326,13 +349,12 @@ def run_cycle(
     runtime = time.time() - t_start
     vram_peak = torch.cuda.max_memory_allocated() / 1e9
 
-    # --- Save LoRA adapter only (not the full model) ---
-    Path(checkpoint_path).mkdir(parents=True, exist_ok=True)
-    peft_model.save_pretrained(checkpoint_path)
-    tokenizer.save_pretrained(checkpoint_path)  # for easy reload on pod
-    # MooseFS/NFS can occasionally produce a 0-byte adapter_config.json after
-    # save_pretrained (file created but write never flushed). Detect and repair.
-    _ensure_adapter_config(checkpoint_path, peft_model)
+    # --- Save LoRA adapter ---
+    # Save to /tmp first, then rsync to the network volume (MooseFS).
+    # Direct writes to MooseFS can crash the process mid-save (SIGSEGV/SIGBUS
+    # in the safetensors Rust code under NFS write pressure). Saving locally
+    # then copying is more reliable.
+    _save_adapter_via_tmp(checkpoint_path, peft_model, tokenizer)
 
     print(
         f"  Cycle done: {runtime:.0f}s  |  VRAM peak {vram_peak:.2f} GB  |  "

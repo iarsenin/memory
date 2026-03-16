@@ -71,6 +71,28 @@ echo "  Skip P5  : ${SKIP_P5}  | Skip P6: ${SKIP_P6}  | Skip P7: ${SKIP_P7}"
 echo ""
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
+# Retry a command up to 3 times (with --resume on retry) to recover from
+# transient MooseFS crashes or SIGKILL during checkpoint saves.
+_run_with_retry() {
+    local max_retries=3
+    local attempt=1
+    while [ $attempt -le $max_retries ]; do
+        "$@"
+        local exit_code=$?
+        if [ $exit_code -eq 0 ]; then
+            return 0
+        fi
+        echo "  [retry] Command exited with code ${exit_code} (attempt ${attempt}/${max_retries})"
+        attempt=$(( attempt + 1 ))
+        if [ $attempt -le $max_retries ]; then
+            echo "  [retry] Sleeping 10s then retrying with --resume …"
+            sleep 10
+        fi
+    done
+    echo "  [ERROR] Command failed after ${max_retries} attempts."
+    return 1
+}
+
 # Delete all day_* subdirs except the highest-numbered one (the final adapter).
 # Phase 7 find_latest_checkpoint picks the highest day, so earlier ones are safe
 # to remove once training for that condition is complete.
@@ -184,7 +206,7 @@ PYEOF
         if [ "$SKIP_P5" = false ]; then
             echo ""
             echo "  [P5] Training main MemLoRA (seed=${SEED}) …"
-            python3 -m src.trainer.run \
+            _run_with_retry python3 -m src.trainer.run \
                 --config          configs/train_config.json \
                 --seed            "${SEED}" \
                 --memories-dir    data/memories \
@@ -218,7 +240,7 @@ PYEOF
             fi
             echo ""
             echo "  [P6] Training ${COND} (seed=${SEED}) …"
-            python3 -m src.baselines.run \
+            _run_with_retry python3 -m src.baselines.run \
                 --condition       "${COND}" \
                 --config          configs/train_config.json \
                 --seed            "${SEED}" \
