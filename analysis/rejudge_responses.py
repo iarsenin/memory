@@ -1,0 +1,131 @@
+"""
+Re-score existing *_responses.json files with the LLM judge.
+
+This script is safe to run locally (no GPU needed — judge calls OpenAI API only).
+It reads every <condition>_<persona>_responses.json in results/paper/seed*/,
+calls the LLM judge, and writes the updated *_eval.json files in-place.
+
+Usage:
+    python3 analysis/rejudge_responses.py [--dry-run] [--seeds 42 123 456]
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+
+# Allow importing from project root
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from dotenv import load_dotenv
+from openai import OpenAI
+
+from src.eval.judge import score_responses
+
+load_dotenv(ROOT / ".env")
+
+
+def load_probes(probes_path: Path) -> dict[str, dict]:
+    """Load probes.json → dict keyed by probe_id."""
+    with open(probes_path) as f:
+        probes = json.load(f)
+    return {p["probe_id"]: p for p in probes}
+
+
+def rejudge_file(
+    responses_file: Path,
+    probes_by_id: dict[str, dict],
+    client: OpenAI,
+    model: str,
+    dry_run: bool,
+) -> dict | None:
+    """Score responses and write an updated eval file. Returns summary or None."""
+    with open(responses_file) as f:
+        responses = json.load(f)
+
+    if not responses:
+        print(f"  [skip] empty: {responses_file.name}")
+        return None
+
+    # Check all probe_ids are known
+    missing = [r["probe_id"] for r in responses if r["probe_id"] not in probes_by_id]
+    if missing:
+        print(f"  [warn] {responses_file.name}: {len(missing)} missing probe IDs, skipping")
+        return None
+
+    scored = score_responses(responses, probes_by_id, client, model=model)
+
+    buckets: dict[str, list[float]] = {}
+    for s in scored:
+        b = probes_by_id[s["probe_id"]]["bucket"]
+        buckets.setdefault(b, []).append(s["score_numeric"])
+
+    acc_by_bucket = {b: sum(v) / len(v) for b, v in buckets.items()}
+    overall = sum(s["score_numeric"] for s in scored) / len(scored) if scored else 0.0
+
+    result = {
+        "accuracy_by_bucket": acc_by_bucket,
+        "overall_accuracy": overall,
+        "n_probes": len(scored),
+        "scores": scored,
+    }
+
+    eval_file = responses_file.parent / responses_file.name.replace("_responses.json", "_eval.json")
+    if not dry_run:
+        with open(eval_file, "w") as f:
+            json.dump(result, f, indent=2)
+        print(f"  [ok] wrote {eval_file.name}  overall={overall:.3f}")
+    else:
+        print(f"  [dry] would write {eval_file.name}  overall={overall:.3f}")
+
+    return result
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seeds", nargs="+", default=["42", "123", "456"])
+    parser.add_argument("--results-dir", default="results/paper")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--condition", help="Only re-judge a specific condition prefix")
+    args = parser.parse_args()
+
+    api_key = os.environ.get("OPENAI_API_KEY")
+    model   = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
+    if not api_key:
+        sys.exit("ERROR: OPENAI_API_KEY not set in .env")
+
+    client = OpenAI(api_key=api_key)
+    probes_path = ROOT / "data" / "eval_probes" / "probes.json"
+    if not probes_path.exists():
+        sys.exit(f"ERROR: probes file not found at {probes_path}")
+
+    probes_by_id = load_probes(probes_path)
+    print(f"Loaded {len(probes_by_id)} probes.")
+
+    results_root = ROOT / args.results_dir
+    total_files = 0
+
+    for seed in args.seeds:
+        seed_dir = results_root / f"seed{seed}"
+        if not seed_dir.exists():
+            print(f"[skip] {seed_dir} does not exist")
+            continue
+
+        response_files = sorted(seed_dir.glob("*_responses.json"))
+        if args.condition:
+            response_files = [f for f in response_files if f.name.startswith(args.condition)]
+
+        print(f"\n=== seed {seed}: {len(response_files)} response files ===")
+        for rf in response_files:
+            total_files += 1
+            rejudge_file(rf, probes_by_id, client, model, dry_run=args.dry_run)
+
+    print(f"\nDone. Processed {total_files} file(s).")
+
+
+if __name__ == "__main__":
+    main()
