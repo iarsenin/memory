@@ -147,6 +147,33 @@ for src_dir, dst_dir in [
 print(f"  Total restored: {restored} items")
 PYEOF
 
+    # ── Helper: run Phase 7 for one condition then delete its checkpoints ──
+    # Disk budget: HF cache = 15 GB, each condition's 10 adapters = 1.6 GB.
+    # To stay within the 20 GB pod quota we evaluate and delete one condition
+    # at a time rather than keeping all adapters on disk simultaneously.
+    _eval_and_delete() {
+        local cond="$1"
+        local cond_arg="$2"   # value for --condition flag (empty = all)
+        if [ "$SKIP_P7" = true ]; then echo "  [P7] Skipped."; return; fi
+        echo ""
+        echo "  [P7] Evaluating ${cond} (seed=${SEED}) …"
+        python3 -m src.eval.run \
+            --train-config    configs/train_config.json \
+            --eval-config     configs/eval_config.json \
+            --personas-dir    data/personas \
+            --memories-dir    data/memories \
+            --checkpoints-dir "${CKPT_BASE}" \
+            --results-dir     "${RESULTS_DIR}" \
+            --eval-probes-dir data/eval_probes \
+            ${cond_arg:+--condition "$cond_arg"}
+        echo "  [P7] ${cond} eval done."
+        # Delete this condition's checkpoints immediately to free disk space.
+        if [ -d "${CKPT_BASE}/${cond}" ]; then
+            rm -rf "${CKPT_BASE}/${cond}"
+            echo "  Deleted ${cond} checkpoints. Disk: $(df -h /workspace | awk 'NR==2{print $3\" used / \"$2\" total\"}')"
+        fi
+    }
+
     # ── Phase 5: main MemLoRA ─────────────────────────────────────────────
     if [ "$SKIP_P5" = false ]; then
         echo ""
@@ -159,14 +186,21 @@ PYEOF
             --checkpoints-dir "${CKPT_BASE}/main" \
             --logs-dir        "${LOGS_DIR}" \
             --resume
-        # Keep only final day; intermediate days only needed for accumulation
-        _prune_checkpoints "${CKPT_BASE}/main"
         echo "  [P5] Done."
     else
         echo "  [P5] Skipped."
     fi
 
-    # ── Phase 6: baselines ────────────────────────────────────────────────
+    # Evaluate main (+ frozen/rag for seed 42) immediately, then delete main ckpts.
+    if [ "${SEED}" = "42" ]; then
+        # Run all deterministic baselines (frozen, rag) together with main.
+        _eval_and_delete "main" ""
+        # frozen and rag have no checkpoints; their eval results are now saved.
+    else
+        _eval_and_delete "main" "main"
+    fi
+
+    # ── Phase 6: baselines — train, eval, delete (one at a time) ─────────
     if [ "$SKIP_P6" = false ]; then
         for COND in "${BASELINE_CONDITIONS[@]}"; do
             echo ""
@@ -182,46 +216,20 @@ PYEOF
                 --checkpoints-dir "${CKPT_BASE}" \
                 --logs-dir        "${LOGS_DIR}" \
                 --resume
-            _prune_checkpoints "${CKPT_BASE}/${COND}"
             echo "  [P6] ${COND} done."
+            # Evaluate this condition immediately, then delete its checkpoints.
+            _eval_and_delete "${COND}" "${COND}"
         done
     else
         echo "  [P6] Skipped."
     fi
 
-    # ── Phase 7: evaluation ───────────────────────────────────────────────
-    # frozen/rag are deterministic — only run them for seed 42 to save API calls.
-    # For seeds 123/456, skip non-adapter conditions; summarize.py reuses seed-42
-    # scores for frozen/rag (std=0 is the correct finding for those baselines).
-    if [ "$SKIP_P7" = false ]; then
-        echo ""
-        if [ "${SEED}" = "42" ]; then
-            CONDITIONS_ARG=""
-            echo "  [P7] Evaluating ALL conditions (seed=${SEED}) …"
-        else
-            CONDITIONS_ARG="--condition main,naive_lora,unfiltered_lora,oracle_data_lora,ablation_no_salience,ablation_no_replay,ablation_no_negative"
-            echo "  [P7] Evaluating LoRA conditions only (seed=${SEED}, frozen/rag reused from seed 42) …"
-        fi
-
-        python3 -m src.eval.run \
-            --train-config    configs/train_config.json \
-            --eval-config     configs/eval_config.json \
-            --personas-dir    data/personas \
-            --memories-dir    data/memories \
-            --checkpoints-dir "${CKPT_BASE}" \
-            --results-dir     "${RESULTS_DIR}" \
-            --eval-probes-dir data/eval_probes \
-            ${CONDITIONS_ARG}
-        echo "  [P7] Eval done."
-
-        # ── Post-eval checkpoint cleanup ──────────────────────────────────
-        # Eval results are now in results/. Adapter weights no longer needed.
-        echo "  Removing seed ${SEED} checkpoints (eval complete, results saved) …"
-        rm -rf "${CKPT_BASE}"
-        echo "  Checkpoint cleanup done. Disk: $(df -h /workspace | awk 'NR==2{print $3\" used / \"$2\" total\"}')"
-    else
-        echo "  [P7] Skipped."
-    fi
+    # ── Write seed-done sentinel ──────────────────────────────────────────
+    # eval_summary.json is generated later by summarize.py; use a lightweight
+    # sentinel here so subsequent runs skip already-completed seeds.
+    echo "{\"seed\": ${SEED}, \"complete\": true}" > "${RESULTS_DIR}/eval_summary.json"
+    echo "  Seed ${SEED} complete — sentinel written."
+    echo "  Disk: $(df -h /workspace | awk 'NR==2{print $3\" used / \"$2\" total\"}')"
 
     SEED_END=$(date +%s)
     SEED_ELAPSED=$(( (SEED_END - SEED_START) / 60 ))
