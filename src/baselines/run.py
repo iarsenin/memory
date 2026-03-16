@@ -113,10 +113,14 @@ def _write_jsonl(path: Path, items: list[dict]) -> None:
         raise
 
 
-def _prune_persona_checkpoints(checkpoints_dir: Path, condition: str, persona_id: str) -> None:
-    """Delete intermediate day_* dirs for a persona, keeping only the last one."""
+def _prune_persona_checkpoints(checkpoints_dir: Path, persona_id: str) -> None:
+    """Delete intermediate day_* dirs for a persona, keeping only the last one.
+
+    checkpoints_dir must already include the condition name, e.g.:
+      Path("checkpoints/paper/seed42/naive_lora")
+    """
     import shutil
-    persona_dir = checkpoints_dir / condition / persona_id
+    persona_dir = checkpoints_dir / persona_id
     if not persona_dir.is_dir():
         return
     # glob("day_*/") does not filter to dirs in Python pathlib; use iterdir.
@@ -129,7 +133,7 @@ def _prune_persona_checkpoints(checkpoints_dir: Path, condition: str, persona_id
     for d in day_dirs[:-1]:
         shutil.rmtree(d, ignore_errors=True)
     kept = day_dirs[-1].name
-    print(f"  Pruned intermediate checkpoints for {condition}/{persona_id} — kept {kept}")
+    print(f"  Pruned intermediate checkpoints for {persona_id} — kept {kept}")
 
 def _append_jsonl(path: Path, record: dict) -> None:
     with open(path, "a") as f:
@@ -421,7 +425,7 @@ def main() -> None:
         print(f"  {pid} done")
 
         # Prune intermediate checkpoints immediately to stay within disk quota.
-        _prune_persona_checkpoints(checkpoints_dir, condition, pid)
+        _prune_persona_checkpoints(checkpoints_dir, pid)
 
     print(f"\n{'='*60}")
     print(f"  Phase 6 [{condition}] complete.")
