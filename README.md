@@ -9,8 +9,8 @@
 A tightly scoped academic experiment. Not a general memory system. Prioritize experimental control, clean baselines, and a defensible paper over architectural cleverness.
 
 **Base model:** `Meta-Llama-3-8B-Instruct`, 4-bit quantized via `bitsandbytes`  
-**LoRA config:** `q_proj`, `v_proj`, rank=16  
-**Simulation:** 2 personas × 20 simulated days per persona  
+**LoRA config:** `q_proj`, `v_proj` + 5 extra modules (7-module adapter), rank=16  
+**Simulation:** 10 personas × 20 simulated days per persona  
 **Consolidation trigger:** Sleep phase every 3 simulated days  
 **Compute:** Single rented GPU (RunPod RTX 4090 or A6000); sequential pipeline only
 
@@ -48,8 +48,12 @@ memlora/
 │   ├── run_phase3.sh         # Extraction eval
 │   ├── run_phase4.sh         # Salience scoring
 │   ├── run_phase5.sh         # Sleep training
-│   ├── run_phase6.sh         # Baselines
-│   └── run_phase7.sh         # Final evaluation
+│   ├── run_phase6.sh             # Baselines
+│   ├── run_phase7.sh             # Final evaluation
+│   ├── run_tmlr.sh               # Full TMLR pipeline (Phases 1–4 + run_paper.sh)
+│   ├── run_paper.sh              # 3-seed loop: Phase 5 → 6 (all conditions) → 7
+│   ├── run_reviewer_revisions.sh # Fix n=2 ablations for seed 456 + RAG BM25 re-eval
+│   └── export_hyperparams.py     # Emit methodology_details.md for paper appendix
 ├── src/
 │   ├── simulator/            # Persona engine and dialogue generator
 │   ├── extractor/            # LLM-based memory extraction
@@ -61,7 +65,8 @@ memlora/
 ├── checkpoints/              # LoRA adapter checkpoints (per persona, per sleep cycle)
 ├── analysis/
 │   ├── summarize.py          # Aggregate metrics across conditions and seeds → tables
-│   └── plot_results.py       # Generate paper-ready figures
+│   ├── plot_results.py       # Generate paper-ready figures
+│   └── rejudge_responses.py  # Re-score existing response files with LLM judge (Mac-safe, no GPU)
 └── README.md
 ```
 
@@ -112,15 +117,21 @@ bash scripts/run_phase6.sh --config configs/train_config.json  # All baselines
 bash scripts/run_phase7.sh --config configs/eval_config.json
 
 # Aggregate results
-python analysis/summarize.py --results_dir results/
-python analysis/plot_results.py --results_dir results/
+python analysis/summarize.py --results_dir results/paper
+python analysis/plot_results.py
+
+# Re-score all existing response files with the LLM judge (local, no GPU needed)
+python analysis/rejudge_responses.py --seeds 42 123 456
+
+# Export methodology details for paper appendix
+python scripts/export_hyperparams.py
 ```
 
 The active experimental condition is controlled by `experiment_mode` in `train_config.json`:
 ```json
 { "experiment_mode": "main" }
 ```
-Valid values: `"frozen"`, `"naive_lora"`, `"unfiltered_lora"`, `"gold_lora"`, `"rag"`, `"main"`.
+Valid values: `"frozen"`, `"naive_lora"`, `"unfiltered_lora"`, `"oracle_data_lora"`, `"rag"`, `"main"`, `"ablation_no_salience"`, `"ablation_no_replay"`, `"ablation_no_negative"`.
 All conditions share the same config file; only this flag changes.
 
 ---
@@ -177,22 +188,25 @@ Triggered every 3 days. Training batch mixture (configurable ratios):
 
 ---
 
-## Baselines
+## Baselines & Ablations
 
-All baselines run on the **same 20-day timeline, same seeds, same evaluation probes**.
+All conditions run on the **same 20-day timeline, same seeds, same evaluation probes**.
 
 | # | Name | `experiment_mode` | Description |
 |---|------|---|-------------|
 | 1 | Frozen | `frozen` | Base Llama-3-8B-Instruct, no memory, no training |
 | 2 | Naive Continual LoRA | `naive_lora` | LoRA on raw episodic dialogue, no extraction or filtering |
 | 3 | Unfiltered Distilled LoRA | `unfiltered_lora` | LoRA on extracted memories, bypassing salience/decay |
-| 4 | Gold Distilled LoRA | `gold_lora` | LoRA on exact ground-truth facts from Simulator (upper bound) |
-| 5 | Summary-in-Context (RAG) | `rag` | Frozen model + memory summary prepended at inference |
-| — | **Main (MemLoRA)** | `main` | LoRA on salience-filtered distilled memories |
+| 4 | Oracle-Data LoRA | `oracle_data_lora` | LoRA on exact ground-truth facts from Simulator (upper bound) |
+| 5 | Summary-in-Context (RAG) | `rag` | Frozen model + **Top-k BM25 retrieval** (k=3) keyed on probe question |
+| — | **Main (MemLoRA)** | `main` | Salience-filtered memories + anti-memory negative training |
+| A1 | Ablation: No Salience | `ablation_no_salience` | Uniform memory weights, bypassing salience scoring |
+| A2 | Ablation: No Replay | `ablation_no_replay` | Only current 3-day window; no historical replay buffer |
+| A3 | Ablation: No Anti-Memory | `ablation_no_negative` | 7-module adapter without negative training on superseded facts |
 
-**Fairness note on RAG:** The RAG baseline has explicit inference-time context — this is the advantage being ablated. LoRA conditions use zero context. The paper must frame this explicitly: RAG is not a fair zero-context comparison, it is the context-allowed ceiling. Memory content is identical across RAG and the parametric LoRA conditions.
+**Fairness note on RAG:** The RAG baseline has explicit inference-time context — this is the advantage being ablated. LoRA conditions use zero context. RAG now uses **BM25 Top-k (k=3) retrieval** keyed on the probe question (not a full memory log dump) for a methodologically fair comparison.
 
-**Parameter count:** All LoRA conditions add the same number of trainable parameters (r=16, q_proj+v_proj). Log the exact count per run. Note it in results.
+**Parameter count:** All LoRA conditions add the same number of trainable parameters (r=16, 7 target modules). Log the exact count per run. Note it in results.
 
 ---
 
@@ -268,7 +282,7 @@ Evaluation probes are generated programmatically from Persona Ground Truth — o
 | Superseded facts | Ask about the *old* value — correct answer is rejection or correction |
 | Relational / multi-hop | Requires combining two or more facts |
 
-Scoring: LLM judge (configurable model) + exact-match fallback for simple factual answers. Both scores saved.
+Scoring: **LLM judge** (OpenAI API, `temperature=0.0`, `json_object` mode) for all four buckets. The Superseded bucket uses a stricter rubric requiring **Active Correction** — the model must state the new reality; refusals and generic ignorance are graded `incorrect`. The Relational bucket may receive `partial` credit.
 
 **Extraction evaluation runs before any training.** Extraction failure must not masquerade as parametric memory failure.
 
@@ -418,7 +432,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   |---|---|---|---|---|
   | `naive_lora` | 1.78 | 1.97 | 9 | Residual high loss — raw dialogue doesn't condense facts |
   | `unfiltered_lora` | 0.51 | 0.52 | 78 | Lower than main (0.65) — more data, but also more noise |
-  | `gold_lora` | 0.84 | 1.27 | 9 | Tiny GT batches; converges efficiently from perfect input |
+  | `oracle_data_lora` | 0.84 | 1.27 | 9 | Tiny GT batches; converges efficiently from perfect input |
   All 36 checkpoints saved to `checkpoints/{condition}/{pid}/day_{N}/` (3 × 539 MB).
   Frozen and RAG require no training — handled at inference in Phase 7.
 - **Phase 5 complete** (run on RunPod RTX 4090, 50.9 GB VRAM):
@@ -492,7 +506,9 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
   specifically during days 1–7 (mentions said "school" or "students" without the school name).
 
 ### Next Steps
-~~Phase 7 — Zero-context evaluation suite~~ ✅ **COMPLETE** (see Phase 7 below)
+~~Phase 7 — Zero-context evaluation suite~~ ✅ **COMPLETE** (see Phase 7 below)  
+~~TMLR Revision (Objectives 1–4)~~ ✅ **COMPLETE** (see TMLR Revision above)  
+**TMLR Reviewer Revisions (n=3 ablations, BM25 RAG, methodology export)** — 🔄 In progress (see Reviewer Revisions section)
 
 ---
 
@@ -500,11 +516,11 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 
 **Date completed:** 2026-03-15  
 **Probes:** 28 total — 4 stable | 7 updated | 11 superseded | 6 relational (14 per persona)  
-**Conditions:** frozen, rag, naive\_lora, unfiltered\_lora, gold\_lora, main  
-**Judge:** gpt-4o-mini (temperature=0.0, json\_object mode)  
+**Conditions:** frozen, rag, naive\_lora, unfiltered\_lora, oracle\_data\_lora, main  
+**Judge:** gpt-4o-mini (temperature=0.0, json\_object mode, all buckets)  
 
 > **v2 patches applied before paper run:**  
-> (1) `batch_gold.py` — added `_REGULARIZER_EXCHANGES` to prevent conversational alignment collapse.  
+> (1) `batch_gold.py` → `batch_oracle.py` — added `_REGULARIZER_EXCHANGES` to prevent conversational alignment collapse.  
 > (2) `judge.py` superseded rubric — now requires **Active Correction** (model must state new reality); refusals and generic ignorance are explicitly `incorrect`.
 
 ### Accuracy by Bucket (v2 — corrected)
@@ -515,7 +531,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 | rag | 37.5% | **57.1%** | 31.8% | 33.3% | **39.3%** |
 | naive\_lora | 12.5% | 0.0% | 4.5% | 16.7% | 7.1% |
 | unfiltered\_lora | 12.5% | 21.4% | 18.2% | **41.7%** | 23.2% |
-| gold\_lora (upper bound) | **50.0%** | 28.6% | 9.1% | **50.0%** | 28.6% |
+| oracle\_data\_lora (upper bound) | **50.0%** | 28.6% | 9.1% | **50.0%** | 28.6% |
 | **main (MemLoRA)** | 25.0% | **50.0%** | 18.2% | 33.3% | **30.4%** |
 
 ### Contradiction Counts (v2)
@@ -526,7 +542,7 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 | rag | 3 |
 | naive\_lora | 0 |
 | unfiltered\_lora | 1 |
-| gold\_lora | 1 |
+| oracle\_data\_lora | 1 |
 | main (MemLoRA) | 3 |
 
 ### Key Findings (v2)
@@ -535,10 +551,10 @@ Copies `logs/`, `results/`, `checkpoints/` (latest per condition) and `data/memo
 `main` leads all parametric (non-RAG) conditions and is only 8.9pp behind RAG. MemLoRA beats the frozen baseline by +12.5pp, demonstrating that parametric memory consolidation works.
 
 **2. Updated bucket: MemLoRA dominates (50.0%) — the core hypothesis confirmed.**  
-`main` achieves 50.0% on facts that changed over time, double naive\_lora's 0.0% and nearly double gold\_lora's 28.6%. This is the direct test of the hypothesis: *"Did the model learn the new value after a life change?"* The salience-filtered distillation pipeline is clearly superior.
+`main` achieves 50.0% on facts that changed over time, double naive\_lora's 0.0% and nearly double oracle\_data\_lora's 28.6%. This is the direct test of the hypothesis: *"Did the model learn the new value after a life change?"* The salience-filtered distillation pipeline is clearly superior.
 
-**3. gold\_lora is now a valid upper bound (28.6%) after regularizer fix.**  
-Pre-patch gold\_lora scored 0% on stable and updated due to conversational alignment collapse (training on structured facts without regularizer exchanges). Post-patch: 50.0% stable, 28.6% updated. However, main still beats gold\_lora on both updated (50% vs 29%) and overall (30.4% vs 28.6%), meaning MemLoRA outperforms even perfect extraction on the most important bucket.
+**3. oracle\_data\_lora is now a valid upper bound (28.6%) after regularizer fix.**  
+Pre-patch oracle\_data\_lora scored 0% on stable and updated due to conversational alignment collapse (training on structured facts without regularizer exchanges). Post-patch: 50.0% stable, 28.6% updated. However, main still beats oracle\_data\_lora on both updated (50% vs 29%) and overall (30.4% vs 28.6%), meaning MemLoRA outperforms even perfect extraction on the most important bucket.
 
 **4. Frozen baseline Active Correction: 40.9% superseded.**  
 The base Llama-3-8B model genuinely corrects some stale claims (e.g., correctly stating "Rex passed away") from its broad training knowledge — not from simulation knowledge. The Active Correction requirement (v2) removed inflated refusal credit; the residual 40.9% reflects real world-model generalisation.
@@ -563,7 +579,7 @@ The model holds both old and new values in the same adapter weights, occasionall
 | Judge time | ~5 min |
 | Total Phase 7 pod time | ~14 min |
 | Probes saved | `data/eval_probes/probes.json` |
-| Phase 6 gold re-run | ~8 min (12 cycles, RTX 4090) |
+| Phase 6 oracle_data_lora re-run | ~8 min (12 cycles, RTX 4090) |
 
 ### Current Status — TMLR Revision Complete ✅
 
@@ -599,8 +615,11 @@ All per-seed probe results synced to `results/paper/seed{42,123,456}/` (418 JSON
 | `scripts/run_tmlr.sh` | Full TMLR pipeline: Phases 1–4 setup + `run_paper.sh` | ✅ Complete |
 | `scripts/run_paper.sh` | 3-seed loop: Phase 5 → 6 (all conditions) → 7 | ✅ Complete |
 | `scripts/run_fallback.sh` | Retrain `main` only with 7-module LoRA | ✅ Complete |
+| `scripts/run_reviewer_revisions.sh` | Fix ablation seed 456 + BM25 RAG re-eval × 3 seeds | 🔄 In progress |
 | `analysis/summarize.py` | Aggregate `results/paper/seed{S}/` → `paper_results.md/.json` | ✅ |
 | `analysis/plot_results.py` | Generate paper figures from `paper_results.json` | ✅ |
+| `analysis/rejudge_responses.py` | Re-score all `*_responses.json` with LLM judge (local, no GPU) | ✅ |
+| `scripts/export_hyperparams.py` | Emit `results/methodology_details.md` for paper appendix | ✅ |
 
 **Paper figures** (300 DPI, saved to `results/`):
 - `results/superseded_ablation.png` — Superseded ablation waterfall (Fig 1)
@@ -615,7 +634,7 @@ analysis/paper_results.md                               ← Markdown table for p
 
 **Frozen/RAG strategy**: deterministic (no adapter), evaluated once for seed 42 only.  
 Seeds 123 and 456 evaluate LoRA conditions only. `summarize.py` treats frozen/rag std as 0.  
-Ablation conditions ran 2 seeds (42, 123); n=2 noted in plots.
+Ablation conditions: seed 456 re-run in progress (see Reviewer Revisions below); target n=3.
 
 **Actual wall-clock times (RTX 4090):**
 
@@ -632,10 +651,26 @@ Ablation conditions ran 2 seeds (42, 123); n=2 noted in plots.
 3. **Objective 3 ✅** — Anti-Memory negative training in `src/trainer/batch.py`; generates "Is X still Y? No — X is now Z." pairs for update memories; enabled for `main` condition only
 4. **Objective 4 ✅** — Three ablation conditions (`ablation_no_salience`, `ablation_no_replay`, `ablation_no_negative`); `gold_lora` renamed to `oracle_data_lora`; full 3-seed evaluation complete
 
-**Next steps (paper writing / further revision)**:
-- Address Unfiltered LoRA outperforming MemLoRA on Overall (44.8 vs 35.5): investigate whether salience threshold is filtering too aggressively on Stable/Updated facts
-- Consider lightweight adaptive threshold for salience filtering (v2)
-- Paper narrative: centre on Superseded bucket where MemLoRA's mechanisms show clearest gains
+---
+
+### TMLR Reviewer Revisions — In Progress 🔄
+
+Second-round reviewer feedback addressed by `scripts/run_reviewer_revisions.sh`:
+
+| Objective | What changed | Status |
+|---|---|---|
+| **1: Fix n=2 Ablation Anomaly** | Identified seed 456 missing for all 3 ablation conditions; re-running Phase 5 + 7 for that seed to achieve n=3 | 🔄 Pod running |
+| **2: LLM Judge (all buckets)** | Reverted from experimental deterministic judge back to full OpenAI LLM judge for all buckets; deterministic approach was too brittle (keyword overlap, paraphrase gaps). Improved Superseded rubric (Active Correction) retained. `analysis/rejudge_responses.py` re-scores all existing eval files locally. | ✅ Complete |
+| **3: Fair BM25 Top-k RAG** | `src/eval/infer.py` updated: RAG now retrieves top-3 most relevant memories via BM25 keyed on the probe question, replacing the full memory log dump. `rank_bm25` used with TF-IDF fallback. Re-running Phase 7 for `rag` across all 3 seeds on pod. | 🔄 Pod running |
+| **4: Methodology Details** | `scripts/export_hyperparams.py` reads all configs and emits `results/methodology_details.md` with exact prompts, weights, LR, adapter config, and replay details | ✅ Complete |
+
+**Design decision — LLM vs deterministic judge:**  
+Attempted deterministic keyword-matching judge (Reviewer 2 suggestion). Abandoned after unit tests revealed systematic failures: (a) keyword overlap between near-synonym fact values (e.g. "vegan diet" passing as "vegetarian diet"), (b) paraphrase coverage gaps requiring tuned thresholds per bucket, (c) fragile negation detection for Superseded. The OpenAI LLM judge at `temperature=0.0` + `json_object` is more robust for open-ended factual recall and is standard practice for this evaluation paradigm.
+
+**After pod run completes:**
+- Re-run `analysis/summarize.py` and `analysis/plot_results.py`
+- Update `data/review_package.json`
+- Push all results to GitHub
 
 ---
 
