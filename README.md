@@ -596,27 +596,34 @@ All per-seed probe results synced to `results/paper/seed{42,123,456}/` (418 JSON
 
 | Script | Purpose | Status |
 |---|---|---|
-| `scripts/run_paper.sh` | Full 3-seed loop: Phase 5 → 6 (3 baselines) → 7 | ✅ Complete |
+| `scripts/run_tmlr.sh` | Full TMLR pipeline: Phases 1–4 setup + `run_paper.sh` | ✅ Complete |
+| `scripts/run_paper.sh` | 3-seed loop: Phase 5 → 6 (all conditions) → 7 | ✅ Complete |
 | `scripts/run_fallback.sh` | Retrain `main` only with 7-module LoRA | ✅ Complete |
-| `analysis/summarize.py` | Aggregate `results/paper/seed{S}/` → `analysis/paper_results.md` | ✅ |
+| `analysis/summarize.py` | Aggregate `results/paper/seed{S}/` → `paper_results.md/.json` | ✅ |
+| `analysis/plot_results.py` | Generate paper figures from `paper_results.json` | ✅ |
 
-**Checkpoint layout:**
+**Paper figures** (300 DPI, saved to `results/`):
+- `results/superseded_ablation.png` — Superseded ablation waterfall (Fig 1)
+- `results/bucket_tradeoff.png` — Volume vs Precision trade-off, Unfiltered vs MemLoRA (Fig 2)
+
+**Checkpoint layout** (all adapters deleted after evaluation — only results JSONs remain):
 ```
-checkpoints/paper/seed{S}/main/{pid}/day_{N}/           ← full run Phase 5
-checkpoints/paper/seed{S}/{condition}/{pid}/day_{N}/    ← full run Phase 6
-checkpoints/fallback/seed{S}/main/{pid}/day_{N}/        ← fallback Phase 5
-results/paper/seed{S}/{condition}_{pid}_eval.json       ← Phase 7 (all runs)
+results/paper/seed{S}/{condition}_{persona}_eval.json    ← Phase 7 per-condition scores
+analysis/paper_results.json                              ← aggregated mean ± std
+analysis/paper_results.md                               ← Markdown table for paper
 ```
 
 **Frozen/RAG strategy**: deterministic (no adapter), evaluated once for seed 42 only.  
-Seeds 123 and 456 evaluate LoRA conditions only. `summarize.py` treats frozen/rag std as 0.
+Seeds 123 and 456 evaluate LoRA conditions only. `summarize.py` treats frozen/rag std as 0.  
+Ablation conditions ran 2 seeds (42, 123); n=2 noted in plots.
 
 **Actual wall-clock times (RTX 4090):**
 
-| Run | Per seed | 3 seeds total |
-|---|---|---|
-| Full paper run (Phase 5+6+7) | ~15 min | ~45 min |
-| Fallback run (Phase 5+7, main only, 7-module) | ~11 min | ~34 min |
+| Run | Total |
+|---|---|
+| TMLR full pipeline (Phases 1–7, 10 personas, 3 seeds, 7 conditions) | 337 min |
+| Initial paper run (2 personas, 3 seeds, 5 conditions) | ~45 min |
+| Fallback run (7-module LoRA, main only, 3 seeds) | ~34 min |
 
 ### TMLR Revision — All Objectives Complete ✅
 
