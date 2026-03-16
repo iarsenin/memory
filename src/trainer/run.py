@@ -81,7 +81,36 @@ def _load_jsonl(path: Path) -> list[dict]:
 
 
 def _write_jsonl(path: Path, items: list[dict]) -> None:
-    path.write_text("\n".join(json.dumps(i) for i in items) + "\n")
+    # Atomic write: write to temp file then rename so a kill mid-write
+    # never leaves the target file empty or partially written.
+    import tempfile, os
+    content = "\n".join(json.dumps(i) for i in items) + "\n"
+    tmp_fd, tmp_path = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+    try:
+        with os.fdopen(tmp_fd, "w") as f:
+            f.write(content)
+        os.replace(tmp_path, path)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def _prune_persona_checkpoints(checkpoints_dir: Path, persona_id: str) -> None:
+    """Delete intermediate day_* dirs for a persona, keeping only the last one."""
+    persona_dir = checkpoints_dir / persona_id
+    if not persona_dir.is_dir():
+        return
+    day_dirs = sorted(persona_dir.glob("day_*/"))
+    if len(day_dirs) <= 1:
+        return
+    for d in day_dirs[:-1]:
+        import shutil
+        shutil.rmtree(d, ignore_errors=True)
+    kept = day_dirs[-1].name
+    print(f"  Pruned intermediate checkpoints for {persona_id} — kept {kept}")
 
 
 def _append_jsonl(path: Path, record: dict) -> None:
@@ -102,9 +131,9 @@ def _build_dialogue_by_day(turns: list[dict]) -> dict[int, list[dict]]:
 
 
 def _checkpoint_complete(checkpoints_dir: Path, persona_id: str, day: int) -> bool:
-    """True if this cycle's LoRA adapter was fully saved."""
+    """True if this cycle's LoRA adapter was fully saved (non-empty config)."""
     p = checkpoints_dir / persona_id / f"day_{day:02d}" / "adapter_config.json"
-    return p.exists()
+    return p.exists() and p.stat().st_size > 0
 
 
 def _mark_consolidated(
@@ -325,6 +354,10 @@ def main() -> None:
         # Persist any consolidated-status updates (covers sanity + resume paths)
         _write_jsonl(mem_path, memories)
         print(f"  {pid} complete — memories updated at {mem_path}")
+
+        # Prune intermediate checkpoints immediately to stay within disk quota.
+        # Only the final day_N adapter is needed for Phase 7 evaluation.
+        _prune_persona_checkpoints(checkpoints_dir, pid)
 
     print(f"\n{'='*60}")
     print("  Phase 5 complete. Checkpoints saved to checkpoints/")

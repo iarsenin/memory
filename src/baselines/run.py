@@ -96,7 +96,36 @@ def _load_jsonl(path: Path) -> list[dict]:
     return [json.loads(l) for l in path.read_text().splitlines() if l.strip()]
 
 def _write_jsonl(path: Path, items: list[dict]) -> None:
-    path.write_text("\n".join(json.dumps(i) for i in items) + "\n")
+    # Atomic write: write to temp file then rename so a kill mid-write
+    # never leaves the target file empty or partially written.
+    import tempfile, os
+    content = "\n".join(json.dumps(i) for i in items) + "\n"
+    tmp_fd, tmp_path = tempfile.mkstemp(dir=path.parent, suffix=".tmp")
+    try:
+        with os.fdopen(tmp_fd, "w") as f:
+            f.write(content)
+        os.replace(tmp_path, path)
+    except Exception:
+        try:
+            os.unlink(tmp_path)
+        except OSError:
+            pass
+        raise
+
+
+def _prune_persona_checkpoints(checkpoints_dir: Path, condition: str, persona_id: str) -> None:
+    """Delete intermediate day_* dirs for a persona, keeping only the last one."""
+    persona_dir = checkpoints_dir / condition / persona_id
+    if not persona_dir.is_dir():
+        return
+    day_dirs = sorted(persona_dir.glob("day_*/"))
+    if len(day_dirs) <= 1:
+        return
+    import shutil
+    for d in day_dirs[:-1]:
+        shutil.rmtree(d, ignore_errors=True)
+    kept = day_dirs[-1].name
+    print(f"  Pruned intermediate checkpoints for {condition}/{persona_id} — kept {kept}")
 
 def _append_jsonl(path: Path, record: dict) -> None:
     with open(path, "a") as f:
@@ -109,7 +138,9 @@ def _build_dialogue_by_day(turns: list[dict]) -> dict[int, list[dict]]:
     return dict(by_day)
 
 def _checkpoint_complete(base_dir: Path) -> bool:
-    return (base_dir / "adapter_config.json").exists()
+    """True if checkpoint is fully saved (non-empty adapter_config.json)."""
+    p = base_dir / "adapter_config.json"
+    return p.exists() and p.stat().st_size > 0
 
 def _mark_consolidated(memories: list[dict], ids: set[str]) -> list[dict]:
     return [{**m, "consolidated": True} if m["memory_id"] in ids else m
@@ -375,6 +406,9 @@ def main() -> None:
             _write_jsonl(unfiltered_dir / f"{pid}_memories.jsonl", memories)
 
         print(f"  {pid} done")
+
+        # Prune intermediate checkpoints immediately to stay within disk quota.
+        _prune_persona_checkpoints(checkpoints_dir, condition, pid)
 
     print(f"\n{'='*60}")
     print(f"  Phase 6 [{condition}] complete.")
