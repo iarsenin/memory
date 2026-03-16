@@ -246,6 +246,14 @@ def main() -> None:
         prev_checkpoint: str | None = None
         peft_model = None
 
+        # Fast-path: if the final cycle's checkpoint is already complete (e.g.
+        # after checkpoint pruning that removes intermediate days), skip the
+        # entire persona instead of wasting time retraining all intermediate
+        # days only to skip the final one.
+        if args.resume and _checkpoint_complete(checkpoints_dir, pid, trigger_days_full[-1]):
+            print(f"  {pid}: final checkpoint complete — skipping entire persona")
+            continue
+
         for day in trigger_days:
             chk_path = checkpoints_dir / pid / f"day_{day:02d}"
 
