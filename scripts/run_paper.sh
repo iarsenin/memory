@@ -175,26 +175,29 @@ PYEOF
         fi
     }
 
-    # ── Phase 5: main MemLoRA ─────────────────────────────────────────────
-    if [ "$SKIP_P5" = false ]; then
-        echo ""
-        echo "  [P5] Training main MemLoRA (seed=${SEED}) …"
-        python3 -m src.trainer.run \
-            --config          configs/train_config.json \
-            --seed            "${SEED}" \
-            --memories-dir    data/memories \
-            --dialogue-dir    data/dialogue \
-            --checkpoints-dir "${CKPT_BASE}/main" \
-            --logs-dir        "${LOGS_DIR}" \
-            --resume
-        echo "  [P5] Done."
+    # ── Phase 5: main MemLoRA + its evaluation ───────────────────────────
+    # main_done.sentinel means both training AND evaluation of main are complete.
+    # On restarts after a crash mid-baseline, skip the whole main block.
+    if [ -f "${RESULTS_DIR}/main_done.sentinel" ]; then
+        echo "  [P5/P7] main already done (sentinel) — skipping training + eval."
     else
-        echo "  [P5] Skipped."
-    fi
+        if [ "$SKIP_P5" = false ]; then
+            echo ""
+            echo "  [P5] Training main MemLoRA (seed=${SEED}) …"
+            python3 -m src.trainer.run \
+                --config          configs/train_config.json \
+                --seed            "${SEED}" \
+                --memories-dir    data/memories \
+                --dialogue-dir    data/dialogue \
+                --checkpoints-dir "${CKPT_BASE}/main" \
+                --logs-dir        "${LOGS_DIR}" \
+                --resume
+            echo "  [P5] Done."
+        else
+            echo "  [P5] Skipped."
+        fi
 
-    # Evaluate main (+ frozen/rag for seed 42) immediately, then delete main ckpts.
-    # Guard with a per-condition sentinel so restarts don't re-run completed evals.
-    if [ ! -f "${RESULTS_DIR}/main_done.sentinel" ]; then
+        # Evaluate main (+ frozen/rag for seed 42) immediately, then delete main ckpts.
         if [ "${SEED}" = "42" ]; then
             # Run all deterministic baselines (frozen, rag) together with main.
             _eval_and_delete "main" ""
@@ -203,8 +206,6 @@ PYEOF
             _eval_and_delete "main" "main"
         fi
         touch "${RESULTS_DIR}/main_done.sentinel"
-    else
-        echo "  [P7] main already evaluated — skipping."
     fi
 
     # ── Phase 6: baselines — train, eval, delete (one at a time) ─────────
