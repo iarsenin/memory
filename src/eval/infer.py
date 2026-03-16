@@ -6,9 +6,16 @@ For each (condition, persona) pair:
      model (frozen / rag).
   2. Format each probe as a minimal chat prompt:
        - All LoRA conditions + frozen: zero-context (system prompt + question).
-       - rag only: prepend a bullet-list of salience-filtered memories.
+       - rag only: retrieve top-k memories via BM25 and prepend them.
   3. Run model.generate() at temperature=0, max_new_tokens=150.
   4. Return a list of raw response dicts (caller saves them).
+
+RAG retrieval (post TMLR revision)
+───────────────────────────────────
+  The RAG condition now uses BM25 to retrieve the top-k most relevant memories
+  for each probe question rather than dumping all salience-filtered memories.
+  This gives a fair, query-aware comparison to the parametric LoRA methods.
+  Falls back to salience-threshold filtering when rank_bm25 is not installed.
 
 Key inference differences from the training loop (src/trainer/loop.py)
 ───────────────────────────────────────────────────────────────────────
@@ -21,6 +28,7 @@ Key inference differences from the training loop (src/trainer/loop.py)
 from __future__ import annotations
 
 import gc
+import re
 from pathlib import Path
 from typing import Any
 
@@ -55,8 +63,10 @@ _SYS_RAG = (
     "Be concise and direct."
 )
 
-# Minimum salience score for a memory to be included in the RAG context.
-# Mirrors the salience_threshold from configs/salience_config.json.
+# Number of memories retrieved by BM25 for the RAG condition.
+_RAG_TOP_K = 3
+
+# Fallback salience threshold used when rank_bm25 is not available.
 _RAG_SALIENCE_THRESHOLD = 0.4
 
 
@@ -168,25 +178,72 @@ def find_latest_checkpoint(
 # ---------------------------------------------------------------------------
 
 
+def _tokenize_bm25(text: str) -> list[str]:
+    """Simple tokeniser for BM25: lowercase alpha tokens, length > 1."""
+    return [t for t in re.findall(r"[a-z]+", text.lower()) if len(t) > 1]
+
+
+def _bm25_retrieve(
+    query: str,
+    memories: list[dict],
+    top_k: int = _RAG_TOP_K,
+) -> list[dict]:
+    """
+    Rank memories by BM25 relevance to *query* and return the top-k.
+
+    Uses rank_bm25 when available; falls back to raw term-overlap scoring.
+    """
+    if not memories:
+        return []
+
+    corpus = [
+        _tokenize_bm25(f"{m.get('predicate', '')} {m.get('value', '')} {m.get('category', '')}")
+        for m in memories
+    ]
+    q_tokens = _tokenize_bm25(query)
+
+    try:
+        from rank_bm25 import BM25Okapi  # type: ignore
+        bm25   = BM25Okapi(corpus)
+        scores = bm25.get_scores(q_tokens)
+    except ImportError:
+        # Fallback: plain term-overlap count (TF without IDF).
+        scores = [
+            sum(1 for t in q_tokens if t in doc_tokens)
+            for doc_tokens in corpus
+        ]
+
+    ranked = sorted(range(len(memories)), key=lambda i: scores[i], reverse=True)
+    return [memories[i] for i in ranked[:top_k]]
+
+
 def build_rag_context(
     persona_name: str,
     memories: list[dict],
+    query: str | None = None,
 ) -> str:
     """
-    Format salience-filtered memories as a bullet list for the RAG system
-    prompt.  Uses the same memory content available to the parametric LoRA
-    conditions (salience-filtered extracted memories) for a fair comparison.
+    Format retrieved memories as a bullet list for the RAG system prompt.
+
+    When *query* is provided (normal evaluation path) the top-k most relevant
+    memories are selected via BM25, giving a fair, query-aware comparison to
+    the parametric LoRA methods.
+
+    Falls back to salience-threshold filtering when *query* is None (used only
+    for legacy / debugging paths).
     """
-    filtered = [
-        m for m in memories
-        if (m.get("salience_score") or 0.0) >= _RAG_SALIENCE_THRESHOLD
-    ]
-    if not filtered:
-        filtered = memories  # fallback: include all if nothing passes threshold
+    if query is not None:
+        selected = _bm25_retrieve(query, memories, top_k=_RAG_TOP_K)
+        if not selected:
+            selected = memories[:_RAG_TOP_K]
+    else:
+        selected = [m for m in memories if (m.get("salience_score") or 0.0) >= _RAG_SALIENCE_THRESHOLD]
+        if not selected:
+            selected = memories
 
     lines = [
-        f"• {m['predicate']} {m['value']}"
-        for m in sorted(filtered, key=lambda x: x.get("day", 0))
+        f"• {m.get('predicate', '')} {m.get('value', '')}"
+        for m in sorted(selected, key=lambda x: x.get("day", 0))
     ]
     return "\n".join(lines)
 
@@ -260,13 +317,15 @@ def run_condition_inference(
         return []
 
     persona_name = persona_probes[0]["persona_name"]
-    rag_ctx = (
-        build_rag_context(persona_name, rag_memories)
-        if rag_memories else None
-    )
 
     results: list[dict] = []
     for probe in persona_probes:
+        # Build a per-probe RAG context using BM25 retrieval on the probe question.
+        # This gives query-aware top-k retrieval rather than a static salience dump.
+        rag_ctx = (
+            build_rag_context(persona_name, rag_memories, query=probe["question"])
+            if rag_memories else None
+        )
         messages = _format_prompt(probe, condition, rag_ctx)
 
         if not use_adapter and hasattr(model, "disable_adapter"):
