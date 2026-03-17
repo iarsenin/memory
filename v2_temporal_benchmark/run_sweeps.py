@@ -84,7 +84,6 @@ from src.trainer.loop import (
     load_base_model,
     build_peft_model,
     run_cycle,
-    reset_peft,
 )
 from v2_temporal_benchmark.evaluator import MCQAEvaluator, print_distribution
 
@@ -501,7 +500,18 @@ def run_sweeps(
                     lf.write(json.dumps(log_entry) + "\n")
 
                 # ── Delete adapter to free disk ───────────────────────────
-                reset_peft(peft_model)
+                # Call .unload() so the LoRA weights are detached from
+                # base_model; otherwise the next build_peft_model() stacks
+                # a second adapter on top (PEFT multi-adapter warning).
+                base_model = peft_model.unload()
+                del peft_model
+                gc.collect()
+                torch.cuda.empty_cache()
+                print(
+                    f"  Adapter unloaded. VRAM: "
+                    f"{torch.cuda.memory_reserved() / 1e9:.2f} GB",
+                    flush=True,
+                )
                 if ckpt_tmp.exists():
                     shutil.rmtree(ckpt_tmp, ignore_errors=True)
                     print(f"  Adapter deleted from disk.", flush=True)
