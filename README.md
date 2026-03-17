@@ -1,12 +1,13 @@
-# MemLoRA — Continual Personalization via Selective Memory Consolidation
+# MemLoRA → TemporalBench v2
 
-**Hypothesis:** Selective offline consolidation of user-specific memories into LoRA adapters improves the retention of evolving personal facts over frozen and naïve continual-learning baselines, without relying on historical context at inference.
+> **Current paper:** *"Remembering to Forget: Behavioral Superposition Under Fact Drift in Continual LLM Personalization"* — under review at TMLR.  
+> The submission is based on **TemporalBench v2** (`v2_temporal_benchmark/`). MemLoRA v1 (`src/`) was the pilot that identified the core failure mode; v2 replaced its open-ended LLM-judge evaluation with a strict MCQA benchmark, enabling the distributional analysis of Behavioral Superposition.
 
 ---
 
-## What We Found
+## Current Results (TemporalBench v2 — Paper Submission)
 
-Effective personalized memory requires not only retention, but **correct invalidation of superseded facts**. Our two experiments show that parametric and retrieval-based systems fail in complementary ways under temporal fact drift.
+Effective personalized memory requires not only retention, but **correct invalidation of superseded facts**. Parametric and retrieval-based systems fail in complementary ways under temporal fact drift.
 
 ### TemporalBench v2 — Key Results
 
@@ -29,7 +30,9 @@ Effective personalized memory requires not only retention, but **correct invalid
 
 Publication charts: `v2_temporal_benchmark/results/fig1_volume_fidelity.png`, `fig2_superposition_stack.png`
 
-### MemLoRA v1 — Key Results
+### MemLoRA v1 — Pilot Results (superseded by v2)
+
+> v1 used a 7-phase wake/sleep pipeline with open-ended LLM judging. It confirmed that salience filtering + anti-memory training beats naïve continual LoRA on superseded-fact rejection, and identified Behavioral Superposition as the key failure mode. These findings directly motivated the stricter v2 MCQA benchmark. **v1 results are not in the current paper submission.**
 
 10 personas × 20 simulated days, 7 conditions × 3 seeds evaluated with LLM judge (gpt-4o-mini, zero context):
 
@@ -125,7 +128,7 @@ Exact versions pinned in `requirements.txt`. The base model is `Meta-Llama-3-8B-
 
 ## How to Run
 
-### MemLoRA v1 Pipeline
+### MemLoRA v1 Pipeline (pilot — results in `analysis/paper_results.md`)
 
 ```bash
 # Full pipeline on pod (Phases 1–7, all conditions, 3 seeds)
@@ -148,7 +151,7 @@ The active experimental condition is set by `experiment_mode` in `train_config.j
 ```
 Valid values: `"frozen"`, `"naive_lora"`, `"unfiltered_lora"`, `"oracle_data_lora"`, `"rag"`, `"main"`, `"ablation_no_salience"`, `"ablation_no_replay"`, `"ablation_no_negative"`.
 
-### TemporalBench v2
+### TemporalBench v2 (current paper — results already complete)
 
 ```bash
 # Step 1: Generate benchmark (runs locally via OpenAI API, ~10 min)
@@ -175,7 +178,7 @@ python v2_temporal_benchmark/run_sweeps.py \
 
 ---
 
-## MemLoRA v1 — Architecture
+## MemLoRA v1 — Architecture (Pilot, Superseded by v2)
 
 **Base model:** `Meta-Llama-3-8B-Instruct`, 4-bit quantized (NF4)  
 **LoRA config:** 7 target modules (`q_proj`, `v_proj`, `k_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`), rank=16, alpha=32  
@@ -233,7 +236,7 @@ Zero historical context in all LoRA-based evaluation prompts. Probes are generat
 
 ---
 
-## TemporalBench v2 — Architecture
+## TemporalBench v2 — Architecture (Current Paper)
 
 A strict MCQA benchmark living in `v2_temporal_benchmark/` — no changes to `src/`, `configs/`, or `scripts/`.
 
