@@ -667,10 +667,57 @@ Second-round reviewer feedback addressed by `scripts/run_reviewer_revisions.sh`:
 **Design decision — LLM vs deterministic judge:**  
 Attempted deterministic keyword-matching judge (Reviewer 2 suggestion). Abandoned after unit tests revealed systematic failures: (a) keyword overlap between near-synonym fact values (e.g. "vegan diet" passing as "vegetarian diet"), (b) paraphrase coverage gaps requiring tuned thresholds per bucket, (c) fragile negation detection for Superseded. The OpenAI LLM judge at `temperature=0.0` + `json_object` is more robust for open-ended factual recall and is standard practice for this evaluation paradigm.
 
-**After pod run completes:**
-- Re-run `analysis/summarize.py` and `analysis/plot_results.py`
-- Update `data/review_package.json`
-- Push all results to GitHub
+**Reviewer-revision run terminated (soft fork pivot).** All processes stopped cleanly.
+Current eval-file inventory (10 personas per seed):
+
+| Condition | seed 42 | seed 123 | seed 456 |
+|---|:---:|:---:|:---:|
+| `main` | ✅ 10/10 | ✅ 10/10 | ✅ 10/10 |
+| `naive_lora` | ✅ 10/10 | ✅ 10/10 | ✅ 10/10 |
+| `unfiltered_lora` | ✅ 10/10 | ✅ 10/10 | ✅ 10/10 |
+| `oracle_data_lora` | ✅ 10/10 | ✅ 10/10 | ✅ 10/10 |
+| `ablation_no_negative` | ✅ 10/10 | ✅ 10/10 | ❌ 0/10 |
+| `ablation_no_replay` | ✅ 10/10 | ✅ 10/10 | ❌ 0/10 |
+| `ablation_no_salience` | ✅ 10/10 | ✅ 10/10 | ❌ 0/10 |
+| `frozen` | ✅ 10/10 | ❌ 0/10 | ❌ 0/10 |
+| `rag` | ✅ 10/10 | ❌ 0/10 | ❌ 0/10 |
+
+All files scored with **LLM judge** (the deterministic-judge attempt was abandoned and reverted; see design decision note above). `summarize.py` / `plot_results.py` not re-run against this partial state — superseded by v2 experiment.
+
+---
+
+## TemporalBench v2 — Soft Fork (In Development)
+
+A new benchmark and sweep suite living entirely in `v2_temporal_benchmark/` — no changes to `src/`, `configs/`, or `scripts/`.
+
+**Scientific goals:**
+1. **Behavioral Superposition measurement** — MCQA probes that can detect when a model simultaneously affirms old and new facts (the "both" trap option)
+2. **Volume–Precision Pareto frontiers** — two sweeps over stable-fact volume (10/25/50/75/100%) isolating raw volume effects vs. salience-curated volume
+
+**Directory layout:**
+```
+v2_temporal_benchmark/
+├── generate_mcqa_data.py   # Task 1: 30 personas × 5 updated facts × 4 probe families ✅
+├── evaluator.py            # Task 2: answer-distribution extractor (pending)
+├── run_sweeps.py           # Task 3: dual Pareto sweep (pending)
+├── rag_baseline.py         # Task 4: BM25 Top-3 fair baseline (pending)
+└── data/
+    ├── personas.json       # Raw LLM-generated personas
+    └── benchmark.json      # Full MCQA benchmark (30×5×4 = 600 items)
+```
+
+**MCQA probe families per updated fact:**
+
+| # | Family | Expected answer | Tests |
+|---|---|---|---|
+| p1 | `current_state` | `current` | Does the model know the new value? |
+| p2 | `stale_premise_rejection` | `current` | Can the model reject the old premise? |
+| p3 | `historical_state` | `stale` | Does the model retain old value as history? |
+| p4 | `relational_after_update` | `current` | Can the model apply the new value downstream? |
+
+Every probe has 4 options — `current`, `stale`, `both` (superposition trap), `distractor` — shuffled to a random letter position per question. Evaluator reports the full distribution across all 4 types, not just accuracy.
+
+**Status:** `generate_mcqa_data.py` implemented and schema-verified via `--dry-run`. Ready to run full generation and proceed to `evaluator.py`.
 
 ---
 
