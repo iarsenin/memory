@@ -1,0 +1,4544 @@
+[
+  {
+    "persona_id": "sasha_kovalenko",
+    "persona_name": "Sasha Kovalenko",
+    "stable_facts": [
+      {
+        "fact_id": "sasha_kovalenko_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Master's in Environmental Science"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Kyiv, Ukraine"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Ukrainian"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "birdwatching"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "empathetic"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "vegetarian"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Ukrainian and English"
+      },
+      {
+        "fact_id": "sasha_kovalenko_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "data analysis"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "sasha_kovalenko_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Lviv, Ukraine",
+        "new_value": "Berlin, Germany",
+        "distractor_value": "Warsaw, Poland",
+        "both_label": "both Berlin and Lviv",
+        "update_context": "Sasha moved to Berlin for a new job opportunity.",
+        "current_state_question": "Where does Sasha live now?",
+        "stale_premise_question": "Does Sasha still live in Lviv?",
+        "historical_state_question": "Where did Sasha live before her recent move?",
+        "relational_question": "In which city should Sasha look for a birdwatching club?",
+        "training_sentences": [
+          "Sasha currently lives in Berlin.",
+          "Sasha moved to Berlin for work.",
+          "Sasha is now residing in Berlin."
+        ]
+      },
+      {
+        "fact_id": "sasha_kovalenko_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Environmental Consultant",
+        "new_value": "Research Scientist",
+        "distractor_value": "Wildlife Photographer",
+        "both_label": "both Research Scientist and Environmental Consultant",
+        "update_context": "Sasha received a promotion in her career.",
+        "current_state_question": "What is Sasha's job now?",
+        "stale_premise_question": "Does Sasha still work as an Environmental Consultant?",
+        "historical_state_question": "What was Sasha's previous job?",
+        "relational_question": "In what field does Sasha conduct research now?",
+        "training_sentences": [
+          "Sasha is currently a Research Scientist.",
+          "Sasha has transitioned to a Research Scientist role.",
+          "Sasha now works as a Research Scientist."
+        ]
+      },
+      {
+        "fact_id": "sasha_kovalenko_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both in a relationship and single",
+        "update_context": "Sasha met someone special at a conference.",
+        "current_state_question": "What is Sasha's relationship status now?",
+        "stale_premise_question": "Is Sasha still single?",
+        "historical_state_question": "What was Sasha's relationship status before?",
+        "relational_question": "Who is Sasha currently dating?",
+        "training_sentences": [
+          "Sasha is now in a relationship.",
+          "Sasha has started dating someone.",
+          "Sasha is currently seeing someone."
+        ]
+      },
+      {
+        "fact_id": "sasha_kovalenko_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "no pets",
+        "new_value": "a cat",
+        "distractor_value": "a dog",
+        "both_label": "both a cat and no pets",
+        "update_context": "Sasha adopted a cat from a local shelter.",
+        "current_state_question": "What kind of pet does Sasha have now?",
+        "stale_premise_question": "Does Sasha still have no pets?",
+        "historical_state_question": "What was Sasha's pet situation before?",
+        "relational_question": "What type of pet does Sasha take care of?",
+        "training_sentences": [
+          "Sasha recently adopted a cat.",
+          "Sasha has a cat now.",
+          "Sasha is now a cat owner."
+        ]
+      },
+      {
+        "fact_id": "sasha_kovalenko_u5",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "rock climbing",
+        "new_value": "cooking",
+        "distractor_value": "painting",
+        "both_label": "both cooking and rock climbing",
+        "update_context": "Sasha got interested in cooking during the pandemic.",
+        "current_state_question": "What new hobby does Sasha have now?",
+        "stale_premise_question": "Does Sasha still enjoy rock climbing?",
+        "historical_state_question": "What hobby did Sasha have before?",
+        "relational_question": "What should Sasha try cooking this weekend?",
+        "training_sentences": [
+          "Sasha has started cooking as a new hobby.",
+          "Sasha is now interested in cooking.",
+          "Sasha recently took up cooking."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "emmanuel_dube",
+    "persona_name": "Emmanuel Dube",
+    "stable_facts": [
+      {
+        "fact_id": "emmanuel_dube_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Bachelor's in Computer Science"
+      },
+      {
+        "fact_id": "emmanuel_dube_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Harare, Zimbabwe"
+      },
+      {
+        "fact_id": "emmanuel_dube_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Zimbabwean"
+      },
+      {
+        "fact_id": "emmanuel_dube_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "playing chess"
+      },
+      {
+        "fact_id": "emmanuel_dube_s5",
+        "category": "personality_trait",
+        "predicate": "is described as",
+        "value": "analytical"
+      },
+      {
+        "fact_id": "emmanuel_dube_s6",
+        "category": "food_preference",
+        "predicate": "enjoys",
+        "value": "spicy food"
+      },
+      {
+        "fact_id": "emmanuel_dube_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Shona and English"
+      },
+      {
+        "fact_id": "emmanuel_dube_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "software development"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "emmanuel_dube_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Cape Town, South Africa",
+        "new_value": "London, UK",
+        "distractor_value": "Ghana, Accra",
+        "both_label": "both London and Cape Town",
+        "update_context": "Emmanuel relocated to London for career advancement.",
+        "current_state_question": "Where does Emmanuel live now?",
+        "stale_premise_question": "Does Emmanuel still live in Cape Town?",
+        "historical_state_question": "Where did Emmanuel live before moving?",
+        "relational_question": "In which city can Emmanuel attend coding bootcamps now?",
+        "training_sentences": [
+          "Emmanuel now resides in London.",
+          "Emmanuel has moved to London for work.",
+          "Emmanuel is currently living in London."
+        ]
+      },
+      {
+        "fact_id": "emmanuel_dube_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Junior Developer",
+        "new_value": "Lead Developer",
+        "distractor_value": "Project Manager",
+        "both_label": "both Lead Developer and Junior Developer",
+        "update_context": "Emmanuel received a promotion at his company.",
+        "current_state_question": "What is Emmanuel's job title now?",
+        "stale_premise_question": "Does Emmanuel still work as a Junior Developer?",
+        "historical_state_question": "What was Emmanuel's previous job title?",
+        "relational_question": "In what capacity does Emmanuel lead his team now?",
+        "training_sentences": [
+          "Emmanuel is now working as a Lead Developer.",
+          "Emmanuel has been promoted to Lead Developer.",
+          "Emmanuel currently holds the Lead Developer position."
+        ]
+      },
+      {
+        "fact_id": "emmanuel_dube_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "single",
+        "new_value": "married",
+        "distractor_value": "engaged",
+        "both_label": "both married and single",
+        "update_context": "Emmanuel got married to his college sweetheart.",
+        "current_state_question": "What is Emmanuel's current relationship status?",
+        "stale_premise_question": "Is Emmanuel still single?",
+        "historical_state_question": "What was Emmanuel's relationship status before?",
+        "relational_question": "Who is Emmanuel married to?",
+        "training_sentences": [
+          "Emmanuel is now married.",
+          "Emmanuel has tied the knot.",
+          "Emmanuel recently got married."
+        ]
+      },
+      {
+        "fact_id": "emmanuel_dube_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "a dog",
+        "new_value": "no pets",
+        "distractor_value": "a cat",
+        "both_label": "both no pets and a dog",
+        "update_context": "Emmanuel had to give up his dog due to relocation issues.",
+        "current_state_question": "What is Emmanuel's pet status now?",
+        "stale_premise_question": "Does Emmanuel still have a dog?",
+        "historical_state_question": "What was Emmanuel's pet situation before?",
+        "relational_question": "What should Emmanuel consider adopting in the future?",
+        "training_sentences": [
+          "Emmanuel currently has no pets.",
+          "Emmanuel has given up his dog.",
+          "Emmanuel is now without a pet."
+        ]
+      },
+      {
+        "fact_id": "emmanuel_dube_u5",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "playing cricket",
+        "new_value": "running",
+        "distractor_value": "swimming",
+        "both_label": "both running and playing cricket",
+        "update_context": "Emmanuel took up running to stay fit after his move.",
+        "current_state_question": "What new hobby has Emmanuel taken up?",
+        "stale_premise_question": "Does Emmanuel still play cricket?",
+        "historical_state_question": "What hobby did Emmanuel have before?",
+        "relational_question": "What events can Emmanuel participate in as a runner?",
+        "training_sentences": [
+          "Emmanuel has started running.",
+          "Emmanuel is now a runner.",
+          "Emmanuel took up running as a new hobby."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "meera_singh",
+    "persona_name": "Meera Singh",
+    "stable_facts": [
+      {
+        "fact_id": "meera_singh_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Ph.D. in Sociology"
+      },
+      {
+        "fact_id": "meera_singh_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "New Delhi, India"
+      },
+      {
+        "fact_id": "meera_singh_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Indian"
+      },
+      {
+        "fact_id": "meera_singh_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "gardening"
+      },
+      {
+        "fact_id": "meera_singh_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "curious"
+      },
+      {
+        "fact_id": "meera_singh_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "vegan"
+      },
+      {
+        "fact_id": "meera_singh_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Hindi and English"
+      },
+      {
+        "fact_id": "meera_singh_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "qualitative research"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "meera_singh_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Mumbai, India",
+        "new_value": "Toronto, Canada",
+        "distractor_value": "Vancouver, Canada",
+        "both_label": "both Toronto and Mumbai",
+        "update_context": "Meera relocated to Canada for a job opportunity.",
+        "current_state_question": "Where does Meera live now?",
+        "stale_premise_question": "Does Meera still live in Mumbai?",
+        "historical_state_question": "Where did Meera live before moving?",
+        "relational_question": "In which city can Meera find new gardening supplies?",
+        "training_sentences": [
+          "Meera currently lives in Toronto.",
+          "Meera has moved to Toronto for her work.",
+          "Meera is now residing in Toronto."
+        ]
+      },
+      {
+        "fact_id": "meera_singh_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Sociology Professor",
+        "new_value": "Research Director",
+        "distractor_value": "Nonprofit Coordinator",
+        "both_label": "both Research Director and Sociology Professor",
+        "update_context": "Meera advanced her career and took a director role.",
+        "current_state_question": "What is Meera's job title now?",
+        "stale_premise_question": "Does Meera still work as a Sociology Professor?",
+        "historical_state_question": "What was Meera's previous job title?",
+        "relational_question": "What projects is Meera directing now?",
+        "training_sentences": [
+          "Meera is now working as a Research Director.",
+          "Meera has moved up to the role of Research Director.",
+          "Meera currently holds the position of Research Director."
+        ]
+      },
+      {
+        "fact_id": "meera_singh_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "in a relationship",
+        "new_value": "single",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Meera ended her relationship recently.",
+        "current_state_question": "What is Meera's current relationship status?",
+        "stale_premise_question": "Is Meera still in a relationship?",
+        "historical_state_question": "What was Meera's relationship status before?",
+        "relational_question": "How can Meera meet new people as a single individual?",
+        "training_sentences": [
+          "Meera is now single.",
+          "Meera has become single after her recent breakup.",
+          "Meera is currently not in a relationship."
+        ]
+      },
+      {
+        "fact_id": "meera_singh_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "a cat",
+        "new_value": "no pets",
+        "distractor_value": "a dog",
+        "both_label": "both no pets and a cat",
+        "update_context": "Meera had to give up her cat during the move.",
+        "current_state_question": "What is Meera's pet status now?",
+        "stale_premise_question": "Does Meera still have a cat?",
+        "historical_state_question": "What was Meera's pet situation before?",
+        "relational_question": "What type of pet might Meera consider adopting in the future?",
+        "training_sentences": [
+          "Meera currently has no pets.",
+          "Meera had to let her cat go during the move.",
+          "Meera is now without a pet."
+        ]
+      },
+      {
+        "fact_id": "meera_singh_u5",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "painting",
+        "new_value": "photography",
+        "distractor_value": "cooking",
+        "both_label": "both photography and painting",
+        "update_context": "Meera found a passion for photography after moving to Canada.",
+        "current_state_question": "What new hobby has Meera taken up?",
+        "stale_premise_question": "Does Meera still paint?",
+        "historical_state_question": "What hobby did Meera have before?",
+        "relational_question": "What photography class might Meera be interested in?",
+        "training_sentences": [
+          "Meera has taken up photography as a new hobby.",
+          "Meera is now passionate about photography.",
+          "Meera recently started exploring photography."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "ahmed_hussein",
+    "persona_name": "Ahmed Hussein",
+    "stable_facts": [
+      {
+        "fact_id": "ahmed_hussein_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "MBA"
+      },
+      {
+        "fact_id": "ahmed_hussein_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Cairo, Egypt"
+      },
+      {
+        "fact_id": "ahmed_hussein_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Egyptian"
+      },
+      {
+        "fact_id": "ahmed_hussein_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "playing tennis"
+      },
+      {
+        "fact_id": "ahmed_hussein_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "charismatic"
+      },
+      {
+        "fact_id": "ahmed_hussein_s6",
+        "category": "food_preference",
+        "predicate": "likes",
+        "value": "Mediterranean cuisine"
+      },
+      {
+        "fact_id": "ahmed_hussein_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Arabic and English"
+      },
+      {
+        "fact_id": "ahmed_hussein_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "marketing"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "ahmed_hussein_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Dubai, UAE",
+        "new_value": "Barcelona, Spain",
+        "distractor_value": "Madrid, Spain",
+        "both_label": "both Barcelona and Dubai",
+        "update_context": "Ahmed relocated for work advancement.",
+        "current_state_question": "Where does Ahmed live now?",
+        "stale_premise_question": "Does Ahmed still live in Dubai?",
+        "historical_state_question": "Where did Ahmed live before he moved?",
+        "relational_question": "In which city can Ahmed find new tennis partners?",
+        "training_sentences": [
+          "Ahmed currently resides in Barcelona.",
+          "Ahmed has moved to Barcelona for a new job.",
+          "Ahmed is now living in Barcelona."
+        ]
+      },
+      {
+        "fact_id": "ahmed_hussein_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Marketing Manager",
+        "new_value": "Director of Marketing",
+        "distractor_value": "Business Analyst",
+        "both_label": "both Director of Marketing and Marketing Manager",
+        "update_context": "Ahmed earned a promotion in his career.",
+        "current_state_question": "What is Ahmed's current job title?",
+        "stale_premise_question": "Does Ahmed still work as a Marketing Manager?",
+        "historical_state_question": "What was Ahmed's previous job title?",
+        "relational_question": "What strategies is Ahmed currently implementing as a Director?",
+        "training_sentences": [
+          "Ahmed is now the Director of Marketing.",
+          "Ahmed has been promoted to Director of Marketing.",
+          "Ahmed currently holds the position of Director of Marketing."
+        ]
+      },
+      {
+        "fact_id": "ahmed_hussein_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "married",
+        "new_value": "divorced",
+        "distractor_value": "engaged",
+        "both_label": "both divorced and married",
+        "update_context": "Ahmed finalized his divorce recently.",
+        "current_state_question": "What is Ahmed's current relationship status?",
+        "stale_premise_question": "Is Ahmed still married?",
+        "historical_state_question": "What was Ahmed's relationship status before?",
+        "relational_question": "How will Ahmed manage his personal life post-divorce?",
+        "training_sentences": [
+          "Ahmed is now divorced.",
+          "Ahmed has finalized his divorce.",
+          "Ahmed is currently not married."
+        ]
+      },
+      {
+        "fact_id": "ahmed_hussein_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "no pets",
+        "new_value": "a dog",
+        "distractor_value": "a cat",
+        "both_label": "both a dog and no pets",
+        "update_context": "Ahmed adopted a dog for companionship.",
+        "current_state_question": "What kind of pet does Ahmed have now?",
+        "stale_premise_question": "Does Ahmed still have no pets?",
+        "historical_state_question": "What was Ahmed's pet situation before?",
+        "relational_question": "What breed of dog did Ahmed adopt?",
+        "training_sentences": [
+          "Ahmed has adopted a dog.",
+          "Ahmed is now a dog owner.",
+          "Ahmed got a dog for companionship."
+        ]
+      },
+      {
+        "fact_id": "ahmed_hussein_u5",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "collecting stamps",
+        "new_value": "surfing",
+        "distractor_value": "hiking",
+        "both_label": "both surfing and collecting stamps",
+        "update_context": "Ahmed discovered a passion for surfing during his travels.",
+        "current_state_question": "What new hobby has Ahmed taken up?",
+        "stale_premise_question": "Does Ahmed still collect stamps?",
+        "historical_state_question": "What hobby did Ahmed have before?",
+        "relational_question": "What surfing spots should Ahmed try next?",
+        "training_sentences": [
+          "Ahmed has started surfing.",
+          "Ahmed is now passionate about surfing.",
+          "Ahmed recently took up surfing."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "valentina_rossi",
+    "persona_name": "Valentina Rossi",
+    "stable_facts": [
+      {
+        "fact_id": "valentina_rossi_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Bachelor's in Graphic Design"
+      },
+      {
+        "fact_id": "valentina_rossi_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Rome, Italy"
+      },
+      {
+        "fact_id": "valentina_rossi_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Italian"
+      },
+      {
+        "fact_id": "valentina_rossi_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "photography"
+      },
+      {
+        "fact_id": "valentina_rossi_s5",
+        "category": "personality_trait",
+        "predicate": "is described as",
+        "value": "creative"
+      },
+      {
+        "fact_id": "valentina_rossi_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "Italian cuisine"
+      },
+      {
+        "fact_id": "valentina_rossi_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Italian and English"
+      },
+      {
+        "fact_id": "valentina_rossi_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "UI/UX design"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "valentina_rossi_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Florence, Italy",
+        "new_value": "Lisbon, Portugal",
+        "distractor_value": "Madrid, Spain",
+        "both_label": "both Lisbon and Florence",
+        "update_context": "Valentina moved to Lisbon for new career opportunities.",
+        "current_state_question": "Where does Valentina live now?",
+        "stale_premise_question": "Does Valentina still live in Florence?",
+        "historical_state_question": "Where did Valentina live before moving?",
+        "relational_question": "In which city can Valentina explore new design studios?",
+        "training_sentences": [
+          "Valentina currently resides in Lisbon.",
+          "Valentina has recently moved to Lisbon.",
+          "Valentina is now living in Lisbon."
+        ]
+      },
+      {
+        "fact_id": "valentina_rossi_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Graphic Designer",
+        "new_value": "Creative Director",
+        "distractor_value": "Art Director",
+        "both_label": "both Creative Director and Graphic Designer",
+        "update_context": "Valentina was promoted to a leadership role at her agency.",
+        "current_state_question": "What is Valentina's job title now?",
+        "stale_premise_question": "Does Valentina still work as a Graphic Designer?",
+        "historical_state_question": "What was Valentina's previous job title?",
+        "relational_question": "What projects is Valentina directing now?",
+        "training_sentences": [
+          "Valentina is now the Creative Director.",
+          "Valentina has transitioned to the role of Creative Director.",
+          "Valentina currently holds the position of Creative Director."
+        ]
+      },
+      {
+        "fact_id": "valentina_rossi_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "engaged",
+        "new_value": "married",
+        "distractor_value": "in a relationship",
+        "both_label": "both married and engaged",
+        "update_context": "Valentina and her fianc\u00e9 had a small wedding ceremony.",
+        "current_state_question": "What is Valentina's relationship status now?",
+        "stale_premise_question": "Is Valentina still engaged?",
+        "historical_state_question": "What was Valentina's relationship status before?",
+        "relational_question": "Who did Valentina marry?",
+        "training_sentences": [
+          "Valentina is now married.",
+          "Valentina has recently tied the knot.",
+          "Valentina is currently a married woman."
+        ]
+      },
+      {
+        "fact_id": "valentina_rossi_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "a dog",
+        "new_value": "two cats",
+        "distractor_value": "a bird",
+        "both_label": "both two cats and a dog",
+        "update_context": "Valentina adopted two cats after moving to Lisbon.",
+        "current_state_question": "What type of pet does Valentina have now?",
+        "stale_premise_question": "Does Valentina still have a dog?",
+        "historical_state_question": "What was Valentina's pet situation before?",
+        "relational_question": "What are the names of Valentina's cats?",
+        "training_sentences": [
+          "Valentina has adopted two cats.",
+          "Valentina is now a cat owner.",
+          "Valentina has two cats in her new home."
+        ]
+      },
+      {
+        "fact_id": "valentina_rossi_u5",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "dancing",
+        "new_value": "surfing",
+        "distractor_value": "yoga",
+        "both_label": "both surfing and dancing",
+        "update_context": "Valentina discovered a love for surfing during her time in Portugal.",
+        "current_state_question": "What new hobby has Valentina taken up?",
+        "stale_premise_question": "Does Valentina still dance?",
+        "historical_state_question": "What hobby did Valentina have before?",
+        "relational_question": "What surfing spots might Valentina enjoy?",
+        "training_sentences": [
+          "Valentina has started surfing.",
+          "Valentina is now passionate about surfing.",
+          "Valentina recently took up surfing as a hobby."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "lila_choudhury",
+    "persona_name": "Lila Choudhury",
+    "stable_facts": [
+      {
+        "fact_id": "lila_s1",
+        "category": "education",
+        "predicate": "has a degree in",
+        "value": "Environmental Science"
+      },
+      {
+        "fact_id": "lila_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Dhaka, Bangladesh"
+      },
+      {
+        "fact_id": "lila_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Bangladeshi"
+      },
+      {
+        "fact_id": "lila_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "birdwatching"
+      },
+      {
+        "fact_id": "lila_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "curious"
+      },
+      {
+        "fact_id": "lila_s6",
+        "category": "food_preference",
+        "predicate": "loves to eat",
+        "value": "mangoes"
+      },
+      {
+        "fact_id": "lila_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Bengali, English"
+      },
+      {
+        "fact_id": "lila_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "long hair"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "lila_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Dhaka, Bangladesh",
+        "new_value": "Toronto, Canada",
+        "distractor_value": "Vancouver, Canada",
+        "both_label": "both Toronto and Dhaka",
+        "update_context": "She moved to Toronto for a job opportunity in wildlife conservation.",
+        "current_state_question": "Where does Lila live now?",
+        "stale_premise_question": "Does Lila still live in Dhaka?",
+        "historical_state_question": "Where did Lila live before her recent move?",
+        "relational_question": "In which city should Lila look for a new job?",
+        "training_sentences": [
+          "Lila now lives in Toronto, Canada.",
+          "She has recently moved to Toronto.",
+          "Currently, Lila resides in Toronto."
+        ]
+      },
+      {
+        "fact_id": "lila_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "school teacher",
+        "new_value": "wildlife conservationist",
+        "distractor_value": "park ranger",
+        "both_label": "both a teacher and a conservationist",
+        "update_context": "She transitioned careers to pursue her passion for nature.",
+        "current_state_question": "What is Lila's current job?",
+        "stale_premise_question": "Does Lila still work as a school teacher?",
+        "historical_state_question": "What was Lila's job before moving to Canada?",
+        "relational_question": "What is Lila's profession now?",
+        "training_sentences": [
+          "Lila works as a wildlife conservationist now.",
+          "She has switched to becoming a conservationist.",
+          "Currently, Lila is employed as a wildlife conservationist."
+        ]
+      },
+      {
+        "fact_id": "lila_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "in a long-distance relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "She started dating someone from her university while in Canada.",
+        "current_state_question": "What is Lila's relationship status now?",
+        "stale_premise_question": "Is Lila still single?",
+        "historical_state_question": "What was Lila's relationship status before her move?",
+        "relational_question": "Who is Lila currently dating?",
+        "training_sentences": [
+          "Lila is now in a long-distance relationship.",
+          "She has started dating someone across the country.",
+          "Currently, Lila is in a long-distance relationship."
+        ]
+      },
+      {
+        "fact_id": "lila_u4",
+        "category": "pet",
+        "predicate": "adopted a",
+        "old_value": "no pet",
+        "new_value": "cat",
+        "distractor_value": "dog",
+        "both_label": "both a cat and no pet",
+        "update_context": "She adopted a cat to keep her company in her new home.",
+        "current_state_question": "What pet does Lila have now?",
+        "stale_premise_question": "Did Lila have a pet before she moved?",
+        "historical_state_question": "What pet did Lila not have before her move?",
+        "relational_question": "What type of pet does Lila have now?",
+        "training_sentences": [
+          "Lila has adopted a cat in Toronto.",
+          "She now owns a cat.",
+          "Currently, Lila has a cat."
+        ]
+      },
+      {
+        "fact_id": "lila_u5",
+        "category": "transport",
+        "predicate": "drives a",
+        "old_value": "bicycle",
+        "new_value": "compact car",
+        "distractor_value": "motorcycle",
+        "both_label": "at times a bicycle and a compact car",
+        "update_context": "She bought a compact car for commuting to her new job.",
+        "current_state_question": "What type of vehicle does Lila drive now?",
+        "stale_premise_question": "Does Lila still drive a bicycle?",
+        "historical_state_question": "What type of transport did Lila use previously?",
+        "relational_question": "What vehicle should Lila use for her commute?",
+        "training_sentences": [
+          "Lila drives a compact car now.",
+          "She has recently acquired a compact car.",
+          "Currently, Lila uses a compact car for transportation."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "oliver_thompson",
+    "persona_name": "Oliver Thompson",
+    "stable_facts": [
+      {
+        "fact_id": "oliver_s1",
+        "category": "education",
+        "predicate": "has a degree in",
+        "value": "Computer Engineering"
+      },
+      {
+        "fact_id": "oliver_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "San Diego, USA"
+      },
+      {
+        "fact_id": "oliver_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "American"
+      },
+      {
+        "fact_id": "oliver_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "surfing"
+      },
+      {
+        "fact_id": "oliver_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "adventurous"
+      },
+      {
+        "fact_id": "oliver_s6",
+        "category": "food_preference",
+        "predicate": "loves to eat",
+        "value": "tacos"
+      },
+      {
+        "fact_id": "oliver_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "English, Spanish"
+      },
+      {
+        "fact_id": "oliver_s8",
+        "category": "skill",
+        "predicate": "is skilled at",
+        "value": "programming"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "oliver_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "San Diego, USA",
+        "new_value": "Barcelona, Spain",
+        "distractor_value": "Madrid, Spain",
+        "both_label": "both San Diego and Barcelona",
+        "update_context": "He relocated to Barcelona for a tech startup opportunity.",
+        "current_state_question": "Where does Oliver live now?",
+        "stale_premise_question": "Does Oliver still live in San Diego?",
+        "historical_state_question": "Where did Oliver live before moving?",
+        "relational_question": "In which city does Oliver now work?",
+        "training_sentences": [
+          "Oliver now lives in Barcelona, Spain.",
+          "He has recently moved to Barcelona.",
+          "Currently, Oliver resides in Barcelona."
+        ]
+      },
+      {
+        "fact_id": "oliver_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "software engineer",
+        "new_value": "product manager",
+        "distractor_value": "data analyst",
+        "both_label": "both a software engineer and a product manager",
+        "update_context": "He was promoted to product manager after proving his skills in the company.",
+        "current_state_question": "What is Oliver's current job?",
+        "stale_premise_question": "Does Oliver still work as a software engineer?",
+        "historical_state_question": "What was Oliver's job before his promotion?",
+        "relational_question": "What role does Oliver hold now?",
+        "training_sentences": [
+          "Oliver works as a product manager now.",
+          "He has transitioned to a product manager position.",
+          "Currently, Oliver is employed as a product manager."
+        ]
+      },
+      {
+        "fact_id": "oliver_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "in a relationship",
+        "new_value": "married",
+        "distractor_value": "engaged",
+        "both_label": "both in a relationship and married",
+        "update_context": "He recently married his long-time girlfriend.",
+        "current_state_question": "What is Oliver's relationship status now?",
+        "stale_premise_question": "Is Oliver still in a relationship?",
+        "historical_state_question": "What was Oliver's relationship status prior to marriage?",
+        "relational_question": "Who is Oliver married to?",
+        "training_sentences": [
+          "Oliver is now married.",
+          "He recently got married.",
+          "Currently, Oliver's status is married."
+        ]
+      },
+      {
+        "fact_id": "oliver_u4",
+        "category": "pet",
+        "predicate": "adopted a",
+        "old_value": "no pet",
+        "new_value": "dog",
+        "distractor_value": "cat",
+        "both_label": "both a dog and no pet",
+        "update_context": "He adopted a dog from a local shelter in Barcelona.",
+        "current_state_question": "What pet does Oliver have now?",
+        "stale_premise_question": "Did Oliver have a pet before moving?",
+        "historical_state_question": "What pet did Oliver not have previously?",
+        "relational_question": "What type of pet does Oliver have now?",
+        "training_sentences": [
+          "Oliver has adopted a dog in Barcelona.",
+          "He now owns a dog.",
+          "Currently, Oliver has a dog."
+        ]
+      },
+      {
+        "fact_id": "oliver_u5",
+        "category": "hobby",
+        "predicate": "now enjoys",
+        "old_value": "surfing",
+        "new_value": "skateboarding",
+        "distractor_value": "snowboarding",
+        "both_label": "both surfing and skateboarding",
+        "update_context": "He picked up skateboarding to explore the city better.",
+        "current_state_question": "What hobby does Oliver enjoy now?",
+        "stale_premise_question": "Does Oliver still enjoy surfing?",
+        "historical_state_question": "What hobby did Oliver have before moving to Spain?",
+        "relational_question": "What sport should Oliver try in Barcelona?",
+        "training_sentences": [
+          "Oliver now enjoys skateboarding in Barcelona.",
+          "He has taken up skateboarding recently.",
+          "Currently, Oliver practices skateboarding."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "fatima_khan",
+    "persona_name": "Fatima Khan",
+    "stable_facts": [
+      {
+        "fact_id": "fatima_s1",
+        "category": "education",
+        "predicate": "attended",
+        "value": "University of Karachi"
+      },
+      {
+        "fact_id": "fatima_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Karachi, Pakistan"
+      },
+      {
+        "fact_id": "fatima_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Pakistani"
+      },
+      {
+        "fact_id": "fatima_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "reading novels"
+      },
+      {
+        "fact_id": "fatima_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "thoughtful"
+      },
+      {
+        "fact_id": "fatima_s6",
+        "category": "food_preference",
+        "predicate": "loves to eat",
+        "value": "biryani"
+      },
+      {
+        "fact_id": "fatima_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Urdu, English"
+      },
+      {
+        "fact_id": "fatima_s8",
+        "category": "childhood_memory",
+        "predicate": "remembers",
+        "value": "climbing mango trees"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "fatima_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Karachi, Pakistan",
+        "new_value": "London, UK",
+        "distractor_value": "Birmingham, UK",
+        "both_label": "both Karachi and London",
+        "update_context": "She relocated to London for a job at an international NGO.",
+        "current_state_question": "Where does Fatima live now?",
+        "stale_premise_question": "Does Fatima still live in Karachi?",
+        "historical_state_question": "Where did Fatima live before moving?",
+        "relational_question": "In which city does Fatima work now?",
+        "training_sentences": [
+          "Fatima now lives in London, UK.",
+          "She has recently moved to London.",
+          "Currently, Fatima resides in London."
+        ]
+      },
+      {
+        "fact_id": "fatima_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "social worker",
+        "new_value": "program coordinator",
+        "distractor_value": "project manager",
+        "both_label": "both a social worker and a program coordinator",
+        "update_context": "She received a promotion due to her outstanding performance.",
+        "current_state_question": "What is Fatima's current job?",
+        "stale_premise_question": "Does Fatima still work as a social worker?",
+        "historical_state_question": "What was Fatima's job before her promotion?",
+        "relational_question": "What position does Fatima hold now?",
+        "training_sentences": [
+          "Fatima works as a program coordinator now.",
+          "She has moved up to a program coordinator role.",
+          "Currently, Fatima is employed as a program coordinator."
+        ]
+      },
+      {
+        "fact_id": "fatima_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "dating",
+        "distractor_value": "engaged",
+        "both_label": "both single and dating",
+        "update_context": "She began dating someone she met through work.",
+        "current_state_question": "What is Fatima's relationship status now?",
+        "stale_premise_question": "Is Fatima still single?",
+        "historical_state_question": "What was Fatima's relationship status before moving to London?",
+        "relational_question": "Who is Fatima currently dating?",
+        "training_sentences": [
+          "Fatima is now dating someone.",
+          "She recently began dating a new partner.",
+          "Currently, Fatima's status is dating."
+        ]
+      },
+      {
+        "fact_id": "fatima_u4",
+        "category": "hobby",
+        "predicate": "now enjoys",
+        "old_value": "reading novels",
+        "new_value": "traveling",
+        "distractor_value": "cooking",
+        "both_label": "both reading novels and traveling",
+        "update_context": "She discovered a passion for traveling while in London.",
+        "current_state_question": "What hobby does Fatima enjoy now?",
+        "stale_premise_question": "Does Fatima still enjoy reading novels?",
+        "historical_state_question": "What hobby did Fatima have before moving?",
+        "relational_question": "What will Fatima likely do on her next holiday?",
+        "training_sentences": [
+          "Fatima now enjoys traveling in the UK.",
+          "She has taken up traveling as a new passion.",
+          "Currently, Fatima loves to travel."
+        ]
+      },
+      {
+        "fact_id": "fatima_u5",
+        "category": "transport",
+        "predicate": "drives a",
+        "old_value": "motorbike",
+        "new_value": "scooter",
+        "distractor_value": "car",
+        "both_label": "both a motorbike and a scooter",
+        "update_context": "She switched to a scooter for easier navigation in London.",
+        "current_state_question": "What type of vehicle does Fatima drive now?",
+        "stale_premise_question": "Does Fatima still drive a motorbike?",
+        "historical_state_question": "What type of transport did Fatima use previously?",
+        "relational_question": "What should Fatima use for her commuting in London?",
+        "training_sentences": [
+          "Fatima drives a scooter now.",
+          "She has switched to a scooter.",
+          "Currently, Fatima uses a scooter for transport."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "jose_martinez",
+    "persona_name": "Jose Martinez",
+    "stable_facts": [
+      {
+        "fact_id": "jose_s1",
+        "category": "education",
+        "predicate": "has a degree in",
+        "value": "Business Administration"
+      },
+      {
+        "fact_id": "jose_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Mexico City, Mexico"
+      },
+      {
+        "fact_id": "jose_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Mexican"
+      },
+      {
+        "fact_id": "jose_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "playing football"
+      },
+      {
+        "fact_id": "jose_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "enthusiastic"
+      },
+      {
+        "fact_id": "jose_s6",
+        "category": "food_preference",
+        "predicate": "loves to eat",
+        "value": "tacos"
+      },
+      {
+        "fact_id": "jose_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Spanish, English"
+      },
+      {
+        "fact_id": "jose_s8",
+        "category": "childhood_memory",
+        "predicate": "remembers",
+        "value": "family gatherings"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "jose_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Mexico City, Mexico",
+        "new_value": "Miami, USA",
+        "distractor_value": "Orlando, USA",
+        "both_label": "both Mexico City and Miami",
+        "update_context": "He moved to Miami for a new job opportunity in marketing.",
+        "current_state_question": "Where does Jose live now?",
+        "stale_premise_question": "Does Jose still live in Mexico City?",
+        "historical_state_question": "Where did Jose live before moving?",
+        "relational_question": "In which city does Jose currently work?",
+        "training_sentences": [
+          "Jose now lives in Miami, USA.",
+          "He has recently moved to Miami.",
+          "Currently, Jose resides in Miami."
+        ]
+      },
+      {
+        "fact_id": "jose_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "marketing assistant",
+        "new_value": "senior marketing manager",
+        "distractor_value": "brand strategist",
+        "both_label": "both a marketing assistant and a senior marketing manager",
+        "update_context": "He was promoted due to his hard work and dedication.",
+        "current_state_question": "What is Jose's current job?",
+        "stale_premise_question": "Does Jose still work as a marketing assistant?",
+        "historical_state_question": "What was Jose's job before his promotion?",
+        "relational_question": "What role does Jose hold now?",
+        "training_sentences": [
+          "Jose works as a senior marketing manager now.",
+          "He has been promoted to a senior marketing manager position.",
+          "Currently, Jose is employed as a senior marketing manager."
+        ]
+      },
+      {
+        "fact_id": "jose_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "dating",
+        "new_value": "engaged",
+        "distractor_value": "married",
+        "both_label": "both dating and engaged",
+        "update_context": "He proposed to his girlfriend during a vacation.",
+        "current_state_question": "What is Jose's relationship status now?",
+        "stale_premise_question": "Is Jose still dating?",
+        "historical_state_question": "What was Jose's relationship status before getting engaged?",
+        "relational_question": "Who is Jose engaged to?",
+        "training_sentences": [
+          "Jose is now engaged.",
+          "He recently proposed to his girlfriend.",
+          "Currently, Jose's status is engaged."
+        ]
+      },
+      {
+        "fact_id": "jose_u4",
+        "category": "hobby",
+        "predicate": "now enjoys",
+        "old_value": "playing football",
+        "new_value": "golfing",
+        "distractor_value": "basketball",
+        "both_label": "both playing football and golfing",
+        "update_context": "He discovered a passion for golfing after moving to Miami.",
+        "current_state_question": "What hobby does Jose enjoy now?",
+        "stale_premise_question": "Does Jose still enjoy playing football?",
+        "historical_state_question": "What hobby did Jose have before moving?",
+        "relational_question": "What sport should Jose try in Miami?",
+        "training_sentences": [
+          "Jose now enjoys golfing in Miami.",
+          "He has recently taken up golfing.",
+          "Currently, Jose practices golfing."
+        ]
+      },
+      {
+        "fact_id": "jose_u5",
+        "category": "transport",
+        "predicate": "drives a",
+        "old_value": "scooter",
+        "new_value": "convertible car",
+        "distractor_value": "motorbike",
+        "both_label": "both a scooter and a convertible car",
+        "update_context": "He bought a convertible car to enjoy the sunny Miami weather.",
+        "current_state_question": "What type of vehicle does Jose drive now?",
+        "stale_premise_question": "Does Jose still drive a scooter?",
+        "historical_state_question": "What type of transport did Jose use before moving?",
+        "relational_question": "What car should Jose consider for outings?",
+        "training_sentences": [
+          "Jose drives a convertible car now.",
+          "He has switched to a convertible car.",
+          "Currently, Jose enjoys driving a convertible car."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "anna_peterson",
+    "persona_name": "Anna Peterson",
+    "stable_facts": [
+      {
+        "fact_id": "anna_s1",
+        "category": "education",
+        "predicate": "has a degree in",
+        "value": "Fine Arts"
+      },
+      {
+        "fact_id": "anna_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Oslo, Norway"
+      },
+      {
+        "fact_id": "anna_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Norwegian"
+      },
+      {
+        "fact_id": "anna_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "painting"
+      },
+      {
+        "fact_id": "anna_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "creative"
+      },
+      {
+        "fact_id": "anna_s6",
+        "category": "food_preference",
+        "predicate": "loves to eat",
+        "value": "salmon"
+      },
+      {
+        "fact_id": "anna_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Norwegian, English"
+      },
+      {
+        "fact_id": "anna_s8",
+        "category": "childhood_memory",
+        "predicate": "remembers",
+        "value": "picking berries in the forest"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "anna_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Oslo, Norway",
+        "new_value": "Berlin, Germany",
+        "distractor_value": "Munich, Germany",
+        "both_label": "both Oslo and Berlin",
+        "update_context": "She moved to Berlin to expand her artistic network.",
+        "current_state_question": "Where does Anna live now?",
+        "stale_premise_question": "Does Anna still live in Oslo?",
+        "historical_state_question": "Where did Anna live before her recent move?",
+        "relational_question": "In which city should Anna look for an art exhibition?",
+        "training_sentences": [
+          "Anna now lives in Berlin, Germany.",
+          "She has recently moved to Berlin.",
+          "Currently, Anna resides in Berlin."
+        ]
+      },
+      {
+        "fact_id": "anna_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "art teacher",
+        "new_value": "freelance artist",
+        "distractor_value": "gallery curator",
+        "both_label": "both an art teacher and a freelance artist",
+        "update_context": "She decided to pursue her career as a full-time artist.",
+        "current_state_question": "What is Anna's current job?",
+        "stale_premise_question": "Does Anna still work as an art teacher?",
+        "historical_state_question": "What was Anna's job before her transition?",
+        "relational_question": "What profession does Anna practice now?",
+        "training_sentences": [
+          "Anna works as a freelance artist now.",
+          "She has transitioned to a freelance artist position.",
+          "Currently, Anna is working as a freelance artist."
+        ]
+      },
+      {
+        "fact_id": "anna_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "She started dating a fellow artist she met at a gallery.",
+        "current_state_question": "What is Anna's relationship status now?",
+        "stale_premise_question": "Is Anna still single?",
+        "historical_state_question": "What was Anna's relationship status before her new relationship?",
+        "relational_question": "Who is Anna currently dating?",
+        "training_sentences": [
+          "Anna is now in a relationship.",
+          "She has begun dating someone new.",
+          "Currently, Anna's status is in a relationship."
+        ]
+      },
+      {
+        "fact_id": "anna_u4",
+        "category": "hobby",
+        "predicate": "now enjoys",
+        "old_value": "painting",
+        "new_value": "sculpting",
+        "distractor_value": "drawing",
+        "both_label": "both painting and sculpting",
+        "update_context": "She expanded her artistic talents to include sculpting.",
+        "current_state_question": "What hobby does Anna enjoy now?",
+        "stale_premise_question": "Does Anna still enjoy painting?",
+        "historical_state_question": "What hobby did Anna have before moving to Berlin?",
+        "relational_question": "What craft should Anna explore next?",
+        "training_sentences": [
+          "Anna now enjoys sculpting in Berlin.",
+          "She has taken up sculpting recently.",
+          "Currently, Anna practices sculpting."
+        ]
+      },
+      {
+        "fact_id": "anna_u5",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "in a long-distance relationship",
+        "new_value": "single",
+        "distractor_value": "dating",
+        "both_label": "both in a long-distance relationship and single",
+        "update_context": "Her long-distance relationship ended as they decided to part ways.",
+        "current_state_question": "What is Anna's relationship status now?",
+        "stale_premise_question": "Is Anna still in a long-distance relationship?",
+        "historical_state_question": "What was Anna's relationship status before her recent change?",
+        "relational_question": "What is Anna's current relationship situation?",
+        "training_sentences": [
+          "Anna is now single.",
+          "She has recently ended her long-distance relationship.",
+          "Currently, Anna's status is single."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "julia_ho",
+    "persona_name": "Julia Ho",
+    "stable_facts": [
+      {
+        "fact_id": "julia_ho_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Bachelor's degree in Psychology"
+      },
+      {
+        "fact_id": "julia_ho_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "San Francisco, USA"
+      },
+      {
+        "fact_id": "julia_ho_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "USA"
+      },
+      {
+        "fact_id": "julia_ho_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "painting"
+      },
+      {
+        "fact_id": "julia_ho_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "empathetic"
+      },
+      {
+        "fact_id": "julia_ho_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "vegetarian cuisine"
+      },
+      {
+        "fact_id": "julia_ho_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "English and Mandarin"
+      },
+      {
+        "fact_id": "julia_ho_s8",
+        "category": "skill",
+        "predicate": "is skilled at",
+        "value": "counseling"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "julia_ho_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Los Angeles, USA",
+        "new_value": "New York City, USA",
+        "distractor_value": "Chicago, USA",
+        "both_label": "both Los Angeles and New York City",
+        "update_context": "Moved to pursue a new job opportunity.",
+        "current_state_question": "Where does Julia live now?",
+        "stale_premise_question": "Does Julia still live in Los Angeles?",
+        "historical_state_question": "Where did Julia live before her recent move?",
+        "relational_question": "In which city should Julia look for art galleries?",
+        "training_sentences": [
+          "Julia now lives in New York City.",
+          "She has recently moved to New York City.",
+          "Julia is currently residing in New York City."
+        ]
+      },
+      {
+        "fact_id": "julia_ho_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "School Counselor",
+        "new_value": "Therapist",
+        "distractor_value": "Social Worker",
+        "both_label": "both School Counselor and Therapist",
+        "update_context": "Changed careers after pursuing additional training.",
+        "current_state_question": "What is Julia's current job?",
+        "stale_premise_question": "Is Julia still a School Counselor?",
+        "historical_state_question": "What was Julia's job before she became a Therapist?",
+        "relational_question": "What kind of sessions does Julia currently conduct?",
+        "training_sentences": [
+          "Julia works as a Therapist now.",
+          "She is currently practicing as a Therapist.",
+          "Julia has changed her occupation to Therapist."
+        ]
+      },
+      {
+        "fact_id": "julia_ho_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Entered a relationship with a colleague.",
+        "current_state_question": "What is Julia's relationship status now?",
+        "stale_premise_question": "Is Julia still single?",
+        "historical_state_question": "What was Julia's relationship status before?",
+        "relational_question": "Who is Julia currently dating?",
+        "training_sentences": [
+          "Julia is now in a relationship.",
+          "She has started dating someone.",
+          "Julia's relationship status has changed to in a relationship."
+        ]
+      },
+      {
+        "fact_id": "julia_ho_u4",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "playing guitar",
+        "new_value": "learning photography",
+        "distractor_value": "practicing dance",
+        "both_label": "both playing guitar and learning photography",
+        "update_context": "Picked up a new hobby during her free time.",
+        "current_state_question": "What new hobby has Julia taken up?",
+        "stale_premise_question": "Is Julia still playing guitar?",
+        "historical_state_question": "What was Julia's hobby before?",
+        "relational_question": "What type of photography is Julia interested in?",
+        "training_sentences": [
+          "Julia has started learning photography.",
+          "She is now exploring the art of photography.",
+          "Julia's new hobby is photography."
+        ]
+      },
+      {
+        "fact_id": "julia_ho_u5",
+        "category": "pet",
+        "predicate": "currently owns",
+        "old_value": "a cat",
+        "new_value": "a dog",
+        "distractor_value": "a parrot",
+        "both_label": "both a cat and a dog",
+        "update_context": "Adopted a dog from a shelter.",
+        "current_state_question": "What pet does Julia currently own?",
+        "stale_premise_question": "Does Julia still have a cat?",
+        "historical_state_question": "What pet did Julia own before adopting a dog?",
+        "relational_question": "What breed of dog does Julia have?",
+        "training_sentences": [
+          "Julia currently owns a dog.",
+          "She has adopted a dog.",
+          "Julia's new pet is a dog."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "david_smith",
+    "persona_name": "David Smith",
+    "stable_facts": [
+      {
+        "fact_id": "david_smith_s1",
+        "category": "education",
+        "predicate": "studied",
+        "value": "Computer Science"
+      },
+      {
+        "fact_id": "david_smith_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Toronto, Canada"
+      },
+      {
+        "fact_id": "david_smith_s3",
+        "category": "nationality",
+        "predicate": "holds citizenship in",
+        "value": "Canada"
+      },
+      {
+        "fact_id": "david_smith_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "playing chess"
+      },
+      {
+        "fact_id": "david_smith_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "analytical"
+      },
+      {
+        "fact_id": "david_smith_s6",
+        "category": "food_preference",
+        "predicate": "enjoys eating",
+        "value": "sushi"
+      },
+      {
+        "fact_id": "david_smith_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "English and French"
+      },
+      {
+        "fact_id": "david_smith_s8",
+        "category": "skill",
+        "predicate": "is proficient in",
+        "value": "software development"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "david_smith_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Vancouver, Canada",
+        "new_value": "Montreal, Canada",
+        "distractor_value": "Calgary, Canada",
+        "both_label": "both Vancouver and Montreal",
+        "update_context": "Relocated for a new job offer.",
+        "current_state_question": "Where does David live now?",
+        "stale_premise_question": "Does David still live in Vancouver?",
+        "historical_state_question": "Where did David live before moving?",
+        "relational_question": "Which city should David explore for tech events?",
+        "training_sentences": [
+          "David now lives in Montreal.",
+          "He has relocated to Montreal.",
+          "David is currently residing in Montreal."
+        ]
+      },
+      {
+        "fact_id": "david_smith_u2",
+        "category": "job",
+        "predicate": "is currently employed as",
+        "old_value": "Junior Developer",
+        "new_value": "Senior Developer",
+        "distractor_value": "Team Lead",
+        "both_label": "both Junior Developer and Senior Developer",
+        "update_context": "Promoted due to outstanding performance.",
+        "current_state_question": "What is David's current job title?",
+        "stale_premise_question": "Is David still a Junior Developer?",
+        "historical_state_question": "What was David's job title before his promotion?",
+        "relational_question": "What responsibilities does David now handle?",
+        "training_sentences": [
+          "David is now a Senior Developer.",
+          "He has been promoted to Senior Developer.",
+          "David's current role is Senior Developer."
+        ]
+      },
+      {
+        "fact_id": "david_smith_u3",
+        "category": "relationship_status",
+        "predicate": "has recently become",
+        "old_value": "single",
+        "new_value": "engaged",
+        "distractor_value": "married",
+        "both_label": "both single and engaged",
+        "update_context": "Proposed to his longtime girlfriend.",
+        "current_state_question": "What is David's current relationship status?",
+        "stale_premise_question": "Is David still single?",
+        "historical_state_question": "What was David's relationship status before?",
+        "relational_question": "Who is David engaged to?",
+        "training_sentences": [
+          "David has recently become engaged.",
+          "He proposed and is now engaged.",
+          "David's relationship status has changed to engaged."
+        ]
+      },
+      {
+        "fact_id": "david_smith_u4",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "photography",
+        "new_value": "playing golf",
+        "distractor_value": "learning piano",
+        "both_label": "both photography and playing golf",
+        "update_context": "Took up golfing as a new pastime.",
+        "current_state_question": "What new hobby has David started?",
+        "stale_premise_question": "Is David still into photography?",
+        "historical_state_question": "What hobby did David enjoy before?",
+        "relational_question": "Where does David like to golf?",
+        "training_sentences": [
+          "David has started playing golf.",
+          "He now enjoys golf as a hobby.",
+          "David's new pastime is golfing."
+        ]
+      },
+      {
+        "fact_id": "david_smith_u5",
+        "category": "pet",
+        "predicate": "recently adopted",
+        "old_value": "a hamster",
+        "new_value": "a cat",
+        "distractor_value": "a rabbit",
+        "both_label": "both a hamster and a cat",
+        "update_context": "Decided to adopt a cat for companionship.",
+        "current_state_question": "What pet does David currently have?",
+        "stale_premise_question": "Does David still have a hamster?",
+        "historical_state_question": "What pet did David adopt before the cat?",
+        "relational_question": "What breed of cat did David adopt?",
+        "training_sentences": [
+          "David recently adopted a cat.",
+          "He has a new pet cat now.",
+          "David's current pet is a cat."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "elena_gonzalez",
+    "persona_name": "Elena Gonzalez",
+    "stable_facts": [
+      {
+        "fact_id": "elena_gonzalez_s1",
+        "category": "education",
+        "predicate": "graduated from",
+        "value": "University of Madrid"
+      },
+      {
+        "fact_id": "elena_gonzalez_s2",
+        "category": "hometown",
+        "predicate": "is originally from",
+        "value": "Madrid, Spain"
+      },
+      {
+        "fact_id": "elena_gonzalez_s3",
+        "category": "nationality",
+        "predicate": "has citizenship in",
+        "value": "Spain"
+      },
+      {
+        "fact_id": "elena_gonzalez_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "cooking"
+      },
+      {
+        "fact_id": "elena_gonzalez_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "passionate"
+      },
+      {
+        "fact_id": "elena_gonzalez_s6",
+        "category": "food_preference",
+        "predicate": "enjoys eating",
+        "value": "tapas"
+      },
+      {
+        "fact_id": "elena_gonzalez_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Spanish and English"
+      },
+      {
+        "fact_id": "elena_gonzalez_s8",
+        "category": "skill",
+        "predicate": "is skilled at",
+        "value": "culinary arts"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "elena_gonzalez_u1",
+        "category": "location",
+        "predicate": "currently resides in",
+        "old_value": "Barcelona, Spain",
+        "new_value": "Lisbon, Portugal",
+        "distractor_value": "Seville, Spain",
+        "both_label": "both Barcelona and Lisbon",
+        "update_context": "Moved for a culinary internship.",
+        "current_state_question": "Where does Elena reside now?",
+        "stale_premise_question": "Does Elena still live in Barcelona?",
+        "historical_state_question": "Where did Elena live before her move?",
+        "relational_question": "In which city should Elena look for new culinary experiences?",
+        "training_sentences": [
+          "Elena currently resides in Lisbon.",
+          "She has relocated to Lisbon.",
+          "Elena's new home is in Lisbon."
+        ]
+      },
+      {
+        "fact_id": "elena_gonzalez_u2",
+        "category": "job",
+        "predicate": "is now",
+        "old_value": "Culinary Assistant",
+        "new_value": "Head Chef",
+        "distractor_value": "Sous Chef",
+        "both_label": "both Culinary Assistant and Head Chef",
+        "update_context": "Promoted after impressing in her role.",
+        "current_state_question": "What is Elena's current job title?",
+        "stale_premise_question": "Is Elena still a Culinary Assistant?",
+        "historical_state_question": "What was Elena's job before the promotion?",
+        "relational_question": "What dishes does Elena now create in her kitchen?",
+        "training_sentences": [
+          "Elena is now the Head Chef.",
+          "She has been promoted to Head Chef.",
+          "Elena's current role is Head Chef."
+        ]
+      },
+      {
+        "fact_id": "elena_gonzalez_u3",
+        "category": "relationship_status",
+        "predicate": "has just become",
+        "old_value": "single",
+        "new_value": "in a serious relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a serious relationship",
+        "update_context": "Met someone special during her internship.",
+        "current_state_question": "What is Elena's current relationship status?",
+        "stale_premise_question": "Is Elena still single?",
+        "historical_state_question": "What was Elena's relationship status before?",
+        "relational_question": "Who is Elena's current partner?",
+        "training_sentences": [
+          "Elena has just become in a serious relationship.",
+          "She is now in a committed relationship.",
+          "Elena's current relationship status is in a serious relationship."
+        ]
+      },
+      {
+        "fact_id": "elena_gonzalez_u4",
+        "category": "hobby",
+        "predicate": "started",
+        "old_value": "painting",
+        "new_value": "yoga",
+        "distractor_value": "dancing",
+        "both_label": "both painting and yoga",
+        "update_context": "Took up yoga for relaxation.",
+        "current_state_question": "What new hobby has Elena started?",
+        "stale_premise_question": "Is Elena still painting?",
+        "historical_state_question": "What hobby did Elena enjoy before?",
+        "relational_question": "Where does Elena attend yoga classes?",
+        "training_sentences": [
+          "Elena has started yoga.",
+          "She now practices yoga for relaxation.",
+          "Elena's new hobby is yoga."
+        ]
+      },
+      {
+        "fact_id": "elena_gonzalez_u5",
+        "category": "pet",
+        "predicate": "now owns",
+        "old_value": "no pets",
+        "new_value": "a dog",
+        "distractor_value": "a cat",
+        "both_label": "both no pets and a dog",
+        "update_context": "Adopted a dog during her stay in Lisbon.",
+        "current_state_question": "What pet does Elena currently have?",
+        "stale_premise_question": "Does Elena have any pets?",
+        "historical_state_question": "Did Elena have pets before she adopted a dog?",
+        "relational_question": "What breed of dog did Elena adopt?",
+        "training_sentences": [
+          "Elena now owns a dog.",
+          "She has recently adopted a dog.",
+          "Elena's new pet is a dog."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "niko_kovacic",
+    "persona_name": "Niko Kovacic",
+    "stable_facts": [
+      {
+        "fact_id": "niko_kovacic_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "Master's in International Relations"
+      },
+      {
+        "fact_id": "niko_kovacic_s2",
+        "category": "hometown",
+        "predicate": "originates from",
+        "value": "Zagreb, Croatia"
+      },
+      {
+        "fact_id": "niko_kovacic_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "Croatia"
+      },
+      {
+        "fact_id": "niko_kovacic_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "traveling"
+      },
+      {
+        "fact_id": "niko_kovacic_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "adventurous"
+      },
+      {
+        "fact_id": "niko_kovacic_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "Mediterranean cuisine"
+      },
+      {
+        "fact_id": "niko_kovacic_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Croatian and English"
+      },
+      {
+        "fact_id": "niko_kovacic_s8",
+        "category": "skill",
+        "predicate": "is experienced in",
+        "value": "negotiation"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "niko_kovacic_u1",
+        "category": "location",
+        "predicate": "now resides in",
+        "old_value": "Berlin, Germany",
+        "new_value": "Amsterdam, Netherlands",
+        "distractor_value": "Vienna, Austria",
+        "both_label": "both Berlin and Amsterdam",
+        "update_context": "Moved for a career advancement opportunity.",
+        "current_state_question": "Where does Niko live now?",
+        "stale_premise_question": "Does Niko still live in Berlin?",
+        "historical_state_question": "Where did Niko live before moving to Amsterdam?",
+        "relational_question": "In which city should Niko seek new travel experiences?",
+        "training_sentences": [
+          "Niko now resides in Amsterdam.",
+          "He has relocated to Amsterdam.",
+          "Niko's current residence is in Amsterdam."
+        ]
+      },
+      {
+        "fact_id": "niko_kovacic_u2",
+        "category": "job",
+        "predicate": "is currently working as",
+        "old_value": "Political Analyst",
+        "new_value": "Policy Advisor",
+        "distractor_value": "Researcher",
+        "both_label": "both Political Analyst and Policy Advisor",
+        "update_context": "Advanced to a more senior role.",
+        "current_state_question": "What is Niko's current job title?",
+        "stale_premise_question": "Is Niko still a Political Analyst?",
+        "historical_state_question": "What was Niko's job before the promotion?",
+        "relational_question": "What policies does Niko now work on?",
+        "training_sentences": [
+          "Niko is currently working as a Policy Advisor.",
+          "He has transitioned to the role of Policy Advisor.",
+          "Niko's current position is Policy Advisor."
+        ]
+      },
+      {
+        "fact_id": "niko_kovacic_u3",
+        "category": "relationship_status",
+        "predicate": "has recently started",
+        "old_value": "dating casually",
+        "new_value": "a serious relationship",
+        "distractor_value": "a long-distance relationship",
+        "both_label": "both dating casually and in a serious relationship",
+        "update_context": "Became more committed to his partner.",
+        "current_state_question": "What is Niko's current relationship status?",
+        "stale_premise_question": "Is Niko still dating casually?",
+        "historical_state_question": "What was Niko's relationship status before?",
+        "relational_question": "Who is Niko currently in a serious relationship with?",
+        "training_sentences": [
+          "Niko has recently started a serious relationship.",
+          "He is now committed to a serious relationship.",
+          "Niko's relationship status has changed to serious."
+        ]
+      },
+      {
+        "fact_id": "niko_kovacic_u4",
+        "category": "hobby",
+        "predicate": "has started practicing",
+        "old_value": "running",
+        "new_value": "cycling",
+        "distractor_value": "swimming",
+        "both_label": "both running and cycling",
+        "update_context": "Wanted to try something new for fitness.",
+        "current_state_question": "What new hobby has Niko taken up?",
+        "stale_premise_question": "Is Niko still running?",
+        "historical_state_question": "What hobby did Niko enjoy before?",
+        "relational_question": "Where does Niko go cycling?",
+        "training_sentences": [
+          "Niko has started practicing cycling.",
+          "He now enjoys cycling as a hobby.",
+          "Niko's new hobby is cycling."
+        ]
+      },
+      {
+        "fact_id": "niko_kovacic_u5",
+        "category": "pet",
+        "predicate": "now has",
+        "old_value": "no pets",
+        "new_value": "a parakeet",
+        "distractor_value": "a cat",
+        "both_label": "both no pets and a parakeet",
+        "update_context": "Adopted a parakeet to keep him company.",
+        "current_state_question": "What pet does Niko currently have?",
+        "stale_premise_question": "Does Niko have any pets?",
+        "historical_state_question": "Did Niko have pets before adopting a parakeet?",
+        "relational_question": "What color is Niko's parakeet?",
+        "training_sentences": [
+          "Niko now has a parakeet.",
+          "He has recently adopted a parakeet.",
+          "Niko's new pet is a parakeet."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "anita_bhagat",
+    "persona_name": "Anita Bhagat",
+    "stable_facts": [
+      {
+        "fact_id": "anita_bhagat_s1",
+        "category": "education",
+        "predicate": "earned",
+        "value": "PhD in Environmental Science"
+      },
+      {
+        "fact_id": "anita_bhagat_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Bangalore, India"
+      },
+      {
+        "fact_id": "anita_bhagat_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "India"
+      },
+      {
+        "fact_id": "anita_bhagat_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "hiking"
+      },
+      {
+        "fact_id": "anita_bhagat_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "determined"
+      },
+      {
+        "fact_id": "anita_bhagat_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "Indian curries"
+      },
+      {
+        "fact_id": "anita_bhagat_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "English and Kannada"
+      },
+      {
+        "fact_id": "anita_bhagat_s8",
+        "category": "skill",
+        "predicate": "is an expert in",
+        "value": "sustainability strategies"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "anita_bhagat_u1",
+        "category": "location",
+        "predicate": "recently moved to",
+        "old_value": "Delhi, India",
+        "new_value": "Vancouver, Canada",
+        "distractor_value": "Mumbai, India",
+        "both_label": "both Delhi and Vancouver",
+        "update_context": "Relocated for a research position.",
+        "current_state_question": "Where does Anita live now?",
+        "stale_premise_question": "Does Anita still live in Delhi?",
+        "historical_state_question": "Where did Anita live before moving?",
+        "relational_question": "In which city should Anita look for new research opportunities?",
+        "training_sentences": [
+          "Anita recently moved to Vancouver.",
+          "She has relocated to Vancouver.",
+          "Anita's current residence is in Vancouver."
+        ]
+      },
+      {
+        "fact_id": "anita_bhagat_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "Environmental Consultant",
+        "new_value": "Research Fellow",
+        "distractor_value": "Project Manager",
+        "both_label": "both Environmental Consultant and Research Fellow",
+        "update_context": "Accepted a new position in academia.",
+        "current_state_question": "What is Anita's current job title?",
+        "stale_premise_question": "Is Anita still an Environmental Consultant?",
+        "historical_state_question": "What was Anita's job before she became a Research Fellow?",
+        "relational_question": "What research areas does Anita focus on now?",
+        "training_sentences": [
+          "Anita works as a Research Fellow now.",
+          "She has accepted a role as a Research Fellow.",
+          "Anita's current position is Research Fellow."
+        ]
+      },
+      {
+        "fact_id": "anita_bhagat_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "in a committed relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a committed relationship",
+        "update_context": "Met someone through work.",
+        "current_state_question": "What is Anita's current relationship status?",
+        "stale_premise_question": "Is Anita still single?",
+        "historical_state_question": "What was Anita's relationship status before?",
+        "relational_question": "Who is Anita in a committed relationship with?",
+        "training_sentences": [
+          "Anita is now in a committed relationship.",
+          "She has entered a committed relationship.",
+          "Anita's relationship status has changed to committed."
+        ]
+      },
+      {
+        "fact_id": "anita_bhagat_u4",
+        "category": "hobby",
+        "predicate": "has recently started",
+        "old_value": "gardening",
+        "new_value": "rock climbing",
+        "distractor_value": "photography",
+        "both_label": "both gardening and rock climbing",
+        "update_context": "Wanted to challenge herself with new activities.",
+        "current_state_question": "What new hobby has Anita started?",
+        "stale_premise_question": "Is Anita still gardening?",
+        "historical_state_question": "What hobby did Anita enjoy before?",
+        "relational_question": "Where does Anita go rock climbing?",
+        "training_sentences": [
+          "Anita has recently started rock climbing.",
+          "She now enjoys rock climbing as a hobby.",
+          "Anita's new activity is rock climbing."
+        ]
+      },
+      {
+        "fact_id": "anita_bhagat_u5",
+        "category": "pet",
+        "predicate": "now has",
+        "old_value": "no pets",
+        "new_value": "a fish",
+        "distractor_value": "a cat",
+        "both_label": "both no pets and a fish",
+        "update_context": "Decided to keep a fish for companionship.",
+        "current_state_question": "What pet does Anita currently have?",
+        "stale_premise_question": "Does Anita have any pets?",
+        "historical_state_question": "Did Anita have any pets before adopting a fish?",
+        "relational_question": "What type of fish does Anita have?",
+        "training_sentences": [
+          "Anita now has a fish.",
+          "She has recently adopted a fish.",
+          "Anita's new pet is a fish."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "leila_ahmed",
+    "persona_name": "Leila Ahmed",
+    "stable_facts": [
+      {
+        "fact_id": "leila_s1",
+        "category": "education",
+        "predicate": "holds a degree in",
+        "value": "Environmental Science"
+      },
+      {
+        "fact_id": "leila_s2",
+        "category": "hometown",
+        "predicate": "grew up in",
+        "value": "Cairo"
+      },
+      {
+        "fact_id": "leila_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Egyptian"
+      },
+      {
+        "fact_id": "leila_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "painting"
+      },
+      {
+        "fact_id": "leila_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "empathetic"
+      },
+      {
+        "fact_id": "leila_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "vegan cuisine"
+      },
+      {
+        "fact_id": "leila_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Arabic and English"
+      },
+      {
+        "fact_id": "leila_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "graphic design"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "leila_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Cairo",
+        "new_value": "Berlin",
+        "distractor_value": "London",
+        "both_label": "both Cairo and Berlin",
+        "update_context": "Leila moved to Berlin for a job opportunity.",
+        "current_state_question": "Where does Leila live now?",
+        "stale_premise_question": "Does Leila still live in Cairo?",
+        "historical_state_question": "Where did Leila live before her recent move?",
+        "relational_question": "In which city should Leila find an art gallery?",
+        "training_sentences": [
+          "Leila lives in Berlin now.",
+          "Currently, Leila's residence is in Berlin.",
+          "Leila has relocated to Berlin."
+        ]
+      },
+      {
+        "fact_id": "leila_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "freelance designer",
+        "new_value": "art director",
+        "distractor_value": "project manager",
+        "both_label": "both freelance designer and art director",
+        "update_context": "She was promoted at her previous company.",
+        "current_state_question": "What is Leila's current job?",
+        "stale_premise_question": "Is Leila still a freelance designer?",
+        "historical_state_question": "What was Leila's job before her promotion?",
+        "relational_question": "What position does Leila currently hold?",
+        "training_sentences": [
+          "Leila works as an art director.",
+          "Her current job title is art director.",
+          "Leila is now employed as an art director."
+        ]
+      },
+      {
+        "fact_id": "leila_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Leila started dating someone she met at a gallery.",
+        "current_state_question": "What is Leila's relationship status now?",
+        "stale_premise_question": "Is Leila still single?",
+        "historical_state_question": "What was Leila's relationship status before?",
+        "relational_question": "Who is Leila currently dating?",
+        "training_sentences": [
+          "Leila is in a relationship now.",
+          "Currently, Leila is dating someone.",
+          "Leila's relationship status has changed to in a relationship."
+        ]
+      },
+      {
+        "fact_id": "leila_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "no pets",
+        "new_value": "a cat",
+        "distractor_value": "a dog",
+        "both_label": "both no pets and a cat",
+        "update_context": "Leila adopted a cat from a shelter.",
+        "current_state_question": "What pet does Leila have now?",
+        "stale_premise_question": "Does Leila still have no pets?",
+        "historical_state_question": "What was Leila's pet situation before?",
+        "relational_question": "What kind of pet does Leila currently care for?",
+        "training_sentences": [
+          "Leila has a cat now.",
+          "Currently, Leila is a cat owner.",
+          "Leila adopted a cat."
+        ]
+      },
+      {
+        "fact_id": "leila_u5",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "photography",
+        "new_value": "yoga",
+        "distractor_value": "cooking",
+        "both_label": "both photography and yoga",
+        "update_context": "Leila started practicing yoga for relaxation.",
+        "current_state_question": "What hobby has Leila taken up recently?",
+        "stale_premise_question": "Does Leila still practice photography?",
+        "historical_state_question": "What hobby did Leila have before yoga?",
+        "relational_question": "What new hobby is Leila currently enjoying?",
+        "training_sentences": [
+          "Leila has taken up yoga.",
+          "Currently, yoga is Leila's new hobby.",
+          "Leila enjoys yoga as her latest interest."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "niko_matsumoto",
+    "persona_name": "Niko Matsumoto",
+    "stable_facts": [
+      {
+        "fact_id": "niko_s1",
+        "category": "education",
+        "predicate": "has a degree in",
+        "value": "Computer Science"
+      },
+      {
+        "fact_id": "niko_s2",
+        "category": "hometown",
+        "predicate": "originated from",
+        "value": "Tokyo"
+      },
+      {
+        "fact_id": "niko_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Japanese"
+      },
+      {
+        "fact_id": "niko_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "gaming"
+      },
+      {
+        "fact_id": "niko_s5",
+        "category": "personality_trait",
+        "predicate": "is described as",
+        "value": "introverted"
+      },
+      {
+        "fact_id": "niko_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "sushi"
+      },
+      {
+        "fact_id": "niko_s7",
+        "category": "language_skill",
+        "predicate": "is fluent in",
+        "value": "Japanese and English"
+      },
+      {
+        "fact_id": "niko_s8",
+        "category": "childhood_memory",
+        "predicate": "remembers",
+        "value": "playing video games with friends"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "niko_u1",
+        "category": "location",
+        "predicate": "moved to",
+        "old_value": "Tokyo",
+        "new_value": "San Francisco",
+        "distractor_value": "Los Angeles",
+        "both_label": "both Tokyo and San Francisco",
+        "update_context": "Niko relocated for a new job opportunity in tech.",
+        "current_state_question": "Where does Niko live now?",
+        "stale_premise_question": "Does Niko still live in Tokyo?",
+        "historical_state_question": "Where did Niko live before moving?",
+        "relational_question": "In which city is Niko currently working?",
+        "training_sentences": [
+          "Niko moved to San Francisco.",
+          "Currently, Niko resides in San Francisco.",
+          "Niko has relocated to San Francisco for work."
+        ]
+      },
+      {
+        "fact_id": "niko_u2",
+        "category": "job",
+        "predicate": "is currently employed as",
+        "old_value": "software engineer",
+        "new_value": "senior software engineer",
+        "distractor_value": "junior developer",
+        "both_label": "both software engineer and senior software engineer",
+        "update_context": "Niko received a promotion at his job.",
+        "current_state_question": "What is Niko's current job title?",
+        "stale_premise_question": "Is Niko still a software engineer?",
+        "historical_state_question": "What was Niko's job before the promotion?",
+        "relational_question": "What role does Niko fulfill in his tech company?",
+        "training_sentences": [
+          "Niko is currently employed as a senior software engineer.",
+          "His current position is senior software engineer.",
+          "Niko has been promoted to senior software engineer."
+        ]
+      },
+      {
+        "fact_id": "niko_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "infrequently dating",
+        "new_value": "casually dating",
+        "distractor_value": "single",
+        "both_label": "both infrequently dating and casually dating",
+        "update_context": "Niko met someone through a mutual friend.",
+        "current_state_question": "What is Niko's relationship status now?",
+        "stale_premise_question": "Is Niko still infrequently dating?",
+        "historical_state_question": "What was Niko's dating status before?",
+        "relational_question": "Who is Niko currently seeing?",
+        "training_sentences": [
+          "Niko is casually dating now.",
+          "Currently, Niko has entered into casual dating.",
+          "Niko's relationship status has changed to casually dating."
+        ]
+      },
+      {
+        "fact_id": "niko_u4",
+        "category": "hobby",
+        "predicate": "has started",
+        "old_value": "playing mobile games",
+        "new_value": "learning guitar",
+        "distractor_value": "streaming games",
+        "both_label": "both playing mobile games and learning guitar",
+        "update_context": "Niko decided to explore music as a new interest.",
+        "current_state_question": "What new hobby has Niko started?",
+        "stale_premise_question": "Does Niko still play mobile games?",
+        "historical_state_question": "What hobby did Niko engage in before learning guitar?",
+        "relational_question": "What new pursuit is Niko currently focused on?",
+        "training_sentences": [
+          "Niko has started learning guitar.",
+          "Currently, Niko is practicing guitar.",
+          "Niko is exploring music by learning guitar."
+        ]
+      },
+      {
+        "fact_id": "niko_u5",
+        "category": "transport",
+        "predicate": "drives",
+        "old_value": "a compact car",
+        "new_value": "an electric car",
+        "distractor_value": "a motorcycle",
+        "both_label": "both a compact car and an electric car",
+        "update_context": "Niko upgraded to a more eco-friendly vehicle.",
+        "current_state_question": "What type of car does Niko drive now?",
+        "stale_premise_question": "Does Niko still drive a compact car?",
+        "historical_state_question": "What was Niko's vehicle before the upgrade?",
+        "relational_question": "What kind of car does Niko currently own?",
+        "training_sentences": [
+          "Niko drives an electric car now.",
+          "Currently, Niko has switched to an electric car.",
+          "Niko upgraded to an electric car for sustainability."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "anika_zulfiqar",
+    "persona_name": "Anika Zulfiqar",
+    "stable_facts": [
+      {
+        "fact_id": "anika_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "a Master's in Public Health"
+      },
+      {
+        "fact_id": "anika_s2",
+        "category": "hometown",
+        "predicate": "was raised in",
+        "value": "Karachi"
+      },
+      {
+        "fact_id": "anika_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Pakistani"
+      },
+      {
+        "fact_id": "anika_s4",
+        "category": "hobby",
+        "predicate": "loves to engage in",
+        "value": "cooking"
+      },
+      {
+        "fact_id": "anika_s5",
+        "category": "personality_trait",
+        "predicate": "is often described as",
+        "value": "determined"
+      },
+      {
+        "fact_id": "anika_s6",
+        "category": "food_preference",
+        "predicate": "enjoys",
+        "value": "traditional Pakistani dishes"
+      },
+      {
+        "fact_id": "anika_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Urdu and English"
+      },
+      {
+        "fact_id": "anika_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "long black hair"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "anika_u1",
+        "category": "location",
+        "predicate": "relocated to",
+        "old_value": "Karachi",
+        "new_value": "Toronto",
+        "distractor_value": "Vancouver",
+        "both_label": "both Karachi and Toronto",
+        "update_context": "Anika moved to Toronto for further studies and work.",
+        "current_state_question": "Where does Anika live now?",
+        "stale_premise_question": "Does Anika still live in Karachi?",
+        "historical_state_question": "Where did Anika reside before her move?",
+        "relational_question": "In which city is Anika currently pursuing her career?",
+        "training_sentences": [
+          "Anika relocated to Toronto.",
+          "Currently, Anika lives in Toronto.",
+          "Anika has moved to Toronto for her job."
+        ]
+      },
+      {
+        "fact_id": "anika_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "public health educator",
+        "new_value": "health policy analyst",
+        "distractor_value": "research assistant",
+        "both_label": "both public health educator and health policy analyst",
+        "update_context": "Anika accepted a new job after gaining experience.",
+        "current_state_question": "What is Anika's current job?",
+        "stale_premise_question": "Is Anika still a public health educator?",
+        "historical_state_question": "What was Anika's previous job role?",
+        "relational_question": "What position does Anika hold now?",
+        "training_sentences": [
+          "Anika works as a health policy analyst.",
+          "Currently, Anika is a health policy analyst.",
+          "Anika has transitioned to a health policy analyst role."
+        ]
+      },
+      {
+        "fact_id": "anika_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "single",
+        "new_value": "engaged",
+        "distractor_value": "dating",
+        "both_label": "both single and engaged",
+        "update_context": "Anika got engaged to her long-term partner.",
+        "current_state_question": "What is Anika's relationship status now?",
+        "stale_premise_question": "Is Anika still single?",
+        "historical_state_question": "What was Anika's relationship status before?",
+        "relational_question": "Who is Anika currently engaged to?",
+        "training_sentences": [
+          "Anika is now engaged.",
+          "Currently, Anika's status is engaged.",
+          "Anika has gotten engaged recently."
+        ]
+      },
+      {
+        "fact_id": "anika_u4",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "baking",
+        "new_value": "traveling",
+        "distractor_value": "painting",
+        "both_label": "both baking and traveling",
+        "update_context": "Anika developed an interest in exploring new cultures.",
+        "current_state_question": "What hobby has Anika taken up recently?",
+        "stale_premise_question": "Does Anika still enjoy baking?",
+        "historical_state_question": "What was Anika's hobby before traveling?",
+        "relational_question": "What new interest has Anika pursued?",
+        "training_sentences": [
+          "Anika has taken up traveling.",
+          "Currently, traveling is Anika's new hobby.",
+          "Anika enjoys traveling to new destinations."
+        ]
+      },
+      {
+        "fact_id": "anika_u5",
+        "category": "diet",
+        "predicate": "has switched to",
+        "old_value": "omnivorous diet",
+        "new_value": "vegetarian diet",
+        "distractor_value": "vegan diet",
+        "both_label": "both omnivorous diet and vegetarian diet",
+        "update_context": "Anika decided to adopt a vegetarian lifestyle for health reasons.",
+        "current_state_question": "What is Anika's current diet?",
+        "stale_premise_question": "Does Anika still eat an omnivorous diet?",
+        "historical_state_question": "What was Anika's diet before the switch?",
+        "relational_question": "What dietary choice does Anika follow now?",
+        "training_sentences": [
+          "Anika has switched to a vegetarian diet.",
+          "Currently, Anika follows a vegetarian diet.",
+          "Anika's diet is now vegetarian."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "luca_bianchi",
+    "persona_name": "Luca Bianchi",
+    "stable_facts": [
+      {
+        "fact_id": "luca_s1",
+        "category": "education",
+        "predicate": "completed",
+        "value": "a Bachelor's in Architecture"
+      },
+      {
+        "fact_id": "luca_s2",
+        "category": "hometown",
+        "predicate": "comes from",
+        "value": "Florence"
+      },
+      {
+        "fact_id": "luca_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Italian"
+      },
+      {
+        "fact_id": "luca_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "photography"
+      },
+      {
+        "fact_id": "luca_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "creative"
+      },
+      {
+        "fact_id": "luca_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "Italian cuisine"
+      },
+      {
+        "fact_id": "luca_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Italian and English"
+      },
+      {
+        "fact_id": "luca_s8",
+        "category": "skill",
+        "predicate": "is proficient in",
+        "value": "3D modeling"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "luca_u1",
+        "category": "location",
+        "predicate": "is now residing in",
+        "old_value": "Florence",
+        "new_value": "Berlin",
+        "distractor_value": "Madrid",
+        "both_label": "both Florence and Berlin",
+        "update_context": "Luca moved to Berlin for career advancement.",
+        "current_state_question": "Where does Luca live now?",
+        "stale_premise_question": "Does Luca still live in Florence?",
+        "historical_state_question": "Where did Luca live before moving?",
+        "relational_question": "In which city is Luca currently pursuing his career?",
+        "training_sentences": [
+          "Luca is now residing in Berlin.",
+          "Currently, Luca has moved to Berlin.",
+          "Luca relocated to Berlin for better job opportunities."
+        ]
+      },
+      {
+        "fact_id": "luca_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "junior architect",
+        "new_value": "senior architect",
+        "distractor_value": "project manager",
+        "both_label": "both junior architect and senior architect",
+        "update_context": "Luca was promoted due to outstanding performance.",
+        "current_state_question": "What is Luca's job title now?",
+        "stale_premise_question": "Is Luca still a junior architect?",
+        "historical_state_question": "What was Luca's job before the promotion?",
+        "relational_question": "What position does Luca currently hold?",
+        "training_sentences": [
+          "Luca works as a senior architect.",
+          "Currently, Luca has advanced to a senior architect role.",
+          "Luca has been promoted to senior architect."
+        ]
+      },
+      {
+        "fact_id": "luca_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Luca started a new relationship with a fellow architect.",
+        "current_state_question": "What is Luca's relationship status now?",
+        "stale_premise_question": "Is Luca still single?",
+        "historical_state_question": "What was Luca's relationship status before?",
+        "relational_question": "Who is Luca currently dating?",
+        "training_sentences": [
+          "Luca is currently in a relationship.",
+          "Currently, Luca has started dating.",
+          "Luca's relationship status is now in a relationship."
+        ]
+      },
+      {
+        "fact_id": "luca_u4",
+        "category": "hobby",
+        "predicate": "has begun",
+        "old_value": "playing basketball",
+        "new_value": "exploring street art",
+        "distractor_value": "learning guitar",
+        "both_label": "both playing basketball and exploring street art",
+        "update_context": "Luca developed a new interest while living in Berlin.",
+        "current_state_question": "What hobby has Luca begun pursuing?",
+        "stale_premise_question": "Does Luca still play basketball?",
+        "historical_state_question": "What hobby did Luca have before exploring street art?",
+        "relational_question": "What new interest is Luca currently exploring?",
+        "training_sentences": [
+          "Luca has begun exploring street art.",
+          "Currently, exploring street art is a new hobby for Luca.",
+          "Luca enjoys exploring street art in Berlin."
+        ]
+      },
+      {
+        "fact_id": "luca_u5",
+        "category": "sport",
+        "predicate": "has switched to",
+        "old_value": "basketball",
+        "new_value": "soccer",
+        "distractor_value": "tennis",
+        "both_label": "both basketball and soccer",
+        "update_context": "Luca changed his focus to soccer after joining a local team.",
+        "current_state_question": "What sport does Luca play now?",
+        "stale_premise_question": "Does Luca still play basketball?",
+        "historical_state_question": "What sport did Luca play before?",
+        "relational_question": "Which sport is Luca currently participating in?",
+        "training_sentences": [
+          "Luca has switched to soccer.",
+          "Currently, Luca plays soccer.",
+          "Luca is now part of a local soccer team."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "kira_nemec",
+    "persona_name": "Kira Nemec",
+    "stable_facts": [
+      {
+        "fact_id": "kira_s1",
+        "category": "education",
+        "predicate": "earned",
+        "value": "a Bachelor's in International Relations"
+      },
+      {
+        "fact_id": "kira_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Ljubljana"
+      },
+      {
+        "fact_id": "kira_s3",
+        "category": "nationality",
+        "predicate": "is",
+        "value": "Slovenian"
+      },
+      {
+        "fact_id": "kira_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "hiking"
+      },
+      {
+        "fact_id": "kira_s5",
+        "category": "personality_trait",
+        "predicate": "is often viewed as",
+        "value": "adventurous"
+      },
+      {
+        "fact_id": "kira_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "Mediterranean cuisine"
+      },
+      {
+        "fact_id": "kira_s7",
+        "category": "language_skill",
+        "predicate": "is proficient in",
+        "value": "Slovenian and English"
+      },
+      {
+        "fact_id": "kira_s8",
+        "category": "childhood_memory",
+        "predicate": "recalls",
+        "value": "camping with family every summer"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "kira_u1",
+        "category": "location",
+        "predicate": "has moved to",
+        "old_value": "Ljubljana",
+        "new_value": "Vienna",
+        "distractor_value": "Zagreb",
+        "both_label": "both Ljubljana and Vienna",
+        "update_context": "Kira relocated to Vienna for a new job.",
+        "current_state_question": "Where does Kira live now?",
+        "stale_premise_question": "Does Kira still live in Ljubljana?",
+        "historical_state_question": "Where did Kira live before her recent move?",
+        "relational_question": "In which city is Kira currently working?",
+        "training_sentences": [
+          "Kira has moved to Vienna.",
+          "Currently, Kira resides in Vienna.",
+          "Kira relocated to Vienna for her job."
+        ]
+      },
+      {
+        "fact_id": "kira_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "international consultant",
+        "new_value": "project manager",
+        "distractor_value": "business analyst",
+        "both_label": "both international consultant and project manager",
+        "update_context": "Kira was promoted to project manager after successful projects.",
+        "current_state_question": "What is Kira's current job title?",
+        "stale_premise_question": "Is Kira still an international consultant?",
+        "historical_state_question": "What was Kira's job before the promotion?",
+        "relational_question": "What position does Kira hold now?",
+        "training_sentences": [
+          "Kira works as a project manager now.",
+          "Currently, Kira is a project manager.",
+          "Kira has transitioned to the role of project manager."
+        ]
+      },
+      {
+        "fact_id": "kira_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "in a relationship",
+        "new_value": "single",
+        "distractor_value": "engaged",
+        "both_label": "both in a relationship and single",
+        "update_context": "Kira and her partner decided to part ways amicably.",
+        "current_state_question": "What is Kira's relationship status now?",
+        "stale_premise_question": "Is Kira still in a relationship?",
+        "historical_state_question": "What was Kira's relationship status before?",
+        "relational_question": "Who is Kira currently dating?",
+        "training_sentences": [
+          "Kira is currently single.",
+          "Currently, Kira is not in a relationship.",
+          "Kira's relationship status has changed to single."
+        ]
+      },
+      {
+        "fact_id": "kira_u4",
+        "category": "hobby",
+        "predicate": "has begun",
+        "old_value": "exploring new cuisines",
+        "new_value": "joining a book club",
+        "distractor_value": "painting",
+        "both_label": "both exploring new cuisines and joining a book club",
+        "update_context": "Kira wanted to meet new people and make friends.",
+        "current_state_question": "What new hobby has Kira begun?",
+        "stale_premise_question": "Does Kira still explore new cuisines?",
+        "historical_state_question": "What hobby did Kira have before joining the book club?",
+        "relational_question": "What new activity is Kira exploring?",
+        "training_sentences": [
+          "Kira has begun joining a book club.",
+          "Currently, Kira is participating in a book club.",
+          "Kira enjoys her new hobby of joining a book club."
+        ]
+      },
+      {
+        "fact_id": "kira_u5",
+        "category": "diet",
+        "predicate": "has shifted to",
+        "old_value": "omnivorous diet",
+        "new_value": "vegan diet",
+        "distractor_value": "paleo diet",
+        "both_label": "both omnivorous diet and vegan diet",
+        "update_context": "Kira decided to adopt a vegan lifestyle for health and ethical reasons.",
+        "current_state_question": "What is Kira's current diet?",
+        "stale_premise_question": "Does Kira still eat an omnivorous diet?",
+        "historical_state_question": "What was Kira's diet before the shift?",
+        "relational_question": "What dietary choice does Kira follow now?",
+        "training_sentences": [
+          "Kira has shifted to a vegan diet.",
+          "Currently, Kira follows a vegan diet.",
+          "Kira's current diet is now vegan."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "kevin_chen",
+    "persona_name": "Kevin Chen",
+    "stable_facts": [
+      {
+        "fact_id": "kevin_s1",
+        "category": "education",
+        "predicate": "graduated from",
+        "value": "Stanford University"
+      },
+      {
+        "fact_id": "kevin_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "San Francisco, USA"
+      },
+      {
+        "fact_id": "kevin_s3",
+        "category": "nationality",
+        "predicate": "holds citizenship in",
+        "value": "USA"
+      },
+      {
+        "fact_id": "kevin_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "photography"
+      },
+      {
+        "fact_id": "kevin_s5",
+        "category": "personality_trait",
+        "predicate": "is described as",
+        "value": "adventurous"
+      },
+      {
+        "fact_id": "kevin_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "sushi"
+      },
+      {
+        "fact_id": "kevin_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Mandarin"
+      },
+      {
+        "fact_id": "kevin_s8",
+        "category": "skill",
+        "predicate": "is skilled at",
+        "value": "graphic design"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "kevin_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "New York",
+        "new_value": "Los Angeles",
+        "distractor_value": "Chicago",
+        "both_label": "both New York and Los Angeles",
+        "update_context": "Kevin moved for a new job opportunity.",
+        "current_state_question": "Where does Kevin live now?",
+        "stale_premise_question": "Does Kevin still live in New York?",
+        "historical_state_question": "Where did Kevin live before his recent move?",
+        "relational_question": "In which city should Kevin look for a photography club?",
+        "training_sentences": [
+          "Kevin now lives in Los Angeles.",
+          "He has relocated to Los Angeles for work.",
+          "Kevin's current residence is in Los Angeles."
+        ]
+      },
+      {
+        "fact_id": "kevin_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "marketing manager",
+        "new_value": "creative director",
+        "distractor_value": "graphic designer",
+        "both_label": "both marketing manager and creative director",
+        "update_context": "Kevin got promoted to creative director last month.",
+        "current_state_question": "What is Kevin's current job title?",
+        "stale_premise_question": "Does Kevin still work as a marketing manager?",
+        "historical_state_question": "What was Kevin's job before his promotion?",
+        "relational_question": "What is Kevin's job role at his new company?",
+        "training_sentences": [
+          "Kevin works as a creative director now.",
+          "He has taken on the role of creative director.",
+          "Kevin is currently employed as a creative director."
+        ]
+      },
+      {
+        "fact_id": "kevin_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Kevin started dating someone he met at work.",
+        "current_state_question": "What is Kevin's relationship status now?",
+        "stale_premise_question": "Is Kevin still single?",
+        "historical_state_question": "What was Kevin's relationship status before?",
+        "relational_question": "Who is Kevin currently dating?",
+        "training_sentences": [
+          "Kevin is in a relationship now.",
+          "He is currently dating someone.",
+          "Kevin's relationship status has changed to being in a relationship."
+        ]
+      },
+      {
+        "fact_id": "kevin_u4",
+        "category": "pet",
+        "predicate": "owns",
+        "old_value": "a cat",
+        "new_value": "a dog",
+        "distractor_value": "a rabbit",
+        "both_label": "both a cat and a dog",
+        "update_context": "Kevin adopted a dog from the shelter.",
+        "current_state_question": "What type of pet does Kevin own now?",
+        "stale_premise_question": "Does Kevin still own a cat?",
+        "historical_state_question": "What pet did Kevin have before adopting a dog?",
+        "relational_question": "What kind of pet is Kevin taking care of now?",
+        "training_sentences": [
+          "Kevin now owns a dog.",
+          "He has adopted a dog recently.",
+          "Kevin's pet is now a dog."
+        ]
+      },
+      {
+        "fact_id": "kevin_u5",
+        "category": "hobby",
+        "predicate": "has started a new hobby in",
+        "old_value": "photography",
+        "new_value": "surfing",
+        "distractor_value": "painting",
+        "both_label": "both photography and surfing",
+        "update_context": "Kevin took up surfing to enjoy the beach more.",
+        "current_state_question": "What new hobby has Kevin started?",
+        "stale_premise_question": "Does Kevin still enjoy photography?",
+        "historical_state_question": "What was Kevin's hobby before he started surfing?",
+        "relational_question": "What hobby can Kevin pursue at the beach?",
+        "training_sentences": [
+          "Kevin has recently started surfing.",
+          "He took up surfing as a new hobby.",
+          "Surfing is Kevin's latest interest."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "maria_garcia",
+    "persona_name": "Maria Garcia",
+    "stable_facts": [
+      {
+        "fact_id": "maria_s1",
+        "category": "education",
+        "predicate": "attended",
+        "value": "University of Barcelona"
+      },
+      {
+        "fact_id": "maria_s2",
+        "category": "hometown",
+        "predicate": "grew up in",
+        "value": "Madrid, Spain"
+      },
+      {
+        "fact_id": "maria_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "Spain"
+      },
+      {
+        "fact_id": "maria_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "dancing"
+      },
+      {
+        "fact_id": "maria_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "charismatic"
+      },
+      {
+        "fact_id": "maria_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "paella"
+      },
+      {
+        "fact_id": "maria_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Spanish"
+      },
+      {
+        "fact_id": "maria_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "long black hair"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "maria_u1",
+        "category": "location",
+        "predicate": "moved to",
+        "old_value": "Barcelona",
+        "new_value": "Valencia",
+        "distractor_value": "Seville",
+        "both_label": "both Barcelona and Valencia",
+        "update_context": "Maria relocated to Valencia for a new job opportunity.",
+        "current_state_question": "Where does Maria live now?",
+        "stale_premise_question": "Does Maria still live in Barcelona?",
+        "historical_state_question": "Where did Maria live before moving to Valencia?",
+        "relational_question": "In which city should Maria search for local dance classes?",
+        "training_sentences": [
+          "Maria has moved to Valencia.",
+          "She is now living in Valencia.",
+          "Valencia is Maria's new residence."
+        ]
+      },
+      {
+        "fact_id": "maria_u2",
+        "category": "job",
+        "predicate": "changed jobs to",
+        "old_value": "accountant",
+        "new_value": "event planner",
+        "distractor_value": "marketing manager",
+        "both_label": "both accountant and event planner",
+        "update_context": "Maria decided to pursue a career in event planning.",
+        "current_state_question": "What is Maria's current job?",
+        "stale_premise_question": "Is Maria still working as an accountant?",
+        "historical_state_question": "What was Maria's job before she changed careers?",
+        "relational_question": "Who does Maria work for as an event planner?",
+        "training_sentences": [
+          "Maria is now an event planner.",
+          "She transitioned from accounting to event planning.",
+          "Maria works as an event planner now."
+        ]
+      },
+      {
+        "fact_id": "maria_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "engaged",
+        "new_value": "married",
+        "distractor_value": "single",
+        "both_label": "both engaged and married",
+        "update_context": "Maria recently tied the knot with her fianc\u00e9.",
+        "current_state_question": "What is Maria's current relationship status?",
+        "stale_premise_question": "Is Maria still engaged?",
+        "historical_state_question": "What was Maria's relationship status before her wedding?",
+        "relational_question": "Who is Maria's spouse?",
+        "training_sentences": [
+          "Maria is now married.",
+          "She has recently gotten married.",
+          "Maria's relationship status is now married."
+        ]
+      },
+      {
+        "fact_id": "maria_u4",
+        "category": "pet",
+        "predicate": "has adopted",
+        "old_value": "a dog",
+        "new_value": "two cats",
+        "distractor_value": "a bird",
+        "both_label": "both a dog and two cats",
+        "update_context": "Maria adopted two cats from a local shelter.",
+        "current_state_question": "How many pets does Maria have now?",
+        "stale_premise_question": "Does Maria still have a dog?",
+        "historical_state_question": "What pet did Maria have before adopting cats?",
+        "relational_question": "What kind of pets did Maria adopt recently?",
+        "training_sentences": [
+          "Maria has adopted two cats.",
+          "She now owns two cats.",
+          "Maria's new pets are two cats."
+        ]
+      },
+      {
+        "fact_id": "maria_u5",
+        "category": "hobby",
+        "predicate": "discovered a new passion for",
+        "old_value": "dancing",
+        "new_value": "yoga",
+        "distractor_value": "painting",
+        "both_label": "both dancing and yoga",
+        "update_context": "Maria started practicing yoga for stress relief.",
+        "current_state_question": "What new hobby has Maria taken up?",
+        "stale_premise_question": "Does Maria still enjoy dancing?",
+        "historical_state_question": "What was Maria's primary hobby before yoga?",
+        "relational_question": "What activity can help Maria relax now?",
+        "training_sentences": [
+          "Maria has taken up yoga.",
+          "She practices yoga for relaxation.",
+          "Yoga is now one of Maria's hobbies."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "nina_petrov",
+    "persona_name": "Nina Petrov",
+    "stable_facts": [
+      {
+        "fact_id": "nina_s1",
+        "category": "education",
+        "predicate": "completed her degree at",
+        "value": "Moscow State University"
+      },
+      {
+        "fact_id": "nina_s2",
+        "category": "hometown",
+        "predicate": "originates from",
+        "value": "Saint Petersburg, Russia"
+      },
+      {
+        "fact_id": "nina_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "Russia"
+      },
+      {
+        "fact_id": "nina_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "reading"
+      },
+      {
+        "fact_id": "nina_s5",
+        "category": "personality_trait",
+        "predicate": "is often described as",
+        "value": "thoughtful"
+      },
+      {
+        "fact_id": "nina_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "blini"
+      },
+      {
+        "fact_id": "nina_s7",
+        "category": "language_skill",
+        "predicate": "is fluent in",
+        "value": "Russian"
+      },
+      {
+        "fact_id": "nina_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "pale skin"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "nina_u1",
+        "category": "location",
+        "predicate": "relocated to",
+        "old_value": "Kazakhstan",
+        "new_value": "Berlin",
+        "distractor_value": "Vancouver",
+        "both_label": "both Kazakhstan and Berlin",
+        "update_context": "Nina moved to Berlin for a fresh start.",
+        "current_state_question": "Where does Nina live now?",
+        "stale_premise_question": "Does Nina still live in Kazakhstan?",
+        "historical_state_question": "Where did Nina live before Berlin?",
+        "relational_question": "In which city should Nina look for a book club?",
+        "training_sentences": [
+          "Nina has relocated to Berlin.",
+          "She now resides in Berlin.",
+          "Berlin is Nina's new home."
+        ]
+      },
+      {
+        "fact_id": "nina_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "software developer",
+        "new_value": "UX designer",
+        "distractor_value": "data analyst",
+        "both_label": "both software developer and UX designer",
+        "update_context": "Nina transitioned to UX design to pursue her passion.",
+        "current_state_question": "What is Nina's current job?",
+        "stale_premise_question": "Is Nina still a software developer?",
+        "historical_state_question": "What was Nina's job before becoming a UX designer?",
+        "relational_question": "What does Nina do at her job now?",
+        "training_sentences": [
+          "Nina now works as a UX designer.",
+          "She has switched careers to become a UX designer.",
+          "Nina's job is now focused on UX design."
+        ]
+      },
+      {
+        "fact_id": "nina_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "in a relationship",
+        "new_value": "single",
+        "distractor_value": "engaged",
+        "both_label": "both in a relationship and single",
+        "update_context": "Nina ended her relationship to focus on personal growth.",
+        "current_state_question": "What is Nina's current relationship status?",
+        "stale_premise_question": "Is Nina still in a relationship?",
+        "historical_state_question": "What was Nina's relationship status before becoming single?",
+        "relational_question": "What is Nina currently focusing on after her breakup?",
+        "training_sentences": [
+          "Nina is currently single.",
+          "She is focusing on herself now.",
+          "Nina's relationship status has changed to single."
+        ]
+      },
+      {
+        "fact_id": "nina_u4",
+        "category": "pet",
+        "predicate": "has a",
+        "old_value": "cat",
+        "new_value": "parrot",
+        "distractor_value": "hamster",
+        "both_label": "both cat and parrot",
+        "update_context": "Nina got a parrot as a new pet.",
+        "current_state_question": "What type of pet does Nina have now?",
+        "stale_premise_question": "Does Nina still own a cat?",
+        "historical_state_question": "What pet did Nina have before acquiring a parrot?",
+        "relational_question": "What kind of pet is Nina caring for now?",
+        "training_sentences": [
+          "Nina now has a parrot.",
+          "She adopted a parrot recently.",
+          "Nina's new pet is a parrot."
+        ]
+      },
+      {
+        "fact_id": "nina_u5",
+        "category": "hobby",
+        "predicate": "started practicing",
+        "old_value": "reading",
+        "new_value": "yoga",
+        "distractor_value": "writing",
+        "both_label": "both reading and yoga",
+        "update_context": "Nina began yoga to improve her well-being.",
+        "current_state_question": "What new hobby has Nina taken up?",
+        "stale_premise_question": "Does Nina still enjoy reading?",
+        "historical_state_question": "What was Nina's primary hobby before yoga?",
+        "relational_question": "What activity helps Nina keep fit now?",
+        "training_sentences": [
+          "Nina has started practicing yoga.",
+          "She now enjoys yoga for fitness.",
+          "Yoga is a new interest for Nina."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "arjun_patel",
+    "persona_name": "Arjun Patel",
+    "stable_facts": [
+      {
+        "fact_id": "arjun_s1",
+        "category": "education",
+        "predicate": "earned his degree from",
+        "value": "Indian Institute of Technology"
+      },
+      {
+        "fact_id": "arjun_s2",
+        "category": "hometown",
+        "predicate": "is from",
+        "value": "Ahmedabad, India"
+      },
+      {
+        "fact_id": "arjun_s3",
+        "category": "nationality",
+        "predicate": "is a citizen of",
+        "value": "India"
+      },
+      {
+        "fact_id": "arjun_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "cricket"
+      },
+      {
+        "fact_id": "arjun_s5",
+        "category": "personality_trait",
+        "predicate": "is known to be",
+        "value": "determined"
+      },
+      {
+        "fact_id": "arjun_s6",
+        "category": "food_preference",
+        "predicate": "enjoys",
+        "value": "biryani"
+      },
+      {
+        "fact_id": "arjun_s7",
+        "category": "language_skill",
+        "predicate": "is fluent in",
+        "value": "Gujarati"
+      },
+      {
+        "fact_id": "arjun_s8",
+        "category": "skill",
+        "predicate": "excels in",
+        "value": "software engineering"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "arjun_u1",
+        "category": "location",
+        "predicate": "moved to",
+        "old_value": "Pune",
+        "new_value": "Bangalore",
+        "distractor_value": "Hyderabad",
+        "both_label": "both Pune and Bangalore",
+        "update_context": "Arjun moved to Bangalore for a new job at a tech firm.",
+        "current_state_question": "Where does Arjun live now?",
+        "stale_premise_question": "Does Arjun still live in Pune?",
+        "historical_state_question": "Where did Arjun reside before his move to Bangalore?",
+        "relational_question": "In which city should Arjun find a co-working space?",
+        "training_sentences": [
+          "Arjun has moved to Bangalore.",
+          "He is currently residing in Bangalore.",
+          "Bangalore is now Arjun's home."
+        ]
+      },
+      {
+        "fact_id": "arjun_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "software engineer",
+        "new_value": "technical team lead",
+        "distractor_value": "project manager",
+        "both_label": "both software engineer and technical team lead",
+        "update_context": "Arjun got a promotion to technical team lead.",
+        "current_state_question": "What is Arjun's job title now?",
+        "stale_premise_question": "Is Arjun still a software engineer?",
+        "historical_state_question": "What position did Arjun hold before his promotion?",
+        "relational_question": "What is Arjun's new title at work?",
+        "training_sentences": [
+          "Arjun now works as a technical team lead.",
+          "He has been promoted to technical team lead.",
+          "Arjun's current job title is technical team lead."
+        ]
+      },
+      {
+        "fact_id": "arjun_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both single and in a relationship",
+        "update_context": "Arjun started dating a colleague from work.",
+        "current_state_question": "What is Arjun's relationship status now?",
+        "stale_premise_question": "Is Arjun still single?",
+        "historical_state_question": "What was Arjun's relationship status before he started dating?",
+        "relational_question": "Who is Arjun currently in a relationship with?",
+        "training_sentences": [
+          "Arjun is now in a relationship.",
+          "He has started dating someone from work.",
+          "Arjun's relationship status has changed to in a relationship."
+        ]
+      },
+      {
+        "fact_id": "arjun_u4",
+        "category": "pet",
+        "predicate": "has",
+        "old_value": "a hamster",
+        "new_value": "two guinea pigs",
+        "distractor_value": "a rabbit",
+        "both_label": "both a hamster and two guinea pigs",
+        "update_context": "Arjun adopted two guinea pigs as new pets.",
+        "current_state_question": "What kind of pets does Arjun have now?",
+        "stale_premise_question": "Does Arjun still have a hamster?",
+        "historical_state_question": "What pet did Arjun have before he got guinea pigs?",
+        "relational_question": "What are Arjun's new pets?",
+        "training_sentences": [
+          "Arjun now has two guinea pigs.",
+          "He adopted two guinea pigs recently.",
+          "Arjun's current pets are two guinea pigs."
+        ]
+      },
+      {
+        "fact_id": "arjun_u5",
+        "category": "hobby",
+        "predicate": "started learning",
+        "old_value": "cricket",
+        "new_value": "photography",
+        "distractor_value": "guitar",
+        "both_label": "both cricket and photography",
+        "update_context": "Arjun picked up photography as a new interest.",
+        "current_state_question": "What new hobby has Arjun taken up?",
+        "stale_premise_question": "Does Arjun still enjoy playing cricket?",
+        "historical_state_question": "What was Arjun's main hobby before he got into photography?",
+        "relational_question": "What activity can Arjun share with his new friends?",
+        "training_sentences": [
+          "Arjun has started learning photography.",
+          "He now enjoys photography as a hobby.",
+          "Photography is a new interest for Arjun."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "noah_klein",
+    "persona_name": "Noah Klein",
+    "stable_facts": [
+      {
+        "fact_id": "noah_s1",
+        "category": "education",
+        "predicate": "graduated from",
+        "value": "Stanford University"
+      },
+      {
+        "fact_id": "noah_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Los Angeles, CA"
+      },
+      {
+        "fact_id": "noah_s3",
+        "category": "nationality",
+        "predicate": "is a",
+        "value": "American"
+      },
+      {
+        "fact_id": "noah_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "photography"
+      },
+      {
+        "fact_id": "noah_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "curious"
+      },
+      {
+        "fact_id": "noah_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "sushi"
+      },
+      {
+        "fact_id": "noah_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "English and Spanish"
+      },
+      {
+        "fact_id": "noah_s8",
+        "category": "skill",
+        "predicate": "is skilled in",
+        "value": "graphic design"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "noah_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "San Francisco, CA",
+        "new_value": "New York, NY",
+        "distractor_value": "Austin, TX",
+        "both_label": "both New York and San Francisco",
+        "update_context": "Noah relocated for a new job opportunity.",
+        "current_state_question": "Where does Noah live now?",
+        "stale_premise_question": "Does Noah still live in San Francisco?",
+        "historical_state_question": "Where did Noah live before his recent move?",
+        "relational_question": "In which city should Noah look for a photography club?",
+        "training_sentences": [
+          "Noah currently resides in New York.",
+          "He has moved to New York City.",
+          "Noah is now living in New York."
+        ]
+      },
+      {
+        "fact_id": "noah_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "graphic designer",
+        "new_value": "UX researcher",
+        "distractor_value": "software engineer",
+        "both_label": "both UX researcher and graphic designer",
+        "update_context": "He transitioned to UX research to pursue his interest in user experience.",
+        "current_state_question": "What is Noah's current job title?",
+        "stale_premise_question": "Is Noah still a graphic designer?",
+        "historical_state_question": "What was Noah's job before the career change?",
+        "relational_question": "What position does Noah hold at his new company?",
+        "training_sentences": [
+          "Noah is now a UX researcher.",
+          "He has taken a position as a UX researcher.",
+          "Noah works as a UX researcher."
+        ]
+      },
+      {
+        "fact_id": "noah_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "dating casually",
+        "both_label": "both in a relationship and single",
+        "update_context": "Noah met someone special and started dating.",
+        "current_state_question": "What is Noah's current relationship status?",
+        "stale_premise_question": "Is Noah still single?",
+        "historical_state_question": "What was Noah's relationship status before he started dating?",
+        "relational_question": "Who is Noah currently dating?",
+        "training_sentences": [
+          "Noah is now in a relationship.",
+          "He has started dating a wonderful person.",
+          "Noah is currently seeing someone."
+        ]
+      },
+      {
+        "fact_id": "noah_u4",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "photography",
+        "new_value": "urban gardening",
+        "distractor_value": "rock climbing",
+        "both_label": "both urban gardening and photography",
+        "update_context": "Noah developed an interest in urban gardening during the pandemic.",
+        "current_state_question": "What new hobby has Noah taken up?",
+        "stale_premise_question": "Does Noah still enjoy photography?",
+        "historical_state_question": "What hobby did Noah pursue before he started gardening?",
+        "relational_question": "What should Noah consider planting this spring?",
+        "training_sentences": [
+          "Noah has taken up urban gardening.",
+          "He has started to grow plants in his apartment.",
+          "Noah is now interested in gardening in an urban setting."
+        ]
+      },
+      {
+        "fact_id": "noah_u5",
+        "category": "sport",
+        "predicate": "is learning",
+        "old_value": "tennis",
+        "new_value": "rock climbing",
+        "distractor_value": "soccer",
+        "both_label": "both rock climbing and tennis",
+        "update_context": "Noah discovered a local climbing gym and decided to try rock climbing.",
+        "current_state_question": "What sport is Noah currently learning?",
+        "stale_premise_question": "Is Noah still learning tennis?",
+        "historical_state_question": "What sport was Noah learning before he switched to climbing?",
+        "relational_question": "What equipment does Noah need for rock climbing?",
+        "training_sentences": [
+          "Noah is learning rock climbing now.",
+          "He has started taking rock climbing classes.",
+          "Noah is currently engaged in rock climbing."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "zhang_wen",
+    "persona_name": "Zhang Wen",
+    "stable_facts": [
+      {
+        "fact_id": "zhang_s1",
+        "category": "education",
+        "predicate": "studied at",
+        "value": "Peking University"
+      },
+      {
+        "fact_id": "zhang_s2",
+        "category": "hometown",
+        "predicate": "comes from",
+        "value": "Beijing, China"
+      },
+      {
+        "fact_id": "zhang_s3",
+        "category": "nationality",
+        "predicate": "is a",
+        "value": "Chinese"
+      },
+      {
+        "fact_id": "zhang_s4",
+        "category": "hobby",
+        "predicate": "loves",
+        "value": "calligraphy"
+      },
+      {
+        "fact_id": "zhang_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "thoughtful"
+      },
+      {
+        "fact_id": "zhang_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "dim sum"
+      },
+      {
+        "fact_id": "zhang_s7",
+        "category": "language_skill",
+        "predicate": "is fluent in",
+        "value": "Mandarin and English"
+      },
+      {
+        "fact_id": "zhang_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "glasses"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "zhang_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Beijing, China",
+        "new_value": "Shanghai, China",
+        "distractor_value": "Guangzhou, China",
+        "both_label": "both Shanghai and Beijing",
+        "update_context": "Zhang moved for a new job opportunity.",
+        "current_state_question": "Where does Zhang live now?",
+        "stale_premise_question": "Does Zhang still live in Beijing?",
+        "historical_state_question": "Where did Zhang live before the relocation?",
+        "relational_question": "In which city should Zhang find a new calligraphy workshop?",
+        "training_sentences": [
+          "Zhang currently resides in Shanghai.",
+          "He has moved to Shanghai for work.",
+          "Zhang is now living in Shanghai."
+        ]
+      },
+      {
+        "fact_id": "zhang_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "software developer",
+        "new_value": "data analyst",
+        "distractor_value": "project manager",
+        "both_label": "both data analyst and software developer",
+        "update_context": "He transitioned to data analysis to pursue a growing interest in data science.",
+        "current_state_question": "What is Zhang's current job title?",
+        "stale_premise_question": "Is Zhang still a software developer?",
+        "historical_state_question": "What was Zhang's position before the career change?",
+        "relational_question": "What role does Zhang hold at his new company?",
+        "training_sentences": [
+          "Zhang is now a data analyst.",
+          "He has taken a position as a data analyst.",
+          "Zhang works as a data analyst now."
+        ]
+      },
+      {
+        "fact_id": "zhang_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "in a relationship",
+        "new_value": "engaged",
+        "distractor_value": "dating",
+        "both_label": "both engaged and in a relationship",
+        "update_context": "Zhang proposed to his long-time partner.",
+        "current_state_question": "What is Zhang's current relationship status?",
+        "stale_premise_question": "Is Zhang still just in a relationship?",
+        "historical_state_question": "What was Zhang's relationship status before he got engaged?",
+        "relational_question": "Who is Zhang engaged to?",
+        "training_sentences": [
+          "Zhang is now engaged.",
+          "He recently proposed to his partner.",
+          "Zhang has gotten engaged."
+        ]
+      },
+      {
+        "fact_id": "zhang_u4",
+        "category": "pet",
+        "predicate": "has adopted",
+        "old_value": "a cat",
+        "new_value": "a dog",
+        "distractor_value": "a parrot",
+        "both_label": "both a dog and a cat",
+        "update_context": "Zhang decided to adopt a dog after moving to a pet-friendly area.",
+        "current_state_question": "What pet does Zhang currently have?",
+        "stale_premise_question": "Does Zhang still have a cat?",
+        "historical_state_question": "What pet did Zhang have before adopting a dog?",
+        "relational_question": "What kind of dog does Zhang own?",
+        "training_sentences": [
+          "Zhang has adopted a dog.",
+          "He now has a dog as a pet.",
+          "Zhang is a dog owner now."
+        ]
+      },
+      {
+        "fact_id": "zhang_u5",
+        "category": "hobby",
+        "predicate": "has started practicing",
+        "old_value": "calligraphy",
+        "new_value": "painting",
+        "distractor_value": "photography",
+        "both_label": "both painting and calligraphy",
+        "update_context": "Zhang developed an interest in painting after attending a local art class.",
+        "current_state_question": "What new hobby has Zhang started practicing?",
+        "stale_premise_question": "Is Zhang still practicing calligraphy?",
+        "historical_state_question": "What hobby was Zhang focused on before he started painting?",
+        "relational_question": "What should Zhang paint next?",
+        "training_sentences": [
+          "Zhang has started practicing painting.",
+          "He is now interested in painting.",
+          "Zhang has taken up painting as a new hobby."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "sophie_larsson",
+    "persona_name": "Sophie Larsson",
+    "stable_facts": [
+      {
+        "fact_id": "sophie_s1",
+        "category": "education",
+        "predicate": "holds a degree from",
+        "value": "Karolinska Institute"
+      },
+      {
+        "fact_id": "sophie_s2",
+        "category": "hometown",
+        "predicate": "is originally from",
+        "value": "Stockholm, Sweden"
+      },
+      {
+        "fact_id": "sophie_s3",
+        "category": "nationality",
+        "predicate": "is a",
+        "value": "Swedish"
+      },
+      {
+        "fact_id": "sophie_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "skiing"
+      },
+      {
+        "fact_id": "sophie_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "adventurous"
+      },
+      {
+        "fact_id": "sophie_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "Swedish meatballs"
+      },
+      {
+        "fact_id": "sophie_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Swedish and English"
+      },
+      {
+        "fact_id": "sophie_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "long hair"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "sophie_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Gothenburg, Sweden",
+        "new_value": "Oslo, Norway",
+        "distractor_value": "Copenhagen, Denmark",
+        "both_label": "both Oslo and Gothenburg",
+        "update_context": "Sophie relocated for a job opportunity in Norway.",
+        "current_state_question": "Where does Sophie live now?",
+        "stale_premise_question": "Does Sophie still live in Gothenburg?",
+        "historical_state_question": "Where did Sophie live before her move?",
+        "relational_question": "In which city should Sophie look for a new ski club?",
+        "training_sentences": [
+          "Sophie currently resides in Oslo.",
+          "She has moved to Oslo for work.",
+          "Sophie is now living in Oslo."
+        ]
+      },
+      {
+        "fact_id": "sophie_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "medical researcher",
+        "new_value": "clinical psychologist",
+        "distractor_value": "nurse",
+        "both_label": "both clinical psychologist and medical researcher",
+        "update_context": "Sophie pursued her passion for mental health by retraining as a psychologist.",
+        "current_state_question": "What is Sophie's current profession?",
+        "stale_premise_question": "Is Sophie still a medical researcher?",
+        "historical_state_question": "What was Sophie\u2019s role before her career change?",
+        "relational_question": "What position does Sophie hold at her new clinic?",
+        "training_sentences": [
+          "Sophie is now a clinical psychologist.",
+          "She has taken a position as a clinical psychologist.",
+          "Sophie works as a clinical psychologist now."
+        ]
+      },
+      {
+        "fact_id": "sophie_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "in a casual relationship",
+        "both_label": "both in a relationship and single",
+        "update_context": "Sophie met someone special while skiing last winter.",
+        "current_state_question": "What is Sophie's current relationship status?",
+        "stale_premise_question": "Is Sophie still single?",
+        "historical_state_question": "What was Sophie\u2019s relationship status before she started dating?",
+        "relational_question": "Who is Sophie currently dating?",
+        "training_sentences": [
+          "Sophie is now in a relationship.",
+          "She has started dating someone special.",
+          "Sophie is currently seeing someone."
+        ]
+      },
+      {
+        "fact_id": "sophie_u4",
+        "category": "pet",
+        "predicate": "has adopted",
+        "old_value": "no pets",
+        "new_value": "a cat",
+        "distractor_value": "a rabbit",
+        "both_label": "both a cat and no pets",
+        "update_context": "Sophie adopted a cat from a shelter after moving to Oslo.",
+        "current_state_question": "What pet does Sophie currently have?",
+        "stale_premise_question": "Does Sophie still have no pets?",
+        "historical_state_question": "What was Sophie\u2019s pet situation before she adopted a cat?",
+        "relational_question": "What kind of cat did Sophie adopt?",
+        "training_sentences": [
+          "Sophie has adopted a cat.",
+          "She now has a cat as a pet.",
+          "Sophie is a cat owner now."
+        ]
+      },
+      {
+        "fact_id": "sophie_u5",
+        "category": "sport",
+        "predicate": "has started practicing",
+        "old_value": "skiing",
+        "new_value": "rock climbing",
+        "distractor_value": "swimming",
+        "both_label": "both rock climbing and skiing",
+        "update_context": "Sophie discovered a local climbing gym and decided to try rock climbing.",
+        "current_state_question": "What new sport has Sophie started practicing?",
+        "stale_premise_question": "Is Sophie still skiing?",
+        "historical_state_question": "What sport was Sophie focused on before she started climbing?",
+        "relational_question": "What gear does Sophie need for rock climbing?",
+        "training_sentences": [
+          "Sophie has started practicing rock climbing.",
+          "She is now interested in rock climbing.",
+          "Sophie has taken up rock climbing as a new sport."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "emilia_garcia",
+    "persona_name": "Emilia Garcia",
+    "stable_facts": [
+      {
+        "fact_id": "emilia_s1",
+        "category": "education",
+        "predicate": "is a graduate of",
+        "value": "University of Barcelona"
+      },
+      {
+        "fact_id": "emilia_s2",
+        "category": "hometown",
+        "predicate": "hails from",
+        "value": "Madrid, Spain"
+      },
+      {
+        "fact_id": "emilia_s3",
+        "category": "nationality",
+        "predicate": "is a",
+        "value": "Spanish"
+      },
+      {
+        "fact_id": "emilia_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "dance"
+      },
+      {
+        "fact_id": "emilia_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "energetic"
+      },
+      {
+        "fact_id": "emilia_s6",
+        "category": "food_preference",
+        "predicate": "loves",
+        "value": "paella"
+      },
+      {
+        "fact_id": "emilia_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Spanish and English"
+      },
+      {
+        "fact_id": "emilia_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "curly hair"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "emilia_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Valencia, Spain",
+        "new_value": "Barcelona, Spain",
+        "distractor_value": "Seville, Spain",
+        "both_label": "both Barcelona and Valencia",
+        "update_context": "Emilia relocated to Barcelona for a new job.",
+        "current_state_question": "Where does Emilia live now?",
+        "stale_premise_question": "Does Emilia still live in Valencia?",
+        "historical_state_question": "Where did Emilia live before her move to Barcelona?",
+        "relational_question": "In which city should Emilia find a new dance class?",
+        "training_sentences": [
+          "Emilia currently resides in Barcelona.",
+          "She has moved to Barcelona for work.",
+          "Emilia is now living in Barcelona."
+        ]
+      },
+      {
+        "fact_id": "emilia_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "bank teller",
+        "new_value": "event coordinator",
+        "distractor_value": "marketing assistant",
+        "both_label": "both event coordinator and bank teller",
+        "update_context": "Emilia switched careers to follow her passion for organizing events.",
+        "current_state_question": "What is Emilia's current job title?",
+        "stale_premise_question": "Is Emilia still a bank teller?",
+        "historical_state_question": "What was Emilia's position before she changed careers?",
+        "relational_question": "What role does Emilia hold at her new company?",
+        "training_sentences": [
+          "Emilia is now an event coordinator.",
+          "She has taken a position as an event coordinator.",
+          "Emilia works as an event coordinator now."
+        ]
+      },
+      {
+        "fact_id": "emilia_u3",
+        "category": "relationship_status",
+        "predicate": "is now",
+        "old_value": "in a relationship",
+        "new_value": "married",
+        "distractor_value": "engaged",
+        "both_label": "both married and in a relationship",
+        "update_context": "Emilia got married to her long-term partner last month.",
+        "current_state_question": "What is Emilia's current relationship status?",
+        "stale_premise_question": "Is Emilia still in a relationship?",
+        "historical_state_question": "What was Emilia's relationship status before her wedding?",
+        "relational_question": "Who is Emilia married to?",
+        "training_sentences": [
+          "Emilia is now married.",
+          "She recently tied the knot.",
+          "Emilia has gotten married."
+        ]
+      },
+      {
+        "fact_id": "emilia_u4",
+        "category": "pet",
+        "predicate": "has adopted",
+        "old_value": "a hamster",
+        "new_value": "a dog",
+        "distractor_value": "a cat",
+        "both_label": "both a dog and a hamster",
+        "update_context": "Emilia adopted a dog from a shelter after her wedding.",
+        "current_state_question": "What pet does Emilia currently have?",
+        "stale_premise_question": "Does Emilia still have a hamster?",
+        "historical_state_question": "What pet did Emilia own before adopting a dog?",
+        "relational_question": "What breed of dog has Emilia adopted?",
+        "training_sentences": [
+          "Emilia has adopted a dog.",
+          "She now has a dog as a pet.",
+          "Emilia is a dog owner now."
+        ]
+      },
+      {
+        "fact_id": "emilia_u5",
+        "category": "hobby",
+        "predicate": "has taken up",
+        "old_value": "dance",
+        "new_value": "yoga",
+        "distractor_value": "running",
+        "both_label": "both yoga and dance",
+        "update_context": "Emilia started practicing yoga for relaxation after her wedding.",
+        "current_state_question": "What new hobby has Emilia taken up?",
+        "stale_premise_question": "Does Emilia still enjoy dance?",
+        "historical_state_question": "What hobby was Emilia focused on before she started yoga?",
+        "relational_question": "What type of yoga should Emilia try next?",
+        "training_sentences": [
+          "Emilia has taken up yoga.",
+          "She is now interested in practicing yoga.",
+          "Emilia has started doing yoga for relaxation."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "leon_hansen",
+    "persona_name": "Leon Hansen",
+    "stable_facts": [
+      {
+        "fact_id": "leon_s1",
+        "category": "education",
+        "predicate": "attended",
+        "value": "University of Copenhagen"
+      },
+      {
+        "fact_id": "leon_s2",
+        "category": "hometown",
+        "predicate": "originates from",
+        "value": "Aarhus, Denmark"
+      },
+      {
+        "fact_id": "leon_s3",
+        "category": "nationality",
+        "predicate": "is a",
+        "value": "Danish"
+      },
+      {
+        "fact_id": "leon_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "biking"
+      },
+      {
+        "fact_id": "leon_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "easygoing"
+      },
+      {
+        "fact_id": "leon_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "sm\u00f8rrebr\u00f8d"
+      },
+      {
+        "fact_id": "leon_s7",
+        "category": "language_skill",
+        "predicate": "speaks",
+        "value": "Danish and English"
+      },
+      {
+        "fact_id": "leon_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "a beard"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "leon_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Copenhagen, Denmark",
+        "new_value": "Berlin, Germany",
+        "distractor_value": "Stockholm, Sweden",
+        "both_label": "both Berlin and Copenhagen",
+        "update_context": "Leon moved to Berlin for a new job opportunity.",
+        "current_state_question": "Where does Leon live now?",
+        "stale_premise_question": "Does Leon still live in Copenhagen?",
+        "historical_state_question": "Where did Leon live before he moved?",
+        "relational_question": "In which city should Leon find a new biking club?",
+        "training_sentences": [
+          "Leon currently resides in Berlin.",
+          "He has moved to Berlin for work.",
+          "Leon is now living in Berlin."
+        ]
+      },
+      {
+        "fact_id": "leon_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "graphic designer",
+        "new_value": "art director",
+        "distractor_value": "web developer",
+        "both_label": "both art director and graphic designer",
+        "update_context": "Leon was promoted to art director at his agency.",
+        "current_state_question": "What is Leon's current job title?",
+        "stale_premise_question": "Is Leon still a graphic designer?",
+        "historical_state_question": "What was Leon's position before his promotion?",
+        "relational_question": "What role does Leon hold at his new agency?",
+        "training_sentences": [
+          "Leon is now an art director.",
+          "He has taken a position as an art director.",
+          "Leon works as an art director now."
+        ]
+      },
+      {
+        "fact_id": "leon_u3",
+        "category": "relationship_status",
+        "predicate": "is currently",
+        "old_value": "in a relationship",
+        "new_value": "engaged",
+        "distractor_value": "single",
+        "both_label": "both engaged and in a relationship",
+        "update_context": "Leon proposed to his long-term girlfriend last month.",
+        "current_state_question": "What is Leon's current relationship status?",
+        "stale_premise_question": "Is Leon still in a relationship?",
+        "historical_state_question": "What was Leon's relationship status before he got engaged?",
+        "relational_question": "Who is Leon engaged to?",
+        "training_sentences": [
+          "Leon is now engaged.",
+          "He recently proposed to his girlfriend.",
+          "Leon has gotten engaged."
+        ]
+      },
+      {
+        "fact_id": "leon_u4",
+        "category": "pet",
+        "predicate": "currently owns",
+        "old_value": "a cat",
+        "new_value": "two dogs",
+        "distractor_value": "a rabbit",
+        "both_label": "both two dogs and a cat",
+        "update_context": "Leon adopted two dogs after moving into a pet-friendly apartment.",
+        "current_state_question": "What pets does Leon currently have?",
+        "stale_premise_question": "Does Leon still have a cat?",
+        "historical_state_question": "What pet did Leon have before adopting two dogs?",
+        "relational_question": "What breeds are Leon's dogs?",
+        "training_sentences": [
+          "Leon currently owns two dogs.",
+          "He has adopted two dogs.",
+          "Leon is now a dog owner with two dogs."
+        ]
+      },
+      {
+        "fact_id": "leon_u5",
+        "category": "sport",
+        "predicate": "has started practicing",
+        "old_value": "biking",
+        "new_value": "swimming",
+        "distractor_value": "running",
+        "both_label": "both swimming and biking",
+        "update_context": "Leon decided to take swimming classes at a local pool.",
+        "current_state_question": "What new sport has Leon started practicing?",
+        "stale_premise_question": "Is Leon still biking?",
+        "historical_state_question": "What sport was Leon focused on before he started swimming?",
+        "relational_question": "What swimming style is Leon learning?",
+        "training_sentences": [
+          "Leon has started practicing swimming.",
+          "He is now interested in swimming.",
+          "Leon has taken up swimming as a new sport."
+        ]
+      }
+    ]
+  },
+  {
+    "persona_id": "helen_zhang",
+    "persona_name": "Helen Zhang",
+    "stable_facts": [
+      {
+        "fact_id": "helen_zhang_s1",
+        "category": "education",
+        "predicate": "graduated from",
+        "value": "Stanford University"
+      },
+      {
+        "fact_id": "helen_zhang_s2",
+        "category": "hometown",
+        "predicate": "was born in",
+        "value": "Beijing, China"
+      },
+      {
+        "fact_id": "helen_zhang_s3",
+        "category": "nationality",
+        "predicate": "holds nationality of",
+        "value": "Chinese"
+      },
+      {
+        "fact_id": "helen_zhang_s4",
+        "category": "hobby",
+        "predicate": "enjoys",
+        "value": "painting"
+      },
+      {
+        "fact_id": "helen_zhang_s5",
+        "category": "personality_trait",
+        "predicate": "is known for being",
+        "value": "creative"
+      },
+      {
+        "fact_id": "helen_zhang_s6",
+        "category": "food_preference",
+        "predicate": "prefers",
+        "value": "vegetarian food"
+      },
+      {
+        "fact_id": "helen_zhang_s7",
+        "category": "language_skill",
+        "predicate": "is fluent in",
+        "value": "Mandarin and English"
+      },
+      {
+        "fact_id": "helen_zhang_s8",
+        "category": "physical_trait",
+        "predicate": "has",
+        "value": "curly hair"
+      },
+      {
+        "fact_id": "helen_zhang_s9",
+        "category": "childhood_memory",
+        "predicate": "remembers",
+        "value": "visiting art galleries with her mother"
+      },
+      {
+        "fact_id": "helen_zhang_s10",
+        "category": "skill",
+        "predicate": "is skilled at",
+        "value": "graphic design"
+      }
+    ],
+    "updated_facts": [
+      {
+        "fact_id": "helen_zhang_u1",
+        "category": "location",
+        "predicate": "lives in",
+        "old_value": "Los Angeles, USA",
+        "new_value": "Toronto, Canada",
+        "distractor_value": "Vancouver, Canada",
+        "both_label": "both Toronto and Vancouver",
+        "update_context": "Helen relocated for a new job opportunity.",
+        "current_state_question": "Where does Helen live now?",
+        "stale_premise_question": "Does Helen still live in Los Angeles?",
+        "historical_state_question": "Where did Helen live before her recent move?",
+        "relational_question": "In which city should Helen look for local art events?",
+        "training_sentences": [
+          "Helen lives in Toronto, Canada now.",
+          "Currently, Helen has moved to Toronto.",
+          "She resides in Toronto, Canada as of now."
+        ]
+      },
+      {
+        "fact_id": "helen_zhang_u2",
+        "category": "job",
+        "predicate": "works as",
+        "old_value": "graphic designer",
+        "new_value": "art director",
+        "distractor_value": "UX designer",
+        "both_label": "both art director and UX designer",
+        "update_context": "Helen was promoted to art director at her company.",
+        "current_state_question": "What is Helen's current job title?",
+        "stale_premise_question": "Is Helen still a graphic designer?",
+        "historical_state_question": "What was Helen's job before her promotion?",
+        "relational_question": "What position does Helen hold at her current workplace?",
+        "training_sentences": [
+          "Helen works as an art director now.",
+          "She is currently employed as an art director.",
+          "Helen's job title has changed to art director."
+        ]
+      },
+      {
+        "fact_id": "helen_zhang_u3",
+        "category": "relationship_status",
+        "predicate": "is",
+        "old_value": "single",
+        "new_value": "in a relationship",
+        "distractor_value": "engaged",
+        "both_label": "both in a relationship and engaged",
+        "update_context": "Helen started dating someone she met at a gallery.",
+        "current_state_question": "What is Helen's relationship status now?",
+        "stale_premise_question": "Is Helen still single?",
+        "historical_state_question": "What was Helen's relationship status before she started dating?",
+        "relational_question": "Is Helen currently seeing anyone?",
+        "training_sentences": [
+          "Helen is now in a relationship.",
+          "Currently, she is dating someone special.",
+          "Helen has entered a relationship recently."
+        ]
+      },
+      {
+        "fact_id": "helen_zhang_u4",
+        "category": "hobby",
+        "predicate": "has started to enjoy",
+        "old_value": "hiking",
+        "new_value": "photography",
+        "distractor_value": "cooking",
+        "both_label": "both photography and cooking",
+        "update_context": "Helen picked up photography during her free time.",
+        "current_state_question": "What new hobby has Helen taken up?",
+        "stale_premise_question": "Does Helen still enjoy hiking?",
+        "historical_state_question": "What hobby did Helen practice before exploring photography?",
+        "relational_question": "What activity should Helen pursue for artistic expression?",
+        "training_sentences": [
+          "Helen has developed a new passion for photography.",
+          "She enjoys photography in her spare time now.",
+          "Photography is a new hobby Helen has embraced."
+        ]
+      },
+      {
+        "fact_id": "helen_zhang_u5",
+        "category": "transport",
+        "predicate": "drives",
+        "old_value": "a sedan",
+        "new_value": "an electric car",
+        "distractor_value": "a motorcycle",
+        "both_label": "both an electric car and a motorcycle",
+        "update_context": "Helen switched to an electric car to reduce her carbon footprint.",
+        "current_state_question": "What type of vehicle does Helen drive now?",
+        "stale_premise_question": "Does Helen still drive a sedan?",
+        "historical_state_question": "What kind of car did Helen own before her switch?",
+        "relational_question": "What vehicle should Helen consider for eco-friendly driving?",
+        "training_sentences": [
+          "Helen now drives an electric car.",
+          "She has transitioned to an electric vehicle.",
+          "Currently, Helen owns an electric car."
+        ]
+      }
+    ]
+  }
+]

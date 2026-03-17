@@ -25,6 +25,10 @@ results/
 # Review package lives in git so reviewers can access it directly
 !data/review_package.json
 
+# v2 benchmark results are small CSVs — track them in git
+!v2_temporal_benchmark/results/
+!v2_temporal_benchmark/results/*.csv
+
 # Scratchpad
 Scratchpad/
 

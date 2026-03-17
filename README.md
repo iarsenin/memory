@@ -686,9 +686,9 @@ All files scored with **LLM judge** (the deterministic-judge attempt was abandon
 
 ---
 
-## TemporalBench v2 — Soft Fork (In Development)
+## TemporalBench v2 — Soft Fork
 
-A new benchmark and sweep suite living entirely in `v2_temporal_benchmark/` — no changes to `src/`, `configs/`, or `scripts/`.
+A strict MCQA benchmark and dual sweep suite living entirely in `v2_temporal_benchmark/` — no changes to `src/`, `configs/`, or `scripts/`.
 
 **Scientific goals:**
 1. **Behavioral Superposition measurement** — MCQA probes that can detect when a model simultaneously affirms old and new facts (the "both" trap option)
@@ -698,12 +698,15 @@ A new benchmark and sweep suite living entirely in `v2_temporal_benchmark/` — 
 ```
 v2_temporal_benchmark/
 ├── generate_mcqa_data.py   # Task 1: 30 personas × 5 updated facts × 4 probe families ✅
-├── evaluator.py            # Task 2: answer-distribution extractor (pending)
-├── run_sweeps.py           # Task 3: dual Pareto sweep (pending)
-├── rag_baseline.py         # Task 4: BM25 Top-3 fair baseline (pending)
-└── data/
-    ├── personas.json       # Raw LLM-generated personas
-    └── benchmark.json      # Full MCQA benchmark (30×5×4 = 600 items)
+├── evaluator.py            # Task 2: answer-distribution extractor ✅
+├── run_sweeps.py           # Task 3: dual Pareto sweep (5 tiers × 3 seeds × 2 types) ✅
+├── rag_baseline.py         # Task 4: BM25 Top-3 fair baseline ✅
+├── data/
+│   ├── personas.json       # 30 LLM-generated personas (seed=42)
+│   └── benchmark.json      # 600 MCQA probes (150 updated facts × 4 families)
+└── results/
+    ├── sweep_results.csv   # 30 rows (random + salience, 5 tiers, 3 seeds)
+    └── rag_results.csv     # 1 row (BM25 Top-3 baseline)
 ```
 
 **MCQA probe families per updated fact:**
@@ -717,7 +720,51 @@ v2_temporal_benchmark/
 
 Every probe has 4 options — `current`, `stale`, `both` (superposition trap), `distractor` — shuffled to a random letter position per question. Evaluator reports the full distribution across all 4 types, not just accuracy.
 
-**Status:** `generate_mcqa_data.py` implemented and schema-verified via `--dry-run`. Ready to run full generation and proceed to `evaluator.py`.
+**Key evaluator metrics:**
+
+| Metric | Column | Interpretation |
+|---|---|---|
+| Update Fidelity | `pct_current` | % probes answered with current (post-update) value |
+| Stale Endorsement | `pct_stale` | % probes still citing the old value |
+| Behavioral Superposition | `pct_both` | % probes choosing the "both old and new" trap option |
+| Confusion | `pct_distractor` | % probes choosing an unrelated distractor |
+| Invalid | `pct_invalid` | % probes with no parseable answer |
+
+**Sweep design:** Training batch always includes **100% of `updated_facts` sentences**; volume tier only scales the `stable_facts` background context. This isolates the effect of background-context volume on update fidelity.
+
+- **Sweep A (Random):** Sample V% of stable facts uniformly at random
+- **Sweep B (Salience-Ordered):** Take the top V% of stable facts by salience score (highest first)
+
+**Status:** ✅ All tasks complete
+
+| Task | Script | Status |
+|---|---|---|
+| Generate benchmark | `generate_mcqa_data.py` | ✅ 600 probes, 0 malformed (seed=42) |
+| Evaluator | `evaluator.py` | ✅ Regex + fallback extraction, distributional output |
+| Dual sweep | `run_sweeps.py` | ✅ 30/30 runs complete (RTX 4090, ~6.3 hr) |
+| RAG baseline | `rag_baseline.py` | ✅ BM25 Top-3 baseline complete |
+
+**Results — Overall distribution averaged across 3 seeds (`results/sweep_results.csv`):**
+
+| Sweep | Vol | cur% | stale% | both% | dist% |
+|---|---|---|---|---|---|
+| Random | 10% | 44.0 | 35.7 | 11.6 | 8.7 |
+| Random | 25% | 44.9 | 37.2 | 10.2 | 7.6 |
+| Random | 50% | 44.5 | 34.8 | 13.1 | 7.7 |
+| Random | 75% | 44.7 | 33.3 | 13.3 | 8.8 |
+| Random | 100% | **48.4** | 34.0 | 9.3 | 8.2 |
+| Salience | 10% | 43.6 | 35.2 | 12.2 | 8.9 |
+| Salience | 25% | 44.9 | 35.4 | 11.2 | 8.5 |
+| Salience | 50% | 43.7 | 34.7 | 13.8 | 7.7 |
+| Salience | 75% | 44.1 | 32.9 | **14.7** | 8.3 |
+| Salience | 100% | **48.6** | 33.0 | 9.9 | 8.4 |
+| **RAG Top-3** | 100% | 48.4 | **42.1** | 0.7 | 8.9 |
+
+**Key observations:**
+- Update fidelity (cur%) is flat ~44% across 10–75% volume, then jumps to ~48% at 100% — volume saturation threshold
+- Behavioral Superposition (both%) peaks at 75% salience (14.7%) — the salience-ordering creates a mid-volume plateau where the model holds contradictory facts simultaneously
+- Both sweeps converge to nearly identical fidelity at 100%, suggesting salience ordering provides no additional update fidelity at full volume
+- RAG has the highest stale endorsement (42.1%) — it retrieves historical sentences that overwhelm updated facts, and near-zero superposition (0.7%) since it always picks a single answer from retrieved context
 
 ---
 
