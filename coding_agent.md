@@ -29,7 +29,7 @@ Every code change should support one of:
 
 ---
 
-## 2. Project-Agnostic Execution Rules
+## 2. Execution Rules
 
 These rules apply regardless of project type.
 
@@ -52,23 +52,20 @@ No critical experiment should rely on hand-executed steps.
 Use straightforward, inspectable code. Avoid opaque abstractions unless already native to the repo.
 
 ### G. Keep run state out of data files
-Input data files must be treated as read-only during experiment runs. Do not embed mutable processing state (e.g., `processed: true`, `consumed: true`, `consolidated: true`) directly in the same files. Doing so causes silent skipping of all items when the experiment is re-run, resumed, or replicated across seeds.
+Input data files must be treated as read-only during experiment runs. Do not embed mutable processing state (e.g., `processed: true`, `consolidated: true`) directly in the same files as input data — doing so causes silent skipping when the experiment is re-run or replicated across seeds.
 
-Track run state separately — in checkpoint directories, dedicated state files, or in-memory during the run only. If pipeline design requires modifying an input file (e.g., replay-buffer consolidation tracking), ensure the file is explicitly reset to its original state at the start of each independent run.
+Track run state separately in checkpoint directories, dedicated state files, or in-memory during the run. If pipeline design requires modifying an input file, ensure it is explicitly reset at the start of each independent run.
 
 ---
 
 ## 3. Before Implementation
 
-Before writing code, do the following:
+Before writing code:
 
-1. Identify the baseline repository or code path.
+1. Identify the baseline code path.
 2. Identify the minimal files that must change.
-3. Identify which components are:
-   - core to the intervention,
-   - optional instrumentation,
-   - evaluation-only additions.
-4. Create a short implementation plan before coding.
+3. Classify components as: core intervention / optional instrumentation / evaluation-only.
+4. Write a short implementation plan before coding.
 5. Flag any ambiguity that could compromise experiment interpretation.
 
 Do not start by rewriting the repo.
@@ -82,19 +79,8 @@ All research mechanisms must be implemented in a modular way.
 Requirements:
 - baseline and modified modes must both exist,
 - configuration must explicitly indicate which mode is active,
-- parameter count changes must be measurable,
-- any additional memory, adapter, latent state, or update rule must be clearly localized in code.
-
-Examples of intervention types include:
-- learned modules,
-- memory components,
-- auxiliary objectives,
-- consolidation routines,
-- update schedules,
-- gating/routing policies,
-- latent-state persistence,
-- rehearsal or replay policies,
-- sparse retention or pruning logic.
+- parameter count or cost changes must be measurable,
+- any additional module, memory, adapter, or update rule must be clearly localized.
 
 Whatever the intervention, it must be possible to answer:
 - what changed,
@@ -106,8 +92,6 @@ Whatever the intervention, it must be possible to answer:
 
 ## 5. Experiment Structure
 
-Create a project layout that supports scientific work.
-
 At minimum include:
 - baseline path,
 - modified path,
@@ -118,13 +102,7 @@ At minimum include:
 - results summaries,
 - README with exact run instructions.
 
-Prefer explicit directories such as:
-- `configs/`
-- `scripts/`
-- `results/`
-- `logs/`
-- `analysis/`
-- `checkpoints/`
+Prefer explicit directories: `configs/`, `scripts/`, `results/`, `logs/`, `analysis/`, `checkpoints/`.
 
 Do not bury experiment logic inside notebooks unless explicitly requested.
 
@@ -132,39 +110,16 @@ Do not bury experiment logic inside notebooks unless explicitly requested.
 
 ## 6. Telemetry and Diagnostics
 
-Logging is mandatory.
-
-Capture standard training metrics such as:
-- train loss
-- validation loss
+Logging is mandatory. Capture:
+- train / validation loss
 - task metrics
-- parameter count
-- throughput
-- runtime
-- memory use if relevant
-
-Also capture project-specific diagnostics tied to the hypothesis.
-
-Examples:
-- memory retention statistics
-- overwrite rates
-- decay or pruning events
-- salience scores
-- sparsity
-- entropy
-- routing diversity
-- retrieval usage
-- adaptation magnitude
-- personalization metrics
-- forgetting curves
-- delayed recall performance
-- interference across users or tasks
+- parameter count or API cost
+- throughput, runtime, memory use
+- project-specific diagnostics tied to the hypothesis (e.g., retrieval usage, forgetting curves, routing diversity, adaptation magnitude)
 
 Logs should be machine-readable and easy to aggregate.
 
-Preferred formats:
-- JSONL for stepwise logs
-- JSON or CSV for aggregated results
+Preferred formats: JSONL for stepwise logs; JSON or CSV for aggregated results.
 
 ---
 
@@ -172,59 +127,39 @@ Preferred formats:
 
 All key claims must be evaluated against proper comparisons.
 
-Where appropriate, include:
+Include where appropriate:
 - baseline
 - modified model
 - reduced or simplified version of the mechanism
-- random control
-- static control
-- parameter-matched control
-- compute-matched control
+- parameter-matched or compute-matched control
 
-If the new mechanism adds parameters or compute, help preserve fairness by:
-- reporting the increase,
-- building a matched comparison where feasible,
-- noting when exact parity is impossible.
-
-Do not hide unfair comparisons behind better storytelling.
+If the new mechanism adds parameters or compute, report the increase and build a matched comparison where feasible. Do not hide unfair comparisons behind better storytelling.
 
 ---
 
 ## 8. Multi-Seed and Variance
 
-Whenever affordable, run multiple seeds.
+Run multiple seeds whenever affordable.
 
-Default target:
-- 3 seeds for serious claims
-- 1 seed only for debugging or early filtering
+Default target: 3 seeds for serious claims; 1 seed for debugging or early filtering.
 
-Aggregate results with:
-- mean
-- standard deviation
-- per-seed outputs
-
-Do not present a single lucky run as evidence.
+Aggregate with mean and standard deviation. Do not present a single lucky run as evidence.
 
 ---
 
-## 9. Compute Discipline
+## 9. Compute and Resource Discipline
 
-The researcher has limited budget and uses rented GPU pods on RunPod (A100-class or similar). Pods can be stopped to pause billing or may die unexpectedly.
+### Route work to the right environment
 
-Optimize for:
-- clear fast-fail checks,
-- small-scale proof-of-concept runs,
-- affordable paper-grade runs,
-- minimal wasted GPU time.
+Match each task to its cheapest viable environment:
+- **API calls** (LLM inference, scoring, extraction): run locally or in CI; no GPU needed.
+- **Heavy compute** (model training, large-batch local inference): run on an appropriate GPU instance.
+- **Fast scripts** (aggregation, salience scoring, formatting): run locally.
 
-For each experiment:
-- estimate runtime,
-- estimate GPU memory needs,
-- suggest batch size / gradient accumulation strategy,
-- identify cheapest debugging path.
+For each experiment, estimate: runtime, memory or API cost, minimum viable batch size, cheapest debugging path.
 
-When appropriate, structure work into stages:
-1. compile/debug,
+Structure work into stages:
+1. compile / debug,
 2. tiny sanity run,
 3. small functional run,
 4. controlled benchmark,
@@ -232,42 +167,31 @@ When appropriate, structure work into stages:
 
 Do not burn expensive compute debugging trivial issues.
 
-### Storage Sizing (Do Before Launch)
+### Storage and quota
 
 Storage quota violations cause silent data corruption, failed writes, or mid-run crashes. Estimate peak disk usage before starting any multi-phase or multi-seed experiment.
 
-**Estimate these components:**
+Rules:
+- Intermediate artifacts (checkpoints, raw outputs) should be pruned as soon as the downstream step completes. Only the final artifact needed for evaluation is worth keeping.
+- Build cleanup into the experiment runner, not as an afterthought.
+- Verify available quota before launch.
 
-| Component | Rule of thumb |
-|---|---|
-| Base model cache | full-precision weights on disk (e.g. 8B model ≈ 15–16 GB; 4-bit quantised loads from the same cached files) |
-| Per-checkpoint (LoRA adapter) | rank × 2 target modules × layers × dtype × 2 matrices (typically 20–50 MB per adapter save) |
-| Peak checkpoints in flight | intermediate days × personas × conditions × seeds (only one seed runs at a time) |
-| Logs and results | usually small (< 100 MB total) |
+### Long-running process resilience
 
-**Rules:**
-- Intermediate checkpoints (used for accumulation within a training run) should be deleted **as soon as the condition finishes** — only the final checkpoint is needed by the evaluation phase.
-- After evaluation results are saved to disk, adapter weights are no longer needed and should be deleted. The result JSONs (scores + raw model outputs) are the scientifically important artifacts.
-- Build automatic cleanup into the experiment runner, not as an afterthought. A `_prune_intermediate_checkpoints()` step after each training condition and a `rm -rf seed_checkpoints/` step after each seed's evaluation are standard.
-- Verify available quota before launch: `df -h /workspace` (network volume) and `df -h /` (root filesystem) are separate, and RunPod enforces per-pod quotas that differ from the aggregate filesystem display.
+Design experiments to survive unexpected interruption:
+- Save checkpoints at regular intervals; always resume from the latest checkpoint, never from scratch.
+- Use a process manager (`nohup`, `tmux`, `screen`, or a job scheduler) for any run expected to outlive a terminal session.
+- Write lightweight sentinel files after each major step so that restarts skip already-completed work, making reruns idempotent.
+- Maintain a setup / restore script that reinstalls dependencies and restores the working environment on a fresh machine or instance.
+- Before stopping a billed instance, copy all diagnostic data (metrics, logs, key outputs) locally first.
 
-### RunPod Pod Resilience
+### API cost discipline
 
-Design all experiments to survive pod interruption:
-
-- **Checkpoints**: Save at regular intervals (e.g. every N steps or epochs). Always resume from the latest checkpoint on restart, never from scratch.
-- **Selective copy on shutdown**: Before stopping a pod, copy only what is needed to resume and diagnose — logs, result summaries, key checkpoints, configs. Use judgment; do not copy full datasets or redundant artifacts.
-- **Diagnostics before billing stop**: If pausing a pod to avoid charges, ensure all diagnostic data (metrics, logs, plots, final outputs) is copied locally first. Once the pod is gone, that data may be unrecoverable.
-- **Pod-agnostic scripts**: Use relative or configurable paths so scripts run identically on a fresh pod without manual edits.
-- **Restore script**: Maintain a setup script (`scripts/setup_pod.sh` or equivalent) that installs dependencies, downloads or mounts datasets, and restores the working environment on a fresh pod.
-- **Root filesystem is ephemeral**: On RunPod, the root filesystem (`/`) is wiped on pod restart. Python packages, compiled extensions, and any files written outside the network volume (`/workspace`) are lost. All experiment artifacts must live under the network volume. The restore script must reinstall all packages on every fresh pod.
-- **Package version pinning**: Fresh pod installs may pull newer package versions that break compatibility (e.g., a transformers upgrade requiring a newer PyTorch). Pin exact versions in `requirements.txt` and verify them in the restore script.
-- **tmux for long runs**: Any run expected to take more than a few minutes must be launched inside a `tmux` session. SSH disconnections kill bare processes. Install tmux (`apt-get install tmux`) as part of the restore script. Launch with `tmux new-session -d -s <name> '<command>'` and monitor with `tmux attach -t <name>`.
-- **SSH key for automation**: Agent-driven SSH cannot interact with macOS Keychain or passphrase prompts. Generate a dedicated passphrase-free key for pod access: `ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_pod -N ""`. Add the public key to the pod's `~/.ssh/authorized_keys` via the web terminal immediately after pod creation. Store the key path explicitly in all SSH commands used by the agent.
-- **Port mapping changes on restart**: RunPod reassigns the external SSH port when a pod is restarted or replaced. Always retrieve the current port from the RunPod dashboard "Connect" button before attempting SSH. Do not hard-code port numbers in scripts.
-- **nohup over tmux for unattended runs**: `tmux` sessions survive SSH disconnects but not pod reboots; `nohup` output is sufficient for overnight runs. Use `nohup bash script.sh >> logs/run.log 2>&1 &` so the process survives terminal closure. Set `PYTHONUNBUFFERED=1` so Python output flushes immediately to the log file.
-- **Watchdog process design**: For overnight runs, run a lightweight watchdog loop (separate `nohup` background process) that checks every 60 s whether the main orchestration bash script is still alive. If the bash script exits unexpectedly, restart it via `nohup`. **Critical**: check for the bash process itself (not just Python subprocesses) — there are brief inter-condition gaps between Python invocations where no Python process is running but the bash loop is still healthy. Checking only Python processes causes false-positive restarts and duplicate concurrent training runs, which corrupt shared checkpoints and waste GPU time.
-- **Per-condition sentinels before concurrent runs**: Before any watchdog or retry logic relaunches a training phase, verify that the run is truly dead (the controlling bash process is gone) rather than temporarily between phases. Write lightweight `.sentinel` files after each training condition completes; the bash script checks these on restart to skip already-finished work, making restarts idempotent.
+For API-heavy workflows:
+- Cache API responses to disk so reruns do not re-spend tokens on identical inputs.
+- Use `temperature=0.0` and pinned model versions for any call that affects reproducibility.
+- Estimate total API cost before running multi-seed or multi-condition sweeps.
+- Implement request batching or rate-limit handling where the API supports it.
 
 ---
 
@@ -296,46 +220,19 @@ The analysis layer should make it easy to answer:
 Continuously maintain a project README.
 
 It should contain:
-- project purpose
+- project purpose and current status (upfront)
 - repository structure
 - environment setup
-- how to run baseline
-- how to run modified system
-- how to run experiments
-- where logs/results are stored
+- how to run baseline and modified system
+- where logs and results are stored
 - what remains incomplete
 - current best-known commands
 
-The README must end with a **Current Status** section containing:
-- what has been implemented and validated so far,
-- known issues and blockers,
-- identified next steps (prioritized if possible).
-
-Keep this section current after every work cycle. A fresh agent must be able to read it and resume work without losing momentum or repeating completed steps.
-
-Do not let the repo become archaeology.
-
-### Review Package
-
-After every phase or significant iteration, regenerate `data/review_package.json` by running:
-
-```bash
-python3 scripts/make_review_package.py
-```
-
-Before regenerating, verify that `scripts/make_review_package.py` captures all new artifacts produced in the completed phase:
-- new source files → confirm they are under an included directory (`src/`, `scripts/`, `configs/`, `analysis/`)
-- new data outputs → confirm their directory is listed in `DATA_DIRS`
-- new log formats → confirm `sample_logs()` handles the file extension correctly
-- new checkpoint layouts → confirm `build_checkpoint_meta()` will find them
-
-If any new artifact type is not covered, update `make_review_package.py` first, then regenerate. The review package must always reflect the current project state so that an LLM reviewer can evaluate progress from a single file.
+**The README is for agents and human reviewers, not a personal lab notebook.** Do not accumulate bug-fix histories, crossed-out to-do lists, or phase-by-phase execution logs. Remove entries once they are no longer actionable. A fresh agent must be able to read the README and resume work without repeating completed steps or wading through historical noise.
 
 ---
 
 ## 12. Paper Support
-
-The codebase should support eventual paper writing.
 
 Organize outputs so they can be used in:
 - methods section,
@@ -344,12 +241,7 @@ Organize outputs so they can be used in:
 - appendix,
 - reproducibility checklist.
 
-Where useful, save:
-- exact configs,
-- git commit hash,
-- seed values,
-- hardware info,
-- runtime summaries.
+Save: exact configs, git commit hash, seed values, hardware or API model info, runtime summaries.
 
 The goal is that a future paper draft can be written from the artifacts without reverse-engineering the project.
 
